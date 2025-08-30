@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "ETTeu1ZqR6o=",
+  "dgSpecHash": "qBcIxLRfqL0=",
   "success": true,
   "projectFilePath": "C:\\Users\\Lucho\\OneDrive\\Escritorio\\Proyecto Inmobiliaria\\Inmobiliaria-Grippo-Soto\\Inmobiliaria-Grippo-Soto.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Lucho\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.2\\microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\Lucho\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\Lucho\\.nuget\\packages\\mysqlconnector\\2.4.0\\mysqlconnector.2.4.0.nupkg.sha512"
+  ],
   "logs": []
 }
