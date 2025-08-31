@@ -7,9 +7,10 @@ namespace Inmobiliaria_.Net_Core.Controllers
     {
         private readonly RepositorioPropietario repositorio;
 
-        public PropietarioController(IConfiguration configuration)
+        // Constructor que usa inyección de dependencias
+        public PropietarioController(RepositorioPropietario repositorio)
         {
-            repositorio = new RepositorioPropietario(configuration);
+            this.repositorio = repositorio;
         }
 
         public IActionResult Index()
@@ -28,10 +29,97 @@ namespace Inmobiliaria_.Net_Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                repositorio.Alta(propietario);
-                return RedirectToAction(nameof(Index));
+                // Validar que no exista el DNI
+                if (repositorio.ExisteDni(propietario.Dni))
+                {
+                    ModelState.AddModelError("Dni", "Ya existe un propietario con ese DNI");
+                    return View(propietario);
+                }
+
+                try
+                {
+                    repositorio.Alta(propietario);
+                    TempData["Mensaje"] = "Propietario creado exitosamente";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error al crear el propietario: " + ex.Message);
+                }
             }
             return View(propietario);
+        }
+
+        public IActionResult Editar(int id)
+        {
+            var propietario = repositorio.ObtenerPorId(id);
+            if (propietario == null)
+            {
+                return NotFound();
+            }
+            return View(propietario);
+        }
+
+        [HttpPost]
+        public IActionResult Editar(Propietario propietario)
+        {
+            if (ModelState.IsValid)
+            {
+                // Validar que no exista el DNI (excluyendo el actual)
+                if (repositorio.ExisteDni(propietario.Dni, propietario.Id))
+                {
+                    ModelState.AddModelError("Dni", "Ya existe un propietario con ese DNI");
+                    return View(propietario);
+                }
+
+                try
+                {
+                    repositorio.Modificacion(propietario);
+                    TempData["Mensaje"] = "Propietario actualizado exitosamente";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error al actualizar el propietario: " + ex.Message);
+                }
+            }
+            return View(propietario);
+        }
+
+        public IActionResult Detalles(int id)
+        {
+            var propietario = repositorio.ObtenerPorId(id);
+            if (propietario == null)
+            {
+                return NotFound();
+            }
+            return View(propietario);
+        }
+
+        public IActionResult Eliminar(int id)
+        {
+            var propietario = repositorio.ObtenerPorId(id);
+            if (propietario == null)
+            {
+                return NotFound();
+            }
+            return View(propietario);
+        }
+
+        [HttpPost]
+        [ActionName("Eliminar")]
+        public IActionResult EliminarConfirmado(int id)
+        {
+            try
+            {
+                repositorio.Baja(id);
+                TempData["Mensaje"] = "Propietario eliminado exitosamente";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al eliminar el propietario: " + ex.Message;
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

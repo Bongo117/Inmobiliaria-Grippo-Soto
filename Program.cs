@@ -1,7 +1,13 @@
+using Inmobiliaria_.Net_Core.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Registrar los repositorios para inyección de dependencias
+builder.Services.AddScoped<RepositorioPropietario>();
+//builder.Services.AddScoped<RepositorioInquilino>();
 
 var app = builder.Build();
 
