@@ -7,7 +7,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
     {
         private readonly RepositorioPropietario repositorio;
 
-        // Constructor que usa inyección de dependencias
         public PropietarioController(RepositorioPropietario repositorio)
         {
             this.repositorio = repositorio;
@@ -29,7 +28,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Validar que no exista el DNI
                 if (repositorio.ExisteDni(propietario.Dni))
                 {
                     ModelState.AddModelError("Dni", "Ya existe un propietario con ese DNI");
@@ -65,7 +63,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Validar que no exista el DNI (excluyendo el actual)
                 if (repositorio.ExisteDni(propietario.Dni, propietario.Id))
                 {
                     ModelState.AddModelError("Dni", "Ya existe un propietario con ese DNI");

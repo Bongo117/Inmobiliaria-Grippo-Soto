@@ -25,6 +25,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="gestionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Gestión
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="gestionDropdown">
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Inquilino" asp-action="Index">Inquilinos</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Propietario" asp-action="Index">Propietarios</a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
