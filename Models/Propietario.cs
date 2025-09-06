@@ -4,7 +4,7 @@ namespace Inmobiliaria_.Net_Core.Models
 {
     public class Propietario
     {
-        public int Id { get; set; } // Cambié a Id para que coincida con tu BD
+        public int Id { get; set; }
         
         [Required(ErrorMessage = "El DNI es obligatorio")]
         public string Dni { get; set; } = string.Empty;
