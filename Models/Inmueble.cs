@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Inmobiliaria.Web.Models
+namespace Inmobiliaria_.Net_Core.Models
 {
     public class Inmueble
     {
