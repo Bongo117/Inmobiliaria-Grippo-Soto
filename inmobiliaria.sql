@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-08-2025 a las 00:36:26
+-- Tiempo de generación: 06-09-2025 a las 20:39:40
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,38 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `inmobiliaria`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `contratos`
+--
+
+CREATE TABLE `contratos` (
+  `Id` int(11) NOT NULL,
+  `FechaInicio` date NOT NULL,
+  `FechaFin` date NOT NULL,
+  `MontoMensual` decimal(18,2) NOT NULL,
+  `InquilinoId` int(11) NOT NULL,
+  `InmuebleId` int(11) NOT NULL,
+  `Estado` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `inmuebles`
+--
+
+CREATE TABLE `inmuebles` (
+  `Id` int(11) NOT NULL,
+  `Direccion` varchar(200) NOT NULL,
+  `Tipo` varchar(50) NOT NULL,
+  `Ambientes` int(11) NOT NULL,
+  `Precio` decimal(18,2) NOT NULL,
+  `PropietarioId` int(11) NOT NULL,
+  `Estado` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -56,8 +88,31 @@ CREATE TABLE `propietarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Volcado de datos para la tabla `propietarios`
+--
+
+INSERT INTO `propietarios` (`Id`, `Dni`, `Apellido`, `Nombre`, `Email`, `Telefono`, `Domicilio`, `Estado`) VALUES
+(1, '12345678', 'Pérez', 'Juan', 'juanperez@mail.com', '123456789', 'Calle Falsa 123', 1),
+(2, '87654321', 'Gómez', 'María', 'mariagomez@mail.com', '987654321', 'Av. Siempreviva 742', 1);
+
+--
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `contratos`
+--
+ALTER TABLE `contratos`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `InquilinoId` (`InquilinoId`),
+  ADD KEY `InmuebleId` (`InmuebleId`);
+
+--
+-- Indices de la tabla `inmuebles`
+--
+ALTER TABLE `inmuebles`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `PropietarioId` (`PropietarioId`);
 
 --
 -- Indices de la tabla `inquilinos`
@@ -78,6 +133,18 @@ ALTER TABLE `propietarios`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `contratos`
+--
+ALTER TABLE `contratos`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `inmuebles`
+--
+ALTER TABLE `inmuebles`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `inquilinos`
 --
 ALTER TABLE `inquilinos`
@@ -87,7 +154,24 @@ ALTER TABLE `inquilinos`
 -- AUTO_INCREMENT de la tabla `propietarios`
 --
 ALTER TABLE `propietarios`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `contratos`
+--
+ALTER TABLE `contratos`
+  ADD CONSTRAINT `FK_Contratos_Inmuebles` FOREIGN KEY (`InmuebleId`) REFERENCES `inmuebles` (`Id`),
+  ADD CONSTRAINT `FK_Contratos_Inquilinos` FOREIGN KEY (`InquilinoId`) REFERENCES `inquilinos` (`Id`);
+
+--
+-- Filtros para la tabla `inmuebles`
+--
+ALTER TABLE `inmuebles`
+  ADD CONSTRAINT `FK_Inmuebles_Propietarios` FOREIGN KEY (`PropietarioId`) REFERENCES `propietarios` (`Id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
