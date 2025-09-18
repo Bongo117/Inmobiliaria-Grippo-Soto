@@ -118,7 +118,9 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">Nombre Completo:</label>
-                        <p class="form-control-plaintext">@Model.Inquilino.Apellido, @Model.Inquilino.Nombre</p>
+                        <p class="form-control-plaintext">
+                            @(Model.Inquilino.Apellido + ", " + Model.Inquilino.Nombre)
+                        </p>
                     </div>
 
                     <div class="row">
@@ -215,7 +217,7 @@
                         <p class="form-control-plaintext">
                             @if (Model.Inmueble.Propietario != null)
                             {
-                                @Model.Inmueble.Propietario.Apellido, @Model.Inmueble.Propietario.Nombre
+                                @(Model.Inmueble.Propietario.Apellido + ", " + Model.Inmueble.Propietario.Nombre)
                             }
                             else
                             {

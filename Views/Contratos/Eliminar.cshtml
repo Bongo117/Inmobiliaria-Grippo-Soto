@@ -9,7 +9,8 @@
 </div>
 
 <div class="alert alert-warning" role="alert">
-    <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> ¿Está seguro que desea eliminar este contrato?</h4>
+    <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> ¿Está seguro que desea eliminar este contrato?
+    </h4>
     <p>Esta acción marcará al contrato como inactivo. Los datos no se eliminarán permanentemente.</p>
 </div>
 
@@ -71,11 +72,11 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Inquilino:</label>
+                    <label class="form-label fw-bold">Inmueble:</label>
                     <p class="form-control-plaintext">
-                        @if (Model.Inquilino != null)
+                        @if (Model.Inmueble != null)
                         {
-                            @Model.Inquilino.Apellido, @Model.Inquilino.Nombre
+                            @(Model.Inmueble.Direccion + " - " + Model.Inmueble.Tipo)
                         }
                         else
                         {
@@ -89,8 +90,21 @@
                     <p class="form-control-plaintext">
                         @if (Model.Inmueble != null)
                         {
-                            @Model.Inmueble.Direccion - @Model.Inmueble.Tipo
-                        }
+                            <div class="mb-3">
+    <label class="form-label fw-bold">Inmueble:</label>
+    <p class="form-control-plaintext">
+        @if (Model.Inmueble != null)
+        {
+            @(Model.Inmueble.Direccion + " - " + Model.Inmueble.Tipo)
+        }
+        else
+        {
+            <span class="text-muted">No especificado</span>
+        }
+    </p>
+</div>
+
+                                                }
                         else
                         {
                             <span class="text-muted">No especificado</span>
@@ -105,7 +119,8 @@
 <div class="mt-4">
     <form asp-action="Eliminar" method="post" style="display: inline;">
         <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está completamente seguro que desea eliminar este contrato?')">
+        <button type="submit" class="btn btn-danger"
+            onclick="return confirm('¿Está completamente seguro que desea eliminar este contrato?')">
             <i class="fas fa-trash"></i> Confirmar Eliminación
         </button>
     </form>

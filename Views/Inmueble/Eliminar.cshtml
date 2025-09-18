@@ -9,7 +9,8 @@
 </div>
 
 <div class="alert alert-warning" role="alert">
-    <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> ¿Está seguro que desea eliminar este inmueble?</h4>
+    <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> ¿Está seguro que desea eliminar este inmueble?
+    </h4>
     <p>Esta acción marcará al inmueble como inactivo. Los datos no se eliminarán permanentemente.</p>
     <p><strong>Nota:</strong> No se puede eliminar un inmueble que tenga contratos vigentes.</p>
 </div>
@@ -77,12 +78,13 @@
                     <p class="form-control-plaintext">
                         @if (Model.Propietario != null)
                         {
-                            @Model.Propietario.Apellido, @Model.Propietario.Nombre
+                            <span>@Model.Propietario.Apellido @Model.Propietario.Nombre</span>
                         }
                         else
                         {
                             <span class="text-muted">No especificado</span>
                         }
+
                     </p>
                 </div>
             </div>
@@ -93,7 +95,8 @@
 <div class="mt-4">
     <form asp-action="Eliminar" method="post" style="display: inline;">
         <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está completamente seguro que desea eliminar este inmueble?')">
+        <button type="submit" class="btn btn-danger"
+            onclick="return confirm('¿Está completamente seguro que desea eliminar este inmueble?')">
             <i class="fas fa-trash"></i> Confirmar Eliminación
         </button>
     </form>
