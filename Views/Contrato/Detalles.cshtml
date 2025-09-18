@@ -1,0 +1,249 @@
+@model Inmobiliaria_.Net_Core.Models.Contrato
+
+@{
+    ViewData["Title"] = "Detalles del Contrato";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Detalles del Contrato</h2>
+    <div>
+        <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-file-contract"></i> Información del Contrato</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">ID:</label>
+                            <p class="form-control-plaintext">@Model.Id</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Estado:</label>
+                            <p class="form-control-plaintext">
+                                @if (Model.EsVigente)
+                                {
+                                    <span class="badge bg-success">Vigente</span>
+                                }
+                                else if (Model.FechaFin < DateTime.Today)
+                                {
+                                    <span class="badge bg-secondary">Vencido</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Futuro</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Fecha de Inicio:</label>
+                            <p class="form-control-plaintext">@Model.FechaInicio.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Fecha de Finalización:</label>
+                            <p class="form-control-plaintext">@Model.FechaFin.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Duración (días):</label>
+                            <p class="form-control-plaintext">@Model.DuracionDias días</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Duración (meses):</label>
+                            <p class="form-control-plaintext">@Model.DuracionMeses meses</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Monto Mensual:</label>
+                    <p class="form-control-plaintext">
+                        <span class="h5 text-success">$@Model.MontoMensual.ToString("N2")</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-user"></i> Información del Inquilino</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.Inquilino != null)
+                {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">ID Inquilino:</label>
+                                <p class="form-control-plaintext">@Model.Inquilino.Id</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">DNI:</label>
+                                <p class="form-control-plaintext">@Model.Inquilino.Dni</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nombre Completo:</label>
+                        <p class="form-control-plaintext">@Model.Inquilino.Apellido, @Model.Inquilino.Nombre</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email:</label>
+                                <p class="form-control-plaintext">
+                                    @if (!string.IsNullOrEmpty(Model.Inquilino.Email))
+                                    {
+                                        <a href="mailto:@Model.Inquilino.Email">@Model.Inquilino.Email</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No especificado</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Teléfono:</label>
+                                <p class="form-control-plaintext">
+                                    @if (!string.IsNullOrEmpty(Model.Inquilino.Telefono))
+                                    {
+                                        <a href="tel:@Model.Inquilino.Telefono">@Model.Inquilino.Telefono</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No especificado</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        No se encontró información del inquilino.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-building"></i> Información del Inmueble</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.Inmueble != null)
+                {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">ID Inmueble:</label>
+                                <p class="form-control-plaintext">@Model.Inmueble.Id</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Tipo:</label>
+                                <p class="form-control-plaintext">@Model.Inmueble.Tipo</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Dirección:</label>
+                        <p class="form-control-plaintext">@Model.Inmueble.Direccion</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Ambientes:</label>
+                                <p class="form-control-plaintext">@Model.Inmueble.Ambientes</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Precio del Inmueble:</label>
+                                <p class="form-control-plaintext">$@Model.Inmueble.Precio.ToString("N2")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Propietario:</label>
+                        <p class="form-control-plaintext">
+                            @if (Model.Inmueble.Propietario != null)
+                            {
+                                @Model.Inmueble.Propietario.Apellido, @Model.Inmueble.Propietario.Nombre
+                            }
+                            else
+                            {
+                                <span class="text-muted">No especificado</span>
+                            }
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        No se encontró información del inmueble.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Editar
+    </a>
+    <a asp-action="Eliminar" asp-route-id="@Model.Id" class="btn btn-danger">
+        <i class="fas fa-trash"></i> Eliminar
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Volver a la Lista
+    </a>
+</div>

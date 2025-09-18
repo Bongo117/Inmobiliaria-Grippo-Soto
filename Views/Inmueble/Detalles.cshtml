@@ -1,0 +1,179 @@
+@model Inmobiliaria_.Net_Core.Models.Inmueble
+
+@{
+    ViewData["Title"] = "Detalles del Inmueble";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Detalles del Inmueble</h2>
+    <div>
+        <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-building"></i> Información del Inmueble</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">ID:</label>
+                            <p class="form-control-plaintext">@Model.Id</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Estado:</label>
+                            <p class="form-control-plaintext">
+                                @if (Model.Estado)
+                                {
+                                    <span class="badge bg-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactivo</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Dirección:</label>
+                    <p class="form-control-plaintext">@Model.Direccion</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tipo:</label>
+                            <p class="form-control-plaintext">@Model.Tipo</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Ambientes:</label>
+                            <p class="form-control-plaintext">@Model.Ambientes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Precio Mensual:</label>
+                    <p class="form-control-plaintext">
+                        <span class="h5 text-success">$@Model.Precio.ToString("N2")</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-user"></i> Información del Propietario</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.Propietario != null)
+                {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">ID Propietario:</label>
+                                <p class="form-control-plaintext">@Model.Propietario.Id</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">DNI:</label>
+                                <p class="form-control-plaintext">@Model.Propietario.Dni</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nombre Completo:</label>
+                        <p class="form-control-plaintext">@Model.Propietario.Apellido, @Model.Propietario.Nombre</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email:</label>
+                                <p class="form-control-plaintext">
+                                    @if (!string.IsNullOrEmpty(Model.Propietario.Email))
+                                    {
+                                        <a href="mailto:@Model.Propietario.Email">@Model.Propietario.Email</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No especificado</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Teléfono:</label>
+                                <p class="form-control-plaintext">
+                                    @if (!string.IsNullOrEmpty(Model.Propietario.Telefono))
+                                    {
+                                        <a href="tel:@Model.Propietario.Telefono">@Model.Propietario.Telefono</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No especificado</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Domicilio:</label>
+                        <p class="form-control-plaintext">
+                            @if (!string.IsNullOrEmpty(Model.Propietario.Domicilio))
+                            {
+                                @Model.Propietario.Domicilio
+                            }
+                            else
+                            {
+                                <span class="text-muted">No especificado</span>
+                            }
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        No se encontró información del propietario.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Editar
+    </a>
+    <a asp-action="Eliminar" asp-route-id="@Model.Id" class="btn btn-danger">
+        <i class="fas fa-trash"></i> Eliminar
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Volver a la Lista
+    </a>
+</div>

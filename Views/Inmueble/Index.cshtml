@@ -1,22 +1,14 @@
-@model IEnumerable<Inmobiliaria_.Net_Core.Models.Contrato>
+@model IEnumerable<Inmobiliaria_.Net_Core.Models.Inmueble>
 
 @{
-    ViewData["Title"] = ViewBag.Titulo ?? "Lista de Contratos";
+    ViewData["Title"] = "Lista de Inmuebles";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>@ViewBag.Titulo ?? "Lista de Contratos"</h2>
-    <div>
-        @if (ViewBag.Titulo == null)
-        {
-            <a asp-action="Vigentes" class="btn btn-success me-2">
-                <i class="fas fa-check-circle"></i> Ver Vigentes
-            </a>
-        }
-        <a asp-action="Crear" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Nuevo Contrato
-        </a>
-    </div>
+    <h2>Lista de Inmuebles</h2>
+    <a asp-action="Crear" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Nuevo Inmueble
+    </a>
 </div>
 
 @if (TempData["Mensaje"] != null)
@@ -44,50 +36,46 @@
                     <thead class="table-dark">
                         <tr>
                             <th>Id</th>
-                            <th>Inmueble</th>
-                            <th>Inquilino</th>
-                            <th>Fecha Inicio</th>
-                            <th>Fecha Fin</th>
-                            <th>Monto</th>
+                            <th>Dirección</th>
+                            <th>Tipo</th>
+                            <th>Ambientes</th>
+                            <th>Precio</th>
+                            <th>Propietario</th>
                             <th>Estado</th>
                             <th width="200">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var contrato in Model)
+                        @foreach (var inmueble in Model)
                         {
                             <tr>
-                                <td>@contrato.Id</td>
-                                <td>@contrato.Inmueble?.Direccion</td>
-                                <td>@(contrato.Inquilino?.Apellido + ", " + contrato.Inquilino?.Nombre ?? "No especificado")</td>
-                                <td>@contrato.FechaInicio.ToString("dd/MM/yyyy")</td>
-                                <td>@contrato.FechaFin.ToString("dd/MM/yyyy")</td>
-                                <td>$@contrato.MontoMensual.ToString("N2")</td>
+                                <td>@inmueble.Id</td>
+                                <td>@inmueble.Direccion</td>
+                                <td>@inmueble.Tipo</td>
+                                <td>@inmueble.Ambientes</td>
+                                <td>$@inmueble.Precio.ToString("N2")</td>
+                                <td>@(inmueble.Propietario?.Apellido + ", " + inmueble.Propietario?.Nombre ?? "No especificado")</td>
                                 <td>
-                                    @if (contrato.EsVigente)
+                                    @if (inmueble.Estado)
                                     {
-                                        <span class="badge bg-success">Vigente</span>
-                                    }
-                                    else if (contrato.FechaFin < DateTime.Today)
-                                    {
-                                        <span class="badge bg-secondary">Vencido</span>
+                                        <span class="badge bg-success">Activo</span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-warning">Futuro</span>
+                                        <span class="badge bg-danger">Inactivo</span>
                                     }
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <a asp-action="Detalles" asp-route-id="@contrato.Id" 
+                                        <a asp-action="Detalles" asp-route-id="@inmueble.Id" 
                                            class="btn btn-info btn-sm" title="Ver detalles">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a asp-action="Editar" asp-route-id="@contrato.Id" 
+                                        <a asp-action="Editar" asp-route-id="@inmueble.Id" 
                                            class="btn btn-warning btn-sm" title="Editar">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a asp-action="Eliminar" asp-route-id="@contrato.Id" 
+                                        <a asp-action="Eliminar" asp-route-id="@inmueble.Id" 
                                            class="btn btn-danger btn-sm" title="Eliminar">
                                             <i class="fas fa-trash"></i>
                                         </a>
@@ -102,11 +90,11 @@
         else
         {
             <div class="text-center py-5">
-                <i class="fas fa-file-contract fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No hay contratos registrados</h5>
-                <p class="text-muted">Comienza creando tu primer contrato</p>
+                <i class="fas fa-building fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No hay inmuebles registrados</h5>
+                <p class="text-muted">Comienza creando tu primer inmueble</p>
                 <a asp-action="Crear" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Crear Contrato
+                    <i class="fas fa-plus"></i> Crear Inmueble
                 </a>
             </div>
         }

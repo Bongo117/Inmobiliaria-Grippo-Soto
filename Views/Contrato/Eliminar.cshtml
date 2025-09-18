@@ -1,0 +1,118 @@
+@model Inmobiliaria_.Net_Core.Models.Contrato
+
+@{
+    ViewData["Title"] = "Eliminar Contrato";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-danger">Eliminar Contrato</h2>
+</div>
+
+<div class="alert alert-warning" role="alert">
+    <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> ¿Está seguro que desea eliminar este contrato?</h4>
+    <p>Esta acción marcará al contrato como inactivo. Los datos no se eliminarán permanentemente.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4><i class="fas fa-file-contract"></i> Información del Contrato a Eliminar</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">ID:</label>
+                            <p class="form-control-plaintext">@Model.Id</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Estado:</label>
+                            <p class="form-control-plaintext">
+                                @if (Model.EsVigente)
+                                {
+                                    <span class="badge bg-success">Vigente</span>
+                                }
+                                else if (Model.FechaFin < DateTime.Today)
+                                {
+                                    <span class="badge bg-secondary">Vencido</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Futuro</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Fecha de Inicio:</label>
+                            <p class="form-control-plaintext">@Model.FechaInicio.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Fecha de Finalización:</label>
+                            <p class="form-control-plaintext">@Model.FechaFin.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Monto Mensual:</label>
+                    <p class="form-control-plaintext">
+                        <span class="h5 text-success">$@Model.MontoMensual.ToString("N2")</span>
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Inquilino:</label>
+                    <p class="form-control-plaintext">
+                        @if (Model.Inquilino != null)
+                        {
+                            @Model.Inquilino.Apellido, @Model.Inquilino.Nombre
+                        }
+                        else
+                        {
+                            <span class="text-muted">No especificado</span>
+                        }
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Inmueble:</label>
+                    <p class="form-control-plaintext">
+                        @if (Model.Inmueble != null)
+                        {
+                            @Model.Inmueble.Direccion - @Model.Inmueble.Tipo
+                        }
+                        else
+                        {
+                            <span class="text-muted">No especificado</span>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <form asp-action="Eliminar" method="post" style="display: inline;">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está completamente seguro que desea eliminar este contrato?')">
+            <i class="fas fa-trash"></i> Confirmar Eliminación
+        </button>
+    </form>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Cancelar
+    </a>
+    <a asp-action="Detalles" asp-route-id="@Model.Id" class="btn btn-info">
+        <i class="fas fa-eye"></i> Ver Detalles
+    </a>
+</div>
