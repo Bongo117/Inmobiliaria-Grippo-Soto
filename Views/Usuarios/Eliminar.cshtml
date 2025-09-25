@@ -1,0 +1,96 @@
+@model Inmobiliaria_Grippo_Soto.Controllers.UsuarioConRolesViewModel
+
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<h2 class="text-danger"><i class="fas fa-exclamation-triangle"></i> Eliminar Usuario</h2>
+
+<div class="alert alert-warning" role="alert">
+    <i class="fas fa-info-circle"></i>
+    <strong>Atención:</strong> Esta acción deshabilitará al usuario, pero no eliminará permanentemente sus datos.
+    El usuario no podrá acceder al sistema, pero sus registros se mantendrán por auditoría.
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4><i class="fas fa-user"></i> Confirmar Eliminación</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        @if (!string.IsNullOrEmpty(Model.Usuario.FotoPerfil))
+                        {
+                            <img src="@Model.Usuario.FotoPerfil" alt="Foto de Perfil" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; margin: 0 auto;">
+                                <i class="fas fa-user fa-2x text-muted"></i>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-9">
+                        <dl class="row">
+                            <dt class="col-sm-4">Nombre Completo:</dt>
+                            <dd class="col-sm-8">@Model.Usuario.NombreCompleto</dd>
+                            
+                            <dt class="col-sm-4">Email:</dt>
+                            <dd class="col-sm-8">@Model.Usuario.Email</dd>
+                            
+                            <dt class="col-sm-4">Teléfono:</dt>
+                            <dd class="col-sm-8">@(Model.Usuario.PhoneNumber ?? "N/A")</dd>
+                            
+                            <dt class="col-sm-4">Roles:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.Roles.Any())
+                                {
+                                    @foreach (var rol in Model.Roles)
+                                    {
+                                        <span class="badge bg-@(rol == "Administrador" ? "danger" : "primary") me-1">@rol</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Sin rol</span>
+                                }
+                            </dd>
+                            
+                            <dt class="col-sm-4">Fecha de Creación:</dt>
+                            <dd class="col-sm-8">@Model.Usuario.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</dd>
+                        </dl>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <h5 class="text-danger">¿Está seguro que desea deshabilitar este usuario?</h5>
+                        <ul class="list-unstyled text-muted">
+                            <li><i class="fas fa-check"></i> El usuario no podrá iniciar sesión</li>
+                            <li><i class="fas fa-check"></i> Sus datos se mantendrán para auditoría</li>
+                            <li><i class="fas fa-check"></i> Esta acción se puede revertir desde la base de datos</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <form asp-action="EliminarConfirmado" asp-route-id="@Model.Usuario.Id" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está completamente seguro de deshabilitar este usuario?')">
+                            <i class="fas fa-trash"></i> Sí, Deshabilitar Usuario
+                        </button>
+                    </form>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Cancelar
+                    </a>
+                    <a asp-action="Detalles" asp-route-id="@Model.Usuario.Id" class="btn btn-info">
+                        <i class="fas fa-eye"></i> Ver Detalles
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

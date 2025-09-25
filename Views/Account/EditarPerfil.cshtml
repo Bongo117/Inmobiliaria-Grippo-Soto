@@ -1,0 +1,117 @@
+@model Inmobiliaria_Grippo_Soto.Controllers.EditarPerfilViewModel
+
+@{
+    ViewData["Title"] = "Editar Perfil";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-user-edit"></i> Editar Mi Perfil</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="EditarPerfil" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <!-- Foto de Perfil -->
+                            <div class="col-md-4 text-center">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Foto de Perfil</label>
+                                    <div class="profile-photo-container mb-3">
+                                        @if (!string.IsNullOrEmpty(Model.FotoPerfil))
+                                        {
+                                            <img src="@Model.FotoPerfil" alt="Foto de Perfil" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; margin: 0 auto;">
+                                                <i class="fas fa-user fa-3x text-muted"></i>
+                                            </div>
+                                        }
+                                    </div>
+                                    
+                                    <div class="mb-2">
+                                        <input type="file" asp-for="ArchivoFoto" class="form-control" accept="image/*">
+                                        <span asp-validation-for="ArchivoFoto" class="text-danger"></span>
+                                    </div>
+                                    
+                                    @if (!string.IsNullOrEmpty(Model.FotoPerfil))
+                                    {
+                                        <form asp-action="EliminarFoto" method="post" style="display: inline;">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Está seguro de eliminar la foto?')">
+                                                <i class="fas fa-trash"></i> Eliminar Foto
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Datos Personales -->
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label asp-for="Nombre" class="form-label">Nombre</label>
+                                            <input asp-for="Nombre" class="form-control" placeholder="Ingrese su nombre">
+                                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label asp-for="Apellido" class="form-label">Apellido</label>
+                                            <input asp-for="Apellido" class="form-control" placeholder="Ingrese su apellido">
+                                            <span asp-validation-for="Apellido" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Email" class="form-label">Email</label>
+                                    <input asp-for="Email" class="form-control" readonly style="background-color: #f8f9fa;">
+                                    <small class="form-text text-muted">El email no se puede modificar.</small>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Telefono" class="form-label">Teléfono</label>
+                                    <input asp-for="Telefono" class="form-control" placeholder="Ingrese su teléfono">
+                                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Guardar Cambios
+                                    </button>
+                                    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Volver
+                                    </a>
+                                </div>
+                                <div>
+                                    <a asp-action="CambiarContrasena" class="btn btn-warning">
+                                        <i class="fas fa-key"></i> Cambiar Contraseña
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

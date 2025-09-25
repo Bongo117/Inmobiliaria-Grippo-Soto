@@ -37,6 +37,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LogoutPath = "/Account/Logout";
 });
 
+// Registrar servicios de auditoría
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
+
 // Registrar los repositorios para inyección de dependencias
 builder.Services.AddScoped<RepositorioPropietario>();
 builder.Services.AddScoped<RepositorioInquilino>();

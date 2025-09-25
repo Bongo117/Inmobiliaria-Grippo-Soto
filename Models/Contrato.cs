@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using Inmobiliaria_Grippo_Soto.Models;
 
 namespace Inmobiliaria_.Net_Core.Models
 {
-    public class Contrato
+    public class Contrato : AuditableEntity
     {
-        public int Id { get; set; }
         
         [Required(ErrorMessage = "La fecha de inicio es obligatoria")]
         [DataType(DataType.Date)]
@@ -29,7 +29,6 @@ namespace Inmobiliaria_.Net_Core.Models
         [Display(Name = "Inmueble")]
         public int InmuebleId { get; set; }
         
-        public bool Estado { get; set; } = true;
         
         // Propiedades de navegación
         public Inquilino? Inquilino { get; set; }

@@ -1,0 +1,68 @@
+@model Inmobiliaria_Grippo_Soto.Controllers.CambiarContrasenaViewModel
+
+@{
+    ViewData["Title"] = "Cambiar Contraseña";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-key"></i> Cambiar Contraseña</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CambiarContrasena" method="post">
+                        <div class="form-group mb-3">
+                            <label asp-for="ContrasenaActual" class="form-label">Contraseña Actual *</label>
+                            <input asp-for="ContrasenaActual" type="password" class="form-control" placeholder="Ingrese su contraseña actual">
+                            <span asp-validation-for="ContrasenaActual" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="NuevaContrasena" class="form-label">Nueva Contraseña *</label>
+                            <input asp-for="NuevaContrasena" type="password" class="form-control" placeholder="Ingrese la nueva contraseña">
+                            <span asp-validation-for="NuevaContrasena" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                La contraseña debe tener al menos 6 caracteres y contener al menos un número.
+                            </small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="ConfirmarContrasena" class="form-label">Confirmar Nueva Contraseña *</label>
+                            <input asp-for="ConfirmarContrasena" type="password" class="form-control" placeholder="Confirme la nueva contraseña">
+                            <span asp-validation-for="ConfirmarContrasena" class="text-danger"></span>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Cambiar Contraseña
+                            </button>
+                            <a asp-action="EditarPerfil" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Volver al Perfil
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Validación de confirmación de contraseña en tiempo real
+        document.getElementById('ConfirmarContrasena').addEventListener('input', function() {
+            var password = document.getElementById('NuevaContrasena').value;
+            var confirmPassword = this.value;
+            
+            if (password !== confirmPassword) {
+                this.setCustomValidity('Las contraseñas no coinciden');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    </script>
+}

@@ -1,0 +1,192 @@
+@model Inmobiliaria_Grippo_Soto.Controllers.UsuarioConRolesViewModel
+
+@{
+    ViewData["Title"] = "Detalles del Usuario";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-user"></i> Detalles del Usuario</h2>
+    <div>
+        <a asp-action="Editar" asp-route-id="@Model.Usuario.Id" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-info-circle"></i> Información Personal</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        @if (!string.IsNullOrEmpty(Model.Usuario.FotoPerfil))
+                        {
+                            <img src="@Model.Usuario.FotoPerfil" alt="Foto de Perfil" class="img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; margin: 0 auto;">
+                                <i class="fas fa-user fa-3x text-muted"></i>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">ID:</label>
+                                    <p class="form-control-plaintext">@Model.Usuario.Id</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Email:</label>
+                                    <p class="form-control-plaintext">
+                                        @Model.Usuario.Email
+                                        @if (Model.Usuario.EmailConfirmed)
+                                        {
+                                            <i class="fas fa-check-circle text-success" title="Email confirmado"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-exclamation-circle text-warning" title="Email no confirmado"></i>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Nombre:</label>
+                                    <p class="form-control-plaintext">@(Model.Usuario.Nombre ?? "N/A")</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Apellido:</label>
+                                    <p class="form-control-plaintext">@(Model.Usuario.Apellido ?? "N/A")</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Teléfono:</label>
+                                    <p class="form-control-plaintext">@(Model.Usuario.PhoneNumber ?? "N/A")</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Roles:</label>
+                                    <p class="form-control-plaintext">
+                                        @if (Model.Roles.Any())
+                                        {
+                                            @foreach (var rol in Model.Roles)
+                                            {
+                                                <span class="badge bg-@(rol == "Administrador" ? "danger" : "primary") me-1">@rol</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Sin rol asignado</span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Estado:</label>
+                                    <p class="form-control-plaintext">
+                                        @if (Model.Usuario.Estado)
+                                        {
+                                            <span class="badge bg-success">Activo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Inactivo</span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Fecha de Creación:</label>
+                                    <p class="form-control-plaintext">@Model.Usuario.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.Usuario.FechaUltimaModificacion.HasValue)
+                        {
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Última Modificación:</label>
+                                        <p class="form-control-plaintext">@Model.Usuario.FechaUltimaModificacion.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-tools"></i> Acciones Administrativas</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <form asp-action="RestablecerContrasena" asp-route-id="@Model.Usuario.Id" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-warning w-100" onclick="return confirm('¿Está seguro de restablecer la contraseña de este usuario?')">
+                            <i class="fas fa-key"></i> Restablecer Contraseña
+                        </button>
+                    </form>
+                    
+                    @if (Model.Usuario.Estado)
+                    {
+                        <a asp-action="Eliminar" asp-route-id="@Model.Usuario.Id" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Deshabilitar Usuario
+                        </a>
+                    }
+                </div>
+                
+                <hr>
+                
+                <h6>Información del Sistema</h6>
+                <small class="text-muted">
+                    <strong>Usuario creado:</strong> @Model.Usuario.FechaCreacion.ToString("dd/MM/yyyy")<br>
+                    @if (Model.Usuario.FechaUltimaModificacion.HasValue)
+                    {
+                        <strong>Última actualización:</strong> @Model.Usuario.FechaUltimaModificacion.Value.ToString("dd/MM/yyyy")<br>
+                    }
+                    <strong>Estado de Email:</strong> 
+                    @(Model.Usuario.EmailConfirmed ? "Confirmado" : "Pendiente")
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

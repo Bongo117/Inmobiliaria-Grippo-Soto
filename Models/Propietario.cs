@@ -1,11 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using Inmobiliaria_Grippo_Soto.Models;
 
 namespace Inmobiliaria_.Net_Core.Models
 {
-    public class Propietario
+    public class Propietario : AuditableEntity
     {
-        public int Id { get; set; }
-        
         [Required(ErrorMessage = "El DNI es obligatorio")]
         public string Dni { get; set; } = string.Empty;
         
@@ -22,6 +21,6 @@ namespace Inmobiliaria_.Net_Core.Models
         
         public string? Domicilio { get; set; }
         
-        public bool Estado { get; set; } = true;
+        public string NombreCompleto => $"{Nombre} {Apellido}".Trim();
     }
 }

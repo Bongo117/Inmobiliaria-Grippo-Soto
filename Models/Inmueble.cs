@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using Inmobiliaria_Grippo_Soto.Models;
 
 namespace Inmobiliaria_.Net_Core.Models
 {
-    public class Inmueble
+    public class Inmueble : AuditableEntity
     {
-        public int Id { get; set; }
         
         [Required(ErrorMessage = "La dirección es obligatoria")]
         [StringLength(200, ErrorMessage = "La dirección no puede exceder los 200 caracteres")]
@@ -27,7 +27,6 @@ namespace Inmobiliaria_.Net_Core.Models
         [Display(Name = "Propietario")]
         public int PropietarioId { get; set; }
         
-        public bool Estado { get; set; } = true;
         
         // Propiedad de navegación
         public Propietario? Propietario { get; set; }
