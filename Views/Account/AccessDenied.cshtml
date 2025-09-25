@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Acceso denegado";
+}
+
+<div class="alert alert-danger" role="alert">
+    No tenés permisos para acceder a este recurso.
+    <a asp-controller="Home" asp-action="Index" class="alert-link">Volver al inicio</a>
+    .
+    @* Mensaje mostrado cuando la autorización por rol falla *@
+</div>
+
+

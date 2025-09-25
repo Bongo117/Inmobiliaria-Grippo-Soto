@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Controllers
 {
+    [Authorize]
     public class ContratosController : Controller
     {
         private readonly RepositorioContrato repositorio;
@@ -24,6 +26,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View(lista);
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Crear()
         {
             ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
@@ -32,6 +35,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrador")]
         public IActionResult Crear(Contrato contrato)
         {
             if (ModelState.IsValid)
@@ -68,6 +72,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View(contrato);
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Editar(int id)
         {
             var contrato = repositorio.ObtenerPorId(id);
@@ -82,6 +87,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrador")]
         public IActionResult Editar(Contrato contrato)
         {
             if (ModelState.IsValid)
@@ -128,6 +134,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View(contrato);
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Eliminar(int id)
         {
             var contrato = repositorio.ObtenerPorId(id);
@@ -140,6 +147,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         [HttpPost]
         [ActionName("Eliminar")]
+        [Authorize(Roles = "Administrador")]
         public IActionResult EliminarConfirmado(int id)
         {
             try
