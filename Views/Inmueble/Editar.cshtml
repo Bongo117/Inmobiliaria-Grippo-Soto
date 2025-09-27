@@ -26,24 +26,49 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label asp-for="Tipo" class="form-label">Tipo *</label>
-                                <select asp-for="Tipo" class="form-control">
+                                <label asp-for="TipoInmuebleId" class="form-label">Tipo de Inmueble</label>
+                                <select asp-for="TipoInmuebleId" class="form-control">
                                     <option value="">Seleccione un tipo</option>
-                                    <option value="Casa">Casa</option>
-                                    <option value="Departamento">Departamento</option>
-                                    <option value="Local">Local</option>
-                                    <option value="Oficina">Oficina</option>
-                                    <option value="Depósito">Depósito</option>
-                                    <option value="Terreno">Terreno</option>
+                                    @if (ViewBag.TiposInmuebles != null)
+                                    {
+                                        @foreach (var tipo in ViewBag.TiposInmuebles)
+                                        {
+                                            <option value="@tipo.Id" data-uso="@tipo.UsoPermitido" data-comercial="@tipo.EsComercial" 
+                                                    selected="@(tipo.Id == Model.TipoInmuebleId)">
+                                                @tipo.Nombre - @tipo.UsoPermitido
+                                            </option>
+                                        }
+                                    }
                                 </select>
+                                <small class="form-text text-muted">Seleccione el tipo específico del inmueble</small>
+                                <span asp-validation-for="TipoInmuebleId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Tipo" class="form-label">Tipo (Texto) *</label>
+                                <input asp-for="Tipo" class="form-control" placeholder="Ej: Casa, Departamento, Local" />
+                                <small class="form-text text-muted">Descripción libre del tipo (por compatibilidad)</small>
                                 <span asp-validation-for="Tipo" class="text-danger"></span>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="Ambientes" class="form-label">Ambientes *</label>
                                 <input asp-for="Ambientes" type="number" class="form-control" min="1" max="20" />
                                 <span asp-validation-for="Ambientes" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Información del tipo seleccionado -->
+                            <div id="tipoInfo" class="alert alert-info" style="display: none;">
+                                <small>
+                                    <strong>Información del tipo:</strong>
+                                    <div id="tipoDescripcion"></div>
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -105,4 +130,36 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            // Mostrar información al cargar si hay un tipo seleccionado
+            var selectedOption = $('#TipoInmuebleId').find('option:selected');
+            if (selectedOption.val()) {
+                var uso = selectedOption.data('uso');
+                var esComercial = selectedOption.data('comercial');
+                var info = 'Uso: ' + uso + (esComercial ? ' (Comercial)' : ' (No comercial)');
+                $('#tipoDescripcion').text(info);
+                $('#tipoInfo').show();
+            }
+            
+            $('#TipoInmuebleId').change(function() {
+                var selectedOption = $(this).find('option:selected');
+                var tipoNombre = selectedOption.text().split(' - ')[0];
+                var uso = selectedOption.data('uso');
+                var esComercial = selectedOption.data('comercial');
+                
+                if (tipoNombre && tipoNombre !== 'Seleccione un tipo') {
+                    // Autocompletar el campo Tipo con el nombre del tipo seleccionado
+                    $('#Tipo').val(tipoNombre);
+                    
+                    // Mostrar información del tipo
+                    var info = 'Uso: ' + uso + (esComercial ? ' (Comercial)' : ' (No comercial)');
+                    $('#tipoDescripcion').text(info);
+                    $('#tipoInfo').show();
+                } else {
+                    $('#tipoInfo').hide();
+                }
+            });
+        });
+    </script>
 }

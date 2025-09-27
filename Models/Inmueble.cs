@@ -14,6 +14,9 @@ namespace Inmobiliaria_.Net_Core.Models
         [StringLength(50, ErrorMessage = "El tipo no puede exceder los 50 caracteres")]
         public string Tipo { get; set; } = string.Empty;
         
+        [Display(Name = "Tipo de Inmueble")]
+        public int? TipoInmuebleId { get; set; }
+        
         [Required(ErrorMessage = "La cantidad de ambientes es obligatoria")]
         [Range(1, 20, ErrorMessage = "La cantidad de ambientes debe estar entre 1 y 20")]
         public int Ambientes { get; set; }
@@ -30,5 +33,6 @@ namespace Inmobiliaria_.Net_Core.Models
         public bool Estado { get; set; } = true;
         
         public Propietario? Propietario { get; set; }
+        public TipoInmueble? TipoInmueble { get; set; }
     }
 }

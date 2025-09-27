@@ -7,11 +7,13 @@ namespace Inmobiliaria_.Net_Core.Controllers
     {
         private readonly RepositorioInmueble repositorio;
         private readonly RepositorioPropietario repositorioPropietario;
+        private readonly RepositorioTipoInmueble repositorioTipoInmueble;
 
-        public InmuebleController(RepositorioInmueble repositorio, RepositorioPropietario repositorioPropietario)
+        public InmuebleController(RepositorioInmueble repositorio, RepositorioPropietario repositorioPropietario, RepositorioTipoInmueble repositorioTipoInmueble)
         {
             this.repositorio = repositorio;
             this.repositorioPropietario = repositorioPropietario;
+            this.repositorioTipoInmueble = repositorioTipoInmueble;
         }
 
         public IActionResult Index()
@@ -23,6 +25,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
         public IActionResult Crear()
         {
             ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
+            ViewBag.TiposInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View();
         }
 
@@ -44,6 +47,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
             
             ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
+            ViewBag.TiposInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(inmueble);
         }
 
@@ -56,6 +60,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
             
             ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
+            ViewBag.TiposInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(inmueble);
         }
 
@@ -77,6 +82,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
             
             ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
+            ViewBag.TiposInmuebles = repositorioTipoInmueble.ObtenerTodos();
             return View(inmueble);
         }
 

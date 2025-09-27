@@ -1,0 +1,121 @@
+@model Inmobiliaria_.Net_Core.Models.TipoInmueble
+
+@{
+    ViewData["Title"] = "Eliminar Tipo de Inmueble";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-danger">Eliminar Tipo de Inmueble</h2>
+    <a asp-action="Index" class="btn-custom btn-secondary-custom">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+</div>
+
+<div class="alert alert-warning">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>¡Atención!</strong> Está a punto de eliminar el siguiente tipo de inmueble. Esta acción no se puede deshacer.
+</div>
+
+<div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-trash"></i> Confirmar Eliminación
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label text-muted">ID:</label>
+                    <p class="form-control-plaintext">@Model.Id</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted">Nombre:</label>
+                    <p class="form-control-plaintext fw-bold">@Model.Nombre</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted">Uso Permitido:</label>
+                    <p class="form-control-plaintext">
+                        <span class="badge @(Model.UsoPermitido == "Comercial" ? "bg-info" : Model.UsoPermitido == "Residencial" ? "bg-success" : "bg-warning")">
+                            @Model.UsoPermitido
+                        </span>
+                    </p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted">Es Comercial:</label>
+                    <p class="form-control-plaintext">
+                        @if (Model.EsComercial)
+                        {
+                            <span class="badge bg-primary">
+                                <i class="fas fa-check"></i> Sí
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-times"></i> No
+                            </span>
+                        }
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label text-muted">Descripción:</label>
+                    @if (!string.IsNullOrEmpty(Model.Descripcion))
+                    {
+                        <p class="form-control-plaintext border rounded p-3 bg-light">
+                            @Model.Descripcion
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="form-control-plaintext text-muted fst-italic">
+                            Sin descripción
+                        </p>
+                    }
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted">Estado:</label>
+                    <p class="form-control-plaintext">
+                        @if (Model.Estado)
+                        {
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle"></i> Activo
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                <i class="fas fa-times-circle"></i> Inactivo
+                            </span>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-danger mt-3">
+            <i class="fas fa-info-circle"></i>
+            <strong>Importante:</strong> Al eliminar este tipo de inmueble, ya no estará disponible para asignar a nuevas propiedades. 
+            Los inmuebles que ya tengan este tipo asignado mantendrán la referencia.
+        </div>
+        
+        <form asp-action="Eliminar" method="post" class="mt-4">
+            <input type="hidden" asp-for="Id" />
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Confirmar Eliminación
+                </button>
+                <a asp-action="Index" class="btn-custom btn-secondary-custom">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

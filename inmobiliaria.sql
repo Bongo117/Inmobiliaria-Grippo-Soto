@@ -40,6 +40,21 @@ CREATE TABLE `contratos` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tipos_inmuebles`
+--
+
+CREATE TABLE `tipos_inmuebles` (
+  `Id` int(11) NOT NULL,
+  `Nombre` varchar(50) NOT NULL,
+  `Descripcion` varchar(200) DEFAULT NULL,
+  `UsoPermitido` varchar(20) NOT NULL,
+  `EsComercial` tinyint(1) NOT NULL DEFAULT 0,
+  `Estado` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `inmuebles`
 --
 
@@ -47,6 +62,7 @@ CREATE TABLE `inmuebles` (
   `Id` int(11) NOT NULL,
   `Direccion` varchar(200) NOT NULL,
   `Tipo` varchar(50) NOT NULL,
+  `TipoInmuebleId` int(11) DEFAULT NULL,
   `Ambientes` int(11) NOT NULL,
   `Precio` decimal(18,2) NOT NULL,
   `PropietarioId` int(11) NOT NULL,
@@ -108,6 +124,20 @@ CREATE TABLE `pagos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Volcado de datos para la tabla `tipos_inmuebles`
+--
+
+INSERT INTO `tipos_inmuebles` (`Id`, `Nombre`, `Descripcion`, `UsoPermitido`, `EsComercial`, `Estado`) VALUES
+(1, 'Casa', 'Casa unifamiliar con jardín y garage', 'Residencial', 0, 1),
+(2, 'Departamento', 'Unidad habitacional en edificio', 'Residencial', 0, 1),
+(3, 'PH', 'Propiedad horizontal con entrada independiente', 'Residencial', 0, 1),
+(4, 'Local Comercial', 'Espacio para actividades comerciales', 'Comercial', 1, 1),
+(5, 'Oficina', 'Espacio para trabajo administrativo', 'Comercial', 1, 1),
+(6, 'Depósito', 'Espacio para almacenamiento', 'Mixto', 1, 1),
+(7, 'Galpón', 'Edificación amplia para industria o depósito', 'Comercial', 1, 1),
+(8, 'Duplex', 'Vivienda de dos plantas', 'Residencial', 0, 1);
+
+--
 -- Volcado de datos para la tabla `propietarios`
 --
 
@@ -128,11 +158,19 @@ ALTER TABLE `contratos`
   ADD KEY `InmuebleId` (`InmuebleId`);
 
 --
+-- Indices de la tabla `tipos_inmuebles`
+--
+ALTER TABLE `tipos_inmuebles`
+  ADD PRIMARY KEY (`Id`),
+  ADD UNIQUE KEY `Nombre` (`Nombre`);
+
+--
 -- Indices de la tabla `inmuebles`
 --
 ALTER TABLE `inmuebles`
   ADD PRIMARY KEY (`Id`),
-  ADD KEY `PropietarioId` (`PropietarioId`);
+  ADD KEY `PropietarioId` (`PropietarioId`),
+  ADD KEY `TipoInmuebleId` (`TipoInmuebleId`);
 
 --
 -- Indices de la tabla `inquilinos`
@@ -165,6 +203,12 @@ ALTER TABLE `pagos`
 --
 ALTER TABLE `contratos`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tipos_inmuebles`
+--
+ALTER TABLE `tipos_inmuebles`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `inmuebles`
@@ -205,7 +249,8 @@ ALTER TABLE `contratos`
 -- Filtros para la tabla `inmuebles`
 --
 ALTER TABLE `inmuebles`
-  ADD CONSTRAINT `FK_Inmuebles_Propietarios` FOREIGN KEY (`PropietarioId`) REFERENCES `propietarios` (`Id`);
+  ADD CONSTRAINT `FK_Inmuebles_Propietarios` FOREIGN KEY (`PropietarioId`) REFERENCES `propietarios` (`Id`),
+  ADD CONSTRAINT `FK_Inmuebles_TiposInmuebles` FOREIGN KEY (`TipoInmuebleId`) REFERENCES `tipos_inmuebles` (`Id`);
 
 --
 -- Filtros para la tabla `pagos`

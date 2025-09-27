@@ -13,10 +13,12 @@ namespace Inmobiliaria_.Net_Core.Models
 
             using (var connection = new MySqlConnection(connectionString))
             {
-                var sql = @"SELECT i.Id, i.Direccion, i.Tipo, i.Ambientes, i.Precio, i.PropietarioId, i.Estado,
-                            p.Dni, p.Apellido, p.Nombre, p.Email, p.Telefono, p.Domicilio
+                var sql = @"SELECT i.Id, i.Direccion, i.Tipo, i.TipoInmuebleId, i.Ambientes, i.Precio, i.PropietarioId, i.Estado,
+                            p.Dni, p.Apellido, p.Nombre, p.Email, p.Telefono, p.Domicilio,
+                            ti.Nombre AS TipoNombre, ti.Descripcion AS TipoDescripcion, ti.UsoPermitido, ti.EsComercial
                             FROM inmuebles i
                             INNER JOIN propietarios p ON i.PropietarioId = p.Id
+                            LEFT JOIN tipos_inmuebles ti ON i.TipoInmuebleId = ti.Id
                             WHERE i.Estado = 1";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -31,6 +33,7 @@ namespace Inmobiliaria_.Net_Core.Models
                                 Id = reader.GetInt32("Id"),
                                 Direccion = reader["Direccion"].ToString() ?? "",
                                 Tipo = reader["Tipo"].ToString() ?? "",
+                                TipoInmuebleId = reader["TipoInmuebleId"] == DBNull.Value ? null : reader.GetInt32("TipoInmuebleId"),
                                 Ambientes = reader.GetInt32("Ambientes"),
                                 Precio = reader.GetDecimal("Precio"),
                                 PropietarioId = reader.GetInt32("PropietarioId"),
@@ -44,6 +47,14 @@ namespace Inmobiliaria_.Net_Core.Models
                                     Email = reader["Email"] == DBNull.Value ? null : reader["Email"].ToString(),
                                     Telefono = reader["Telefono"] == DBNull.Value ? null : reader["Telefono"].ToString(),
                                     Domicilio = reader["Domicilio"] == DBNull.Value ? null : reader["Domicilio"].ToString()
+                                },
+                                TipoInmueble = reader["TipoInmuebleId"] == DBNull.Value ? null : new TipoInmueble
+                                {
+                                    Id = reader.GetInt32("TipoInmuebleId"),
+                                    Nombre = reader["TipoNombre"]?.ToString() ?? "",
+                                    Descripcion = reader["TipoDescripcion"] == DBNull.Value ? null : reader["TipoDescripcion"].ToString(),
+                                    UsoPermitido = reader["UsoPermitido"]?.ToString() ?? "",
+                                    EsComercial = reader["EsComercial"] == DBNull.Value ? false : Convert.ToBoolean(reader["EsComercial"])
                                 }
                             };
                             lista.Add(inmueble);
@@ -59,10 +70,12 @@ namespace Inmobiliaria_.Net_Core.Models
         {
             using (var connection = new MySqlConnection(connectionString))
             {
-                var sql = @"SELECT i.Id, i.Direccion, i.Tipo, i.Ambientes, i.Precio, i.PropietarioId, i.Estado,
-                            p.Dni, p.Apellido, p.Nombre, p.Email, p.Telefono, p.Domicilio
+                var sql = @"SELECT i.Id, i.Direccion, i.Tipo, i.TipoInmuebleId, i.Ambientes, i.Precio, i.PropietarioId, i.Estado,
+                            p.Dni, p.Apellido, p.Nombre, p.Email, p.Telefono, p.Domicilio,
+                            ti.Nombre AS TipoNombre, ti.Descripcion AS TipoDescripcion, ti.UsoPermitido, ti.EsComercial
                             FROM inmuebles i
                             INNER JOIN propietarios p ON i.PropietarioId = p.Id
+                            LEFT JOIN tipos_inmuebles ti ON i.TipoInmuebleId = ti.Id
                             WHERE i.Id = @id AND i.Estado = 1";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -79,6 +92,7 @@ namespace Inmobiliaria_.Net_Core.Models
                                 Id = reader.GetInt32("Id"),
                                 Direccion = reader["Direccion"].ToString() ?? "",
                                 Tipo = reader["Tipo"].ToString() ?? "",
+                                TipoInmuebleId = reader["TipoInmuebleId"] == DBNull.Value ? null : reader.GetInt32("TipoInmuebleId"),
                                 Ambientes = reader.GetInt32("Ambientes"),
                                 Precio = reader.GetDecimal("Precio"),
                                 PropietarioId = reader.GetInt32("PropietarioId"),
@@ -92,6 +106,14 @@ namespace Inmobiliaria_.Net_Core.Models
                                     Email = reader["Email"] == DBNull.Value ? null : reader["Email"].ToString(),
                                     Telefono = reader["Telefono"] == DBNull.Value ? null : reader["Telefono"].ToString(),
                                     Domicilio = reader["Domicilio"] == DBNull.Value ? null : reader["Domicilio"].ToString()
+                                },
+                                TipoInmueble = reader["TipoInmuebleId"] == DBNull.Value ? null : new TipoInmueble
+                                {
+                                    Id = reader.GetInt32("TipoInmuebleId"),
+                                    Nombre = reader["TipoNombre"]?.ToString() ?? "",
+                                    Descripcion = reader["TipoDescripcion"] == DBNull.Value ? null : reader["TipoDescripcion"].ToString(),
+                                    UsoPermitido = reader["UsoPermitido"]?.ToString() ?? "",
+                                    EsComercial = reader["EsComercial"] == DBNull.Value ? false : Convert.ToBoolean(reader["EsComercial"])
                                 }
                             };
                         }
@@ -105,14 +127,15 @@ namespace Inmobiliaria_.Net_Core.Models
         {
             using (var connection = new MySqlConnection(connectionString))
             {
-                var sql = @"INSERT INTO inmuebles (Direccion, Tipo, Ambientes, Precio, PropietarioId, Estado) 
-                            VALUES (@direccion, @tipo, @ambientes, @precio, @propietarioId, @estado);
+                var sql = @"INSERT INTO inmuebles (Direccion, Tipo, TipoInmuebleId, Ambientes, Precio, PropietarioId, Estado) 
+                            VALUES (@direccion, @tipo, @tipoInmuebleId, @ambientes, @precio, @propietarioId, @estado);
                             SELECT LAST_INSERT_ID();";
 
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@direccion", inmueble.Direccion ?? "");
                     command.Parameters.AddWithValue("@tipo", inmueble.Tipo ?? "");
+                    command.Parameters.AddWithValue("@tipoInmuebleId", inmueble.TipoInmuebleId ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@ambientes", inmueble.Ambientes);
                     command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@propietarioId", inmueble.PropietarioId);
@@ -130,8 +153,8 @@ namespace Inmobiliaria_.Net_Core.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 var sql = @"UPDATE inmuebles SET 
-                            Direccion = @direccion, Tipo = @tipo, Ambientes = @ambientes, 
-                            Precio = @precio, PropietarioId = @propietarioId 
+                            Direccion = @direccion, Tipo = @tipo, TipoInmuebleId = @tipoInmuebleId, 
+                            Ambientes = @ambientes, Precio = @precio, PropietarioId = @propietarioId 
                             WHERE Id = @id";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -139,6 +162,7 @@ namespace Inmobiliaria_.Net_Core.Models
                     command.Parameters.AddWithValue("@id", inmueble.Id);
                     command.Parameters.AddWithValue("@direccion", inmueble.Direccion ?? "");
                     command.Parameters.AddWithValue("@tipo", inmueble.Tipo ?? "");
+                    command.Parameters.AddWithValue("@tipoInmuebleId", inmueble.TipoInmuebleId ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@ambientes", inmueble.Ambientes);
                     command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@propietarioId", inmueble.PropietarioId);

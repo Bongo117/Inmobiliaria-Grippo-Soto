@@ -1,0 +1,95 @@
+@model Inmobiliaria_.Net_Core.Models.TipoInmueble
+
+@{
+    ViewData["Title"] = "Editar Tipo de Inmueble";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Editar Tipo de Inmueble</h2>
+    <a asp-action="Index" class="btn-custom btn-secondary-custom">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Editar" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="Nombre" class="form-label"></label>
+                        <input asp-for="Nombre" class="form-control" placeholder="Ej: Casa, Departamento, Local" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="UsoPermitido" class="form-label"></label>
+                        <select asp-for="UsoPermitido" class="form-select">
+                            <option value="">Seleccione el uso permitido</option>
+                            @foreach (var uso in ViewBag.UsoPermitido as List<string>)
+                            {
+                                <option value="@uso" selected="@(uso == Model.UsoPermitido)">@uso</option>
+                            }
+                        </select>
+                        <span asp-validation-for="UsoPermitido" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label asp-for="Descripcion" class="form-label"></label>
+                        <textarea asp-for="Descripcion" class="form-control" rows="3" 
+                                  placeholder="Descripción opcional del tipo de inmueble"></textarea>
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-check mb-3">
+                        <input asp-for="EsComercial" class="form-check-input" type="checkbox" />
+                        <label asp-for="EsComercial" class="form-check-label">
+                            Es para uso comercial
+                        </label>
+                        <div class="form-text">
+                            Marque si este tipo de inmueble es principalmente para uso comercial
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-check mb-3">
+                        <input asp-for="Estado" class="form-check-input" type="checkbox" />
+                        <label asp-for="Estado" class="form-check-label">
+                            Activo
+                        </label>
+                        <div class="form-text">
+                            Tipos activos estarán disponibles para asignar a inmuebles
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn-custom btn-primary-custom">
+                    <i class="fas fa-save"></i> Actualizar
+                </button>
+                <a asp-action="Index" class="btn-custom btn-secondary-custom">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
