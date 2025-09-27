@@ -1,0 +1,213 @@
+@{
+    ViewData["Title"] = "Estilos Sheet";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Estilos Sheet</h1>
+    
+    <div class="mt-5">
+        <h3 class="mb-4">Ejemplos de Botones Personalizados</h3>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                
+                <div class="mb-4">
+                    <h5>Botón Principal (Default)</h5>
+                    <button type="button" class="btn-custom btn-primary-custom me-2">Botón Principal</button>
+                    <button type="button" class="btn-custom btn-primary-custom btn-sm me-2">Pequeño</button>
+                    <button type="button" class="btn-custom btn-primary-custom btn-lg">Grande</button>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Botón Secundario</h5>
+                    <button type="button" class="btn-custom btn-secondary-custom me-2">Botón Secundario</button>
+                    <button type="button" class="btn-custom btn-secondary-custom btn-sm me-2">Pequeño</button>
+                    <button type="button" class="btn-custom btn-secondary-custom btn-lg">Grande</button>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Botón Outline</h5>
+                    <button type="button" class="btn-custom btn-outline-custom me-2">Botón Outline</button>
+                    <button type="button" class="btn-custom btn-outline-custom btn-sm me-2">Pequeño</button>
+                    <button type="button" class="btn-custom btn-outline-custom btn-lg">Grande</button>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Botón Ghost</h5>
+                    <button type="button" class="btn-custom btn-ghost-custom me-2">Botón Ghost</button>
+                    <button type="button" class="btn-custom btn-ghost-custom btn-sm me-2">Pequeño</button>
+                    <button type="button" class="btn-custom btn-ghost-custom btn-lg">Grande</button>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Estados Deshabilitados</h5>
+                    <button type="button" class="btn-custom btn-primary-custom me-2" disabled>Principal Deshabilitado</button>
+                    <button type="button" class="btn-custom btn-secondary-custom me-2" disabled>Secundario Deshabilitado</button>
+                    <button type="button" class="btn-custom btn-outline-custom me-2" disabled>Outline Deshabilitado</button>
+                    <button type="button" class="btn-custom btn-ghost-custom" disabled>Ghost Deshabilitado</button>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Botones Dropdown (con flecha animada al click)</h5>
+                    
+                    <div class="dropdown-container me-2 d-inline-block">
+                        <button type="button" class="btn-custom btn-dropdown-primary" onclick="toggleDropdown('dropdown1')">
+                            Dropdown Primario
+                        </button>
+                        <div id="dropdown1" class="dropdown-menu-custom">
+                            <h6 class="dropdown-header-custom">Sección Principal</h6>
+                            <a href="#" class="dropdown-item-custom">Opción 1</a>
+                            <a href="#" class="dropdown-item-custom">Opción 2</a>
+                            <a href="#" class="dropdown-item-custom active">Opción Activa</a>
+                            <div class="dropdown-divider-custom"></div>
+                            <a href="#" class="dropdown-item-custom">Configuración</a>
+                            <a href="#" class="dropdown-item-custom disabled">Opción Deshabilitada</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown-container me-2 d-inline-block">
+                        <button type="button" class="btn-custom btn-dropdown-secondary" onclick="toggleDropdown('dropdown2')">
+                            Dropdown Secundario
+                        </button>
+                        <div id="dropdown2" class="dropdown-menu-custom">
+                            <a href="#" class="dropdown-item-custom">Filtro 1</a>
+                            <a href="#" class="dropdown-item-custom">Filtro 2</a>
+                            <a href="#" class="dropdown-item-custom">Filtro 3</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown-container me-2 d-inline-block">
+                        <button type="button" class="btn-custom btn-dropdown-custom" onclick="toggleDropdown('dropdown3')">
+                            Dropdown Outline
+                        </button>
+                        <div id="dropdown3" class="dropdown-menu-custom">
+                            <a href="#" class="dropdown-item-custom">Acción 1</a>
+                            <a href="#" class="dropdown-item-custom">Acción 2</a>
+                            <div class="dropdown-divider-custom"></div>
+                            <a href="#" class="dropdown-item-custom">Eliminar</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown-container me-2 d-inline-block">
+                        <button type="button" class="btn-custom btn-dropdown-custom btn-sm" onclick="toggleDropdown('dropdown4')">
+                            Pequeño
+                        </button>
+                        <div id="dropdown4" class="dropdown-menu-custom">
+                            <a href="#" class="dropdown-item-custom">Opción A</a>
+                            <a href="#" class="dropdown-item-custom">Opción B</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown-container d-inline-block">
+                        <button type="button" class="btn-custom btn-dropdown-primary btn-lg" onclick="toggleDropdown('dropdown5')">
+                            Dropdown Grande
+                        </button>
+                        <div id="dropdown5" class="dropdown-menu-custom">
+                            <h6 class="dropdown-header-custom">Menú Principal</h6>
+                            <a href="#" class="dropdown-item-custom">Dashboard</a>
+                            <a href="#" class="dropdown-item-custom">Propiedades</a>
+                            <a href="#" class="dropdown-item-custom">Inquilinos</a>
+                            <a href="#" class="dropdown-item-custom">Contratos</a>
+                            <div class="dropdown-divider-custom"></div>
+                            <a href="#" class="dropdown-item-custom">Reportes</a>
+                            <a href="#" class="dropdown-item-custom">Configuración</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5>Enlaces con Estilo de Botón</h5>
+                    <a href="#" class="btn-custom btn-primary-custom me-2">Enlace Principal</a>
+                    <a href="#" class="btn-custom btn-secondary-custom me-2">Enlace Secundario</a>
+                    <a href="#" class="btn-custom btn-outline-custom me-2">Enlace Outline</a>
+                    <a href="#" class="btn-custom btn-ghost-custom">Enlace Ghost</a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Función para alternar el dropdown
+function toggleDropdown(dropdownId) {
+    // Cerrar todos los otros dropdowns
+    const allDropdowns = document.querySelectorAll('.dropdown-menu-custom');
+    const allButtons = document.querySelectorAll('.btn-dropdown-primary, .btn-dropdown-secondary, .btn-dropdown-custom');
+    
+    allDropdowns.forEach(dropdown => {
+        if (dropdown.id !== dropdownId) {
+            dropdown.classList.remove('show');
+        }
+    });
+    
+    allButtons.forEach(button => {
+        if (button.getAttribute('onclick') !== `toggleDropdown('${dropdownId}')`) {
+            button.classList.remove('active');
+        }
+    });
+    
+    // Alternar el dropdown actual
+    const dropdown = document.getElementById(dropdownId);
+    const button = document.querySelector(`[onclick="toggleDropdown('${dropdownId}')"]`);
+    
+    if (dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
+        button.classList.remove('active');
+    } else {
+        dropdown.classList.add('show');
+        button.classList.add('active');
+    }
+}
+
+// Cerrar dropdowns al hacer click fuera
+document.addEventListener('click', function(event) {
+    const isDropdownButton = event.target.closest('.btn-dropdown-primary, .btn-dropdown-secondary, .btn-dropdown-custom');
+    const isDropdownMenu = event.target.closest('.dropdown-menu-custom');
+    
+    if (!isDropdownButton && !isDropdownMenu) {
+        // Cerrar todos los dropdowns
+        const allDropdowns = document.querySelectorAll('.dropdown-menu-custom');
+        const allButtons = document.querySelectorAll('.btn-dropdown-primary, .btn-dropdown-secondary, .btn-dropdown-custom');
+        
+        allDropdowns.forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+        
+        allButtons.forEach(button => {
+            button.classList.remove('active');
+        });
+    }
+});
+
+// Cerrar dropdown al presionar Escape
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const allDropdowns = document.querySelectorAll('.dropdown-menu-custom');
+        const allButtons = document.querySelectorAll('.btn-dropdown-primary, .btn-dropdown-secondary, .btn-dropdown-custom');
+        
+        allDropdowns.forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+        
+        allButtons.forEach(button => {
+            button.classList.remove('active');
+        });
+    }
+});
+
+// Manejar clicks en items del dropdown
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('dropdown-item-custom') && !event.target.classList.contains('disabled')) {
+        // Opcional: cerrar el dropdown al seleccionar un item
+        const dropdown = event.target.closest('.dropdown-menu-custom');
+        const button = dropdown.parentElement.querySelector('.btn-dropdown-primary, .btn-dropdown-secondary, .btn-dropdown-custom');
+        
+        dropdown.classList.remove('show');
+        button.classList.remove('active');
+        
+        // Prevenir navegación para el demo
+        event.preventDefault();
+    }
+});
+</script>

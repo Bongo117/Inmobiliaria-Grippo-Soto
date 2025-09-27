@@ -9,13 +9,13 @@
     <div>
         @if (ViewBag.Titulo == null)
         {
-            <a asp-action="Vigentes" class="btn btn-success me-2">
-                <i class="fas fa-check-circle"></i> Ver Vigentes
-            </a>
+            <button type="button" asp-action="Vigentes" class="btn-custom btn-secondary-custom me-2">
+                <i class="fas fa-check-circle"></i> Vigentes
+            </button>
         }
-        <a asp-action="Crear" class="btn btn-primary">
+        <button type="button" asp-action="Crear" class="btn-custom btn-primary-custom me-2">
             <i class="fas fa-plus"></i> Nuevo Contrato
-        </a>
+        </button>
     </div>
 </div>
 
@@ -105,9 +105,9 @@
                 <i class="fas fa-file-contract fa-3x text-muted mb-3"></i>
                 <h5 class="text-muted">No hay contratos registrados</h5>
                 <p class="text-muted">Comienza creando tu primer contrato</p>
-                <a asp-action="Crear" class="btn btn-primary">
+                <button type="button" asp-action="Crear" class="btn-custom btn-primary-custom me-2">
                     <i class="fas fa-plus"></i> Crear Contrato
-                </a>
+                </button>
             </div>
         }
     </div>

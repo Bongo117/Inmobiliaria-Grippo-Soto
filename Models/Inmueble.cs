@@ -29,7 +29,6 @@ namespace Inmobiliaria_.Net_Core.Models
         
         public bool Estado { get; set; } = true;
         
-        // Propiedad de navegación
         public Propietario? Propietario { get; set; }
     }
 }

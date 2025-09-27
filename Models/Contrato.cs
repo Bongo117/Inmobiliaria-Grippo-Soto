@@ -31,7 +31,6 @@ namespace Inmobiliaria_.Net_Core.Models
         
         public bool Estado { get; set; } = true;
         
-        // Propiedades de navegación
         public Inquilino? Inquilino { get; set; }
         public Inmueble? Inmueble { get; set; }
         

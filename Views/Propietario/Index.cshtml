@@ -6,8 +6,13 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Lista de Propietarios</h2>
-    <a asp-action="Crear" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Nuevo Propietario
+    <a asp-action="Crear" class="btn-custom btn-primary-custom">
+        <span class="sidebar-icon me-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/>
+            </svg>
+        </span>
+        Nuevo Propietario
     </a>
 </div>
 
@@ -31,40 +36,76 @@
     <div class="card-body">
         @if (Model != null && Model.Any())
         {
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Id</th>
-                            <th>DNI</th>
-                            <th>Nombre Completo</th>
-                            <th>Email</th>
-                            <th>Teléfono</th>
-                            <th width="200">Acciones</th>
+            <div class="table-shadcn-container">
+                <table class="table-shadcn">
+                    <caption class="table-shadcn-caption">
+                        Lista de propietarios registrados en el sistema.
+                    </caption>
+                    <thead class="table-shadcn-header">
+                        <tr class="table-shadcn-header-row">
+                            <th class="table-shadcn-head" style="width: 80px;">Id</th>
+                            <th class="table-shadcn-head" style="width: 120px;">DNI</th>
+                            <th class="table-shadcn-head">Nombre Completo</th>
+                            <th class="table-shadcn-head">Email</th>
+                            <th class="table-shadcn-head">Teléfono</th>
+                            <th class="table-shadcn-head text-center" style="width: 180px;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-shadcn-body">
                         @foreach (var propietario in Model)
                         {
-                            <tr>
-                                <td>@propietario.Id</td>
-                                <td>@propietario.Dni</td>
-                                <td>@propietario.Apellido, @propietario.Nombre</td>
-                                <td>@(propietario.Email ?? "No especificado")</td>
-                                <td>@(propietario.Telefono ?? "No especificado")</td>
-                                <td>
-                                    <div class="btn-group" role="group">
+                            <tr class="table-shadcn-row">
+                                <td class="table-shadcn-cell font-medium">@propietario.Id</td>
+                                <td class="table-shadcn-cell">@propietario.Dni</td>
+                                <td class="table-shadcn-cell">@propietario.Apellido, @propietario.Nombre</td>
+                                <td class="table-shadcn-cell">
+                                    @if (string.IsNullOrEmpty(propietario.Email))
+                                    {
+                                        <span class="text-muted">No especificado</span>
+                                    }
+                                    else
+                                    {
+                                        @propietario.Email
+                                    }
+                                </td>
+                                <td class="table-shadcn-cell">
+                                    @if (string.IsNullOrEmpty(propietario.Telefono))
+                                    {
+                                        <span class="text-muted">No especificado</span>
+                                    }
+                                    else
+                                    {
+                                        @propietario.Telefono
+                                    }
+                                </td>
+                                <td class="table-shadcn-cell">
+                                    <div class="table-actions">
                                         <a asp-action="Detalles" asp-route-id="@propietario.Id" 
-                                           class="btn btn-info btn-sm" title="Ver detalles">
-                                            <i class="fas fa-eye"></i>
+                                           class="btn-custom btn-ghost-custom" title="Ver detalles">
+                                            <span class="sidebar-icon me-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                                                    <path d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"/>
+                                                </svg>
+                                            </span>
                                         </a>
                                         <a asp-action="Editar" asp-route-id="@propietario.Id" 
-                                           class="btn btn-warning btn-sm" title="Editar">
-                                            <i class="fas fa-edit"></i>
+                                           class="btn-custom btn-secondary-custom" title="Editar">
+                                            <span class="sidebar-icon me-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                                                    <path d="M227.31,73.37,182.63,28.69a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.69,147.31,64l24-24L216,84.69Z"/>
+                                                </svg>
+                                            </span>
                                         </a>
                                         <a asp-action="Eliminar" asp-route-id="@propietario.Id" 
-                                           class="btn btn-danger btn-sm" title="Eliminar">
-                                            <i class="fas fa-trash"></i>
+                                           class="btn-custom btn-outline-custom" title="Eliminar"
+                                           style="color: #dc2626; border-color: rgba(220, 38, 38, 0.3);"
+                                           onmouseover="this.style.backgroundColor='rgba(220, 38, 38, 0.05)'; this.style.borderColor='#dc2626';"
+                                           onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='rgba(220, 38, 38, 0.3)';">
+                                            <span class="sidebar-icon me-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                                                    <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"/>
+                                                </svg>
+                                            </span>
                                         </a>
                                     </div>
                                 </td>
@@ -76,12 +117,21 @@
         }
         else
         {
-            <div class="text-center py-5">
-                <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No hay propietarios registrados</h5>
-                <p class="text-muted">Comienza creando tu primer propietario</p>
-                <a asp-action="Crear" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Crear Propietario
+            <div class="table-empty-state">
+                <div class="table-empty-state-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.7a8,8,0,0,1-11.07-2.33A79.83,79.83,0,0,0,172,168a8,8,0,0,1,0-16,96,96,0,0,1,81.09,45.58A8,8,0,0,1,250.14,206.7ZM172,96a44,44,0,1,1-16.34-84.87,8,8,0,1,1-5.94,14.85,28,28,0,1,0,0,52.09,8,8,0,1,1,5.94,14.85A43.85,43.85,0,0,1,172,96Z"/>
+                    </svg>
+                </div>
+                <h5>No hay propietarios registrados</h5>
+                <p>Comienza creando tu primer propietario para gestionar las propiedades</p>
+                <a asp-action="Crear" class="btn-custom btn-primary-custom">
+                    <span class="sidebar-icon me-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                            <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/>
+                        </svg>
+                    </span>
+                    Crear Propietario
                 </a>
             </div>
         }

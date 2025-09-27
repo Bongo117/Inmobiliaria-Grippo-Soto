@@ -3,66 +3,164 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Inmobiliaria_Grippo_Soto</title>
+    <title>@ViewData["Title"] - GRISOTO</title>
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Inmobiliaria_Grippo_Soto.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Inmobiliaria_Grippo_Soto</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="gestionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Gestión
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="gestionDropdown">
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Inquilino" asp-action="Index">Inquilinos</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Propietario" asp-action="Index">Propietarios</a>
-                                </li>
-                                </li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Inmueble" asp-action="Index">Inmuebles</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Contratos" asp-action="Index">Contratos</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a asp-area="" asp-controller="Home" asp-action="Index">GRISOTO</a>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
+            
+            <nav class="sidebar-nav">
+                <div class="sidebar-nav-section">
+                    <div class="mb-2">
+                        <a class="btn-custom btn-ghost-custom w-100 justify-content-start" asp-area="" asp-controller="Home" asp-action="Index">
+                            <span class="sidebar-icon me-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z"></path></svg>
+                            </span>Inicio
+                        </a>
+                    </div>
+                    <div class="dropdown-container w-100">
+                        <button type="button" class="btn-custom btn-dropdown-custom w-100 justify-content-start" onclick="toggleDropdown('sidebarGestionDropdown')">
+                            <span class="sidebar-icon me-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"><path d="M224,48H32a8,8,0,0,0-8,8V200a8,8,0,0,0,8,8H224a8,8,0,0,0,8-8V56A8,8,0,0,0,224,48ZM88,144V112h80v32Zm-48,0V112H72v32Zm144-32h32v32H184Zm32-16H136V64h80ZM120,64V96H40V64ZM40,160h80v32H40Zm96,32V160h80v32Z"></path></svg></span>Gestión
+                        </button>
+                        <div id="sidebarGestionDropdown" class="dropdown-menu-custom sidebar-dropdown-menu">
+                            <a class="dropdown-item-custom" asp-area="" asp-controller="Inquilino" asp-action="Index">Inquilinos</a>
+                            <a class="dropdown-item-custom" asp-area="" asp-controller="Propietario" asp-action="Index">Propietarios</a>
+                            <a class="dropdown-item-custom" asp-area="" asp-controller="Inmueble" asp-action="Index">Inmuebles</a>
+                            <div class="dropdown-divider-custom"></div>
+                            <a class="dropdown-item-custom" asp-area="" asp-controller="Contratos" asp-action="Index">Contratos</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-divider"></div>
+                <div class="sidebar-help">
+                    <div class="mb-2">
+                        <a class="btn-custom btn-ghost-custom w-100 justify-content-start" href="#" onclick="return false;">
+                            <span class="sidebar-icon me-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256"><path d="M140,180a12,12,0,1,1-12-12A12,12,0,0,1,140,180ZM128,72c-22.06,0-40,16.15-40,36v4a8,8,0,0,0,16,0v-4c0-11,10.77-20,24-20s24,9,24,20-10.77,20-24,20a8,8,0,0,0-8,8v8a8,8,0,0,0,16,0v-.72c18.24-3.35,32-17.9,32-35.28C168,88.15,150.06,72,128,72Zm104,56A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"></path></svg></span>Ayuda y Soporte
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <div class="main-content-inner">
+                @RenderBody()
+                <footer class="border-top footer text-muted mt-5 pt-3">
+                    <div class="container-fluid">
+                        &copy; 2025 - Inmobiliaria GRISOTO - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </div>
+                </footer>
+            </div>
         </main>
+        <button class="mobile-sidebar-toggle" onclick="toggleMobileSidebar()">
+            ☰
+        </button>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Inmobiliaria_Grippo_Soto - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+    function toggleMobileSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('mobile-open');
+    }
+    document.addEventListener('click', function(event) {
+        const sidebar = document.querySelector('.sidebar');
+        const toggleButton = document.querySelector('.mobile-sidebar-toggle');
+        
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(event.target) && 
+            !toggleButton.contains(event.target) &&
+            sidebar.classList.contains('mobile-open')) {
+            sidebar.classList.remove('mobile-open');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPath = window.location.pathname;
+        const navItems = document.querySelectorAll('.sidebar-nav .btn-custom, .dropdown-item-custom');
+        
+        navItems.forEach(item => {
+            const href = item.getAttribute('href');
+            if (href && currentPath.includes(href) && href !== '/') {
+                item.classList.add('active');
+                if (item.classList.contains('dropdown-item-custom')) {
+                    const dropdownMenu = item.closest('.dropdown-menu-custom');
+                    const dropdownContainer = dropdownMenu.closest('.dropdown-container');
+                    const toggle = dropdownContainer.querySelector('.btn-dropdown-custom');
+                    
+                    dropdownMenu.classList.add('show');
+                    toggle.classList.add('active');
+                }
+            } else if (currentPath === '/' && item.textContent.includes('Inicio')) {
+                item.classList.add('active');
+            }
+        });
+    });
+
+    function toggleDropdown(dropdownId) {
+        const allDropdowns = document.querySelectorAll('.dropdown-menu-custom');
+        const allButtons = document.querySelectorAll('.btn-dropdown-primary, .btn-dropdown-secondary, .btn-dropdown-custom');
+        
+        allDropdowns.forEach(dropdown => {
+            if (dropdown.id !== dropdownId) {
+                dropdown.classList.remove('show');
+            }
+        });
+        
+        allButtons.forEach(button => {
+            if (button.getAttribute('onclick') !== `toggleDropdown('${dropdownId}')`) {
+                button.classList.remove('active');
+            }
+        });
+        
+        const dropdown = document.getElementById(dropdownId);
+        const button = document.querySelector(`[onclick="toggleDropdown('${dropdownId}')"]`);
+        
+        if (dropdown && button) {
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+                button.classList.remove('active');
+            } else {
+                dropdown.classList.add('show');
+                button.classList.add('active');
+            }
+        }
+    }
+    
+    // Manejar clicks en items del dropdown
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('dropdown-item-custom') && !event.target.classList.contains('disabled')) {
+            // Cerrar el dropdown al seleccionar un item
+            const dropdown = event.target.closest('.dropdown-menu-custom');
+            if (dropdown) {
+                const button = dropdown.parentElement.querySelector('.btn-dropdown-primary, .btn-dropdown-secondary, .btn-dropdown-custom');
+                
+                dropdown.classList.remove('show');
+                if (button) {
+                    button.classList.remove('active');
+                }
+            }
+            
+            // Solo prevenir navegación para enlaces demo (que tengan href="#")
+            if (event.target.getAttribute('href') === '#') {
+                event.preventDefault();
+            }
+            // Los enlaces reales con asp-controller y asp-action funcionarán normalmente
+        }
+    });
+    </script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
