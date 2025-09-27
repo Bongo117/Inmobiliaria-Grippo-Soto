@@ -87,6 +87,26 @@ CREATE TABLE `propietarios` (
   `Estado` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pagos`
+--
+
+CREATE TABLE `pagos` (
+  `Id` int(11) NOT NULL,
+  `NumeroPago` int(11) NOT NULL,
+  `FechaPago` date NOT NULL,
+  `Detalle` varchar(200) NOT NULL,
+  `Importe` decimal(18,2) NOT NULL,
+  `ContratoId` int(11) NOT NULL,
+  `Estado` tinyint(1) NOT NULL DEFAULT 1,
+  `FechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UsuarioCreador` varchar(100) DEFAULT NULL,
+  `FechaAnulacion` datetime DEFAULT NULL,
+  `UsuarioAnulacion` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Volcado de datos para la tabla `propietarios`
 --
@@ -129,6 +149,14 @@ ALTER TABLE `propietarios`
   ADD UNIQUE KEY `Dni` (`Dni`);
 
 --
+-- Indices de la tabla `pagos`
+--
+ALTER TABLE `pagos`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `ContratoId` (`ContratoId`),
+  ADD UNIQUE KEY `UniqueNumeroPagoContrato` (`ContratoId`, `NumeroPago`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -157,6 +185,12 @@ ALTER TABLE `propietarios`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT de la tabla `pagos`
+--
+ALTER TABLE `pagos`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- Restricciones para tablas volcadas
 --
 
@@ -172,6 +206,12 @@ ALTER TABLE `contratos`
 --
 ALTER TABLE `inmuebles`
   ADD CONSTRAINT `FK_Inmuebles_Propietarios` FOREIGN KEY (`PropietarioId`) REFERENCES `propietarios` (`Id`);
+
+--
+-- Filtros para la tabla `pagos`
+--
+ALTER TABLE `pagos`
+  ADD CONSTRAINT `FK_Pagos_Contratos` FOREIGN KEY (`ContratoId`) REFERENCES `contratos` (`Id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

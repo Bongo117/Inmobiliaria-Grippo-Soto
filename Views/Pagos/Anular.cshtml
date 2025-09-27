@@ -1,0 +1,199 @@
+@model Inmobiliaria_.Net_Core.Models.Pago
+
+@{
+    ViewData["Title"] = "Anular Pago";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-danger">Anular Pago</h2>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Volver a Lista
+    </a>
+</div>
+
+<div class="alert alert-danger">
+    <h5><i class="fas fa-exclamation-triangle"></i> ¡Atención!</h5>
+    <p class="mb-0">
+        Está a punto de anular este pago. Esta acción <strong>NO SE PUEDE DESHACER</strong>. 
+        El pago quedará marcado como anulado pero se mantendrá en el registro para auditoría.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4><i class="fas fa-ban"></i> Confirmar Anulación</h4>
+            </div>
+            <div class="card-body">
+                
+                <h5 class="mb-3">Datos del pago a anular:</h5>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Número de Pago</h6>
+                        <p class="h5 text-primary">@Model.NumeroPago</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Fecha de Pago</h6>
+                        <p class="h5">@Model.FechaPago.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Importe</h6>
+                        <p class="h4 text-success">$@Model.Importe.ToString("N2")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Estado Actual</h6>
+                        <p>
+                            @if (Model.Estado)
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Ya Anulado</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <h6 class="text-muted">Detalle / Concepto</h6>
+                        <p class="lead">@Model.Detalle</p>
+                    </div>
+                </div>
+
+                @if (Model.Contrato != null)
+                {
+                    <hr>
+                    <h6 class="text-muted">Información del Contrato</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>ID:</strong> @Model.Contrato.Id</p>
+                            <p><strong>Inmueble:</strong> @Model.Contrato.Inmueble?.Direccion</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Inquilino:</strong> @(Model.Contrato.Inquilino?.Apellido + ", " + Model.Contrato.Inquilino?.Nombre)</p>
+                            <p><strong>Monto Mensual:</strong> $@Model.Contrato.MontoMensual.ToString("N2")</p>
+                        </div>
+                    </div>
+                }
+
+                <hr>
+
+                @if (Model.Estado)
+                {
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-info-circle"></i> Consecuencias de la anulación:</h6>
+                        <ul class="mb-0">
+                            <li>El pago quedará marcado como <strong>ANULADO</strong></li>
+                            <li>Se registrará la fecha y usuario de anulación</li>
+                            <li>No será posible editar ni reactivar el pago</li>
+                            <li>El registro se mantendrá para auditoría</li>
+                            <li>Podrá crear un nuevo pago con el mismo número si es necesario</li>
+                        </ul>
+                    </div>
+
+                    <form asp-action="Anular" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Detalles" asp-route-id="@Model.Id" class="btn btn-secondary">
+                                <i class="fas fa-eye"></i> Ver Detalles
+                            </a>
+                            
+                            <div>
+                                <a asp-action="Index" class="btn btn-outline-secondary me-2">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro que desea anular este pago? Esta acción NO se puede deshacer.')">
+                                    <i class="fas fa-ban"></i> Confirmar Anulación
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle"></i> Pago ya anulado</h6>
+                        <p class="mb-0">Este pago ya fue anulado anteriormente.</p>
+                        @if (Model.FechaAnulacion.HasValue)
+                        {
+                            <p class="mb-0"><strong>Fecha de anulación:</strong> @Model.FechaAnulacion.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.UsuarioAnulacion))
+                        {
+                            <p class="mb-0"><strong>Anulado por:</strong> @Model.UsuarioAnulacion</p>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Detalles" asp-route-id="@Model.Id" class="btn btn-info">
+                            <i class="fas fa-eye"></i> Ver Detalles
+                        </a>
+                        
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list"></i> Volver a Lista
+                        </a>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> Información</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><strong>Registro de Auditoría:</strong></li>
+                    <li><small>• Fecha de creación: @Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</small></li>
+                    @if (!string.IsNullOrEmpty(Model.UsuarioCreador))
+                    {
+                        <li><small>• Creado por: @Model.UsuarioCreador</small></li>
+                    }
+                </ul>
+                
+                <hr>
+                
+                <ul class="list-unstyled mb-0">
+                    <li><strong>Políticas:</strong></li>
+                    <li><small>• La anulación es irreversible</small></li>
+                    <li><small>• Se mantiene el registro histórico</small></li>
+                    <li><small>• Se registra fecha y usuario de anulación</small></li>
+                    <li><small>• Puede crear un nuevo pago si es necesario</small></li>
+                </ul>
+            </div>
+        </div>
+
+        @if (Model.Contrato != null)
+        {
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6>Acciones Relacionadas</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="PorContrato" asp-route-contratoId="@Model.Contrato.Id" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-list"></i> Pagos del Contrato
+                        </a>
+                        <a asp-action="Crear" asp-route-contratoId="@Model.Contrato.Id" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-plus"></i> Nuevo Pago
+                        </a>
+                        <a asp-controller="Contratos" asp-action="Detalles" asp-route-id="@Model.Contrato.Id" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-file-contract"></i> Ver Contrato
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

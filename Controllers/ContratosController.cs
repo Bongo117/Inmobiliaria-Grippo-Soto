@@ -160,5 +160,10 @@ namespace Inmobiliaria_.Net_Core.Controllers
             ViewBag.Titulo = "Contratos Vigentes";
             return View("Index", lista);
         }
+
+        public IActionResult Pagos(int id)
+        {
+            return RedirectToAction("PorContrato", "Pagos", new { contratoId = id });
+        }
     }
 }

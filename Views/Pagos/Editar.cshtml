@@ -1,0 +1,161 @@
+@model Inmobiliaria_.Net_Core.Models.Pago
+
+@{
+    ViewData["Title"] = "Editar Pago";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Editar Pago</h2>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Volver a Lista
+    </a>
+</div>
+
+@if (!Model.Estado)
+{
+    <div class="alert alert-danger">
+        <h6><i class="fas fa-exclamation-triangle"></i> Pago Anulado</h6>
+        <p class="mb-0">Este pago ha sido anulado y no puede ser editado.</p>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <h6><i class="fas fa-exclamation-triangle"></i> Edición Limitada</h6>
+        <p class="mb-0">Por políticas de auditoría, solo es posible editar el <strong>detalle/concepto</strong> del pago. Los demás campos no pueden modificarse.</p>
+    </div>
+
+    <form asp-action="Editar" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="NumeroPago" />
+        <input type="hidden" asp-for="FechaPago" />
+        <input type="hidden" asp-for="Importe" />
+        <input type="hidden" asp-for="ContratoId" />
+        <input type="hidden" asp-for="Estado" />
+        <input type="hidden" asp-for="FechaCreacion" />
+        <input type="hidden" asp-for="UsuarioCreador" />
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Datos del Pago</h4>
+                    </div>
+                    <div class="card-body">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Número de Pago</label>
+                                    <input class="form-control" value="@Model.NumeroPago" readonly />
+                                    <small class="form-text text-muted">Este campo no puede modificarse</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Fecha de Pago</label>
+                                    <input class="form-control" value="@Model.FechaPago.ToString("yyyy-MM-dd")" readonly />
+                                    <small class="form-text text-muted">Este campo no puede modificarse</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Importe</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input class="form-control" value="@Model.Importe.ToString("N2")" readonly />
+                                    </div>
+                                    <small class="form-text text-muted">Este campo no puede modificarse</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Contrato</label>
+                                    <input class="form-control" value="ID: @Model.ContratoId" readonly />
+                                    <small class="form-text text-muted">Este campo no puede modificarse</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Detalle" class="form-label">Detalle / Concepto *</label>
+                                    <input asp-for="Detalle" class="form-control" maxlength="200" placeholder="Ej: Alquiler mensual, Expensas, etc." />
+                                    <span asp-validation-for="Detalle" class="text-danger"></span>
+                                    <small class="form-text text-muted">Máximo 200 caracteres - Este es el único campo editable</small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Información del Pago</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Número de Pago:</strong> @Model.NumeroPago</p>
+                        <p><strong>Fecha:</strong> @Model.FechaPago.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Importe:</strong> $@Model.Importe.ToString("N2")</p>
+                        <p><strong>Estado:</strong> 
+                            @if (Model.Estado)
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Anulado</span>
+                            }
+                        </p>
+                        <p><strong>Creado:</strong><br>@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</p>
+                        @if (!string.IsNullOrEmpty(Model.UsuarioCreador))
+                        {
+                            <p><strong>Por:</strong> @Model.UsuarioCreador</p>
+                        }
+                        <hr>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn-custom btn-warning-custom">
+                                <i class="fas fa-save"></i> Guardar Cambios
+                            </button>
+                            <a asp-action="Detalles" asp-route-id="@Model.Id" class="btn btn-outline-info">
+                                <i class="fas fa-eye"></i> Ver Detalles
+                            </a>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.Contrato != null)
+                {
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h6><i class="fas fa-file-contract"></i> Contrato Asociado</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>ID:</strong> @Model.Contrato.Id</p>
+                            <p><strong>Inmueble:</strong><br>@Model.Contrato.Inmueble?.Direccion</p>
+                            <p><strong>Inquilino:</strong><br>@(Model.Contrato.Inquilino?.Apellido + ", " + Model.Contrato.Inquilino?.Nombre)</p>
+                            <a asp-action="PorContrato" asp-route-contratoId="@Model.Contrato.Id" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-list"></i> Ver Todos los Pagos
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

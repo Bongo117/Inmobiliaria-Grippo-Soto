@@ -1,0 +1,158 @@
+@model Inmobiliaria_.Net_Core.Models.Pago
+
+@{
+    ViewData["Title"] = "Crear Pago";
+    var contrato = ViewBag.Contrato as Inmobiliaria_.Net_Core.Models.Contrato;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Crear Nuevo Pago</h2>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Volver a Lista
+    </a>
+</div>
+
+@if (contrato != null)
+{
+    <div class="alert alert-info">
+        <h6><i class="fas fa-info-circle"></i> Información del Contrato</h6>
+        <p class="mb-1">
+            <strong>Contrato ID:</strong> @contrato.Id |
+            <strong>Inmueble:</strong> @contrato.Inmueble?.Direccion |
+            <strong>Inquilino:</strong> @(contrato.Inquilino?.Apellido + ", " + contrato.Inquilino?.Nombre)
+        </p>
+        <p class="mb-0">
+            <strong>Monto Mensual:</strong> $@contrato.MontoMensual.ToString("N2") |
+            <strong>Período:</strong> @contrato.FechaInicio.ToString("dd/MM/yyyy") - @contrato.FechaFin.ToString("dd/MM/yyyy")
+        </p>
+    </div>
+}
+
+<form asp-action="Crear" method="post">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Datos del Pago</h4>
+                </div>
+                <div class="card-body">
+                    
+                    @if (contrato == null)
+                    {
+                        <div class="form-group mb-3">
+                            <label asp-for="ContratoId" class="form-label">Contrato *</label>
+                            <select asp-for="ContratoId" class="form-control">
+                                <option value="">Seleccione un contrato</option>
+                                @if (ViewBag.Contratos != null)
+                                {
+                                    @foreach (var c in ViewBag.Contratos)
+                                    {
+                                        <option value="@c.Id" selected="@(Model.ContratoId == c.Id)">
+                                            ID: @c.Id - @c.Inmueble?.Direccion - @(c.Inquilino?.Apellido + ", " + c.Inquilino?.Nombre)
+                                        </option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="ContratoId" class="text-danger"></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="ContratoId" />
+                    }
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="NumeroPago" class="form-label">Número de Pago *</label>
+                                <input asp-for="NumeroPago" class="form-control" type="number" min="1" />
+                                <span asp-validation-for="NumeroPago" class="text-danger"></span>
+                                <small class="form-text text-muted">Número correlativo del pago para este contrato</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="FechaPago" class="form-label">Fecha de Pago *</label>
+                                <input asp-for="FechaPago" class="form-control" type="date" />
+                                <span asp-validation-for="FechaPago" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Importe" class="form-label">Importe *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="Importe" class="form-control" type="number" step="0.01" min="0.01" />
+                                </div>
+                                <span asp-validation-for="Importe" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Detalle" class="form-label">Detalle *</label>
+                                <input asp-for="Detalle" class="form-control" maxlength="200" placeholder="Ej: Alquiler mensual, Expensas, etc." />
+                                <span asp-validation-for="Detalle" class="text-danger"></span>
+                                <small class="form-text text-muted">Máximo 200 caracteres</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Resumen</h5>
+                </div>
+                <div class="card-body">
+                    @if (contrato != null)
+                    {
+                        <p><strong>Contrato:</strong> @contrato.Id</p>
+                        <p><strong>Inmueble:</strong><br>@contrato.Inmueble?.Direccion</p>
+                        <p><strong>Inquilino:</strong><br>@(contrato.Inquilino?.Apellido + ", " + contrato.Inquilino?.Nombre)</p>
+                        <p><strong>Monto Mensual:</strong><br>$@contrato.MontoMensual.ToString("N2")</p>
+                        <hr>
+                    }
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn-custom btn-primary-custom">
+                            <i class="fas fa-save"></i> Registrar Pago
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        @if (contrato != null)
+                        {
+                            <a asp-action="PorContrato" asp-route-contratoId="@contrato.Id" class="btn btn-outline-info">
+                                <i class="fas fa-list"></i> Ver Pagos del Contrato
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6><i class="fas fa-info-circle"></i> Información</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li><small>• El número de pago debe ser único para cada contrato</small></li>
+                        <li><small>• La fecha debe estar dentro del período del contrato</small></li>
+                        <li><small>• Una vez registrado, solo se podrá editar el detalle</small></li>
+                        <li><small>• Los pagos pueden ser anulados pero no eliminados</small></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,203 @@
+@model Inmobiliaria_.Net_Core.Models.Pago
+
+@{
+    ViewData["Title"] = "Detalles del Pago";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Detalles del Pago</h2>
+    <div>
+        <a asp-action="Index" class="btn btn-secondary me-2">
+            <i class="fas fa-list"></i> Lista de Pagos
+        </a>
+        @if (Model.Contrato != null)
+        {
+            <a asp-action="PorContrato" asp-route-contratoId="@Model.Contrato.Id" class="btn btn-outline-info">
+                <i class="fas fa-file-contract"></i> Pagos del Contrato
+            </a>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4>Información del Pago</h4>
+                <div>
+                    @if (Model.Estado)
+                    {
+                        <span class="badge bg-success fs-6">ACTIVO</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger fs-6">ANULADO</span>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Número de Pago</h6>
+                        <p class="h5 text-primary">@Model.NumeroPago</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Fecha de Pago</h6>
+                        <p class="h5">@Model.FechaPago.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Importe</h6>
+                        <p class="h4 text-success">$@Model.Importe.ToString("N2")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Estado</h6>
+                        <p>
+                            @if (Model.Estado)
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Anulado</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <h6 class="text-muted">Detalle / Concepto</h6>
+                        <p class="lead">@Model.Detalle</p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Fecha de Creación</h6>
+                        <p>@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")</p>
+                        @if (!string.IsNullOrEmpty(Model.UsuarioCreador))
+                        {
+                            <h6 class="text-muted">Creado por</h6>
+                            <p>@Model.UsuarioCreador</p>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        @if (!Model.Estado && Model.FechaAnulacion.HasValue)
+                        {
+                            <h6 class="text-muted">Fecha de Anulación</h6>
+                            <p class="text-danger">@Model.FechaAnulacion.Value.ToString("dd/MM/yyyy HH:mm:ss")</p>
+                            @if (!string.IsNullOrEmpty(Model.UsuarioAnulacion))
+                            {
+                                <h6 class="text-muted">Anulado por</h6>
+                                <p class="text-danger">@Model.UsuarioAnulacion</p>
+                            }
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        @if (Model.Contrato != null)
+        {
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-file-contract"></i> Información del Contrato</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">ID del Contrato</h6>
+                            <p>@Model.Contrato.Id</p>
+                            
+                            <h6 class="text-muted">Inmueble</h6>
+                            <p>@Model.Contrato.Inmueble?.Direccion</p>
+                            @if (!string.IsNullOrEmpty(Model.Contrato.Inmueble?.Tipo))
+                            {
+                                <small class="text-muted">Tipo: @Model.Contrato.Inmueble.Tipo</small>
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Inquilino</h6>
+                            <p>@(Model.Contrato.Inquilino?.Apellido + ", " + Model.Contrato.Inquilino?.Nombre)</p>
+                            
+                            <h6 class="text-muted">Período del Contrato</h6>
+                            <p>@Model.Contrato.FechaInicio.ToString("dd/MM/yyyy") - @Model.Contrato.FechaFin.ToString("dd/MM/yyyy")</p>
+                            
+                            <h6 class="text-muted">Monto Mensual</h6>
+                            <p class="text-success">$@Model.Contrato.MontoMensual.ToString("N2")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Acciones</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    @if (Model.Estado)
+                    {
+                        <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a asp-action="Anular" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="fas fa-ban"></i> Anular Pago
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <small><i class="fas fa-info-circle"></i> Este pago está anulado y no puede ser editado.</small>
+                        </div>
+                    }
+                    
+                    <hr>
+                    
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-list"></i> Lista de Pagos
+                    </a>
+                    
+                    @if (Model.Contrato != null)
+                    {
+                        <a asp-action="PorContrato" asp-route-contratoId="@Model.Contrato.Id" class="btn btn-outline-info">
+                            <i class="fas fa-file-contract"></i> Pagos del Contrato
+                        </a>
+                        
+                        <a asp-controller="Contratos" asp-action="Detalles" asp-route-id="@Model.Contrato.Id" class="btn btn-outline-primary">
+                            <i class="fas fa-eye"></i> Ver Contrato
+                        </a>
+                        
+                        <a asp-action="Crear" asp-route-contratoId="@Model.Contrato.Id" class="btn btn-outline-success">
+                            <i class="fas fa-plus"></i> Nuevo Pago
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6><i class="fas fa-info-circle"></i> Información</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li><small>• Los pagos registrados quedan como constancia permanente</small></li>
+                    <li><small>• Solo se puede editar el detalle/concepto</small></li>
+                    <li><small>• Los pagos anulados no pueden ser editados</small></li>
+                    <li><small>• La anulación es irreversible</small></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
