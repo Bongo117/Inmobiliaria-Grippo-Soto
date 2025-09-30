@@ -1,0 +1,36 @@
+@model IEnumerable<Inmobiliaria_.Net_Core.Models.Usuario>
+@{
+    ViewData["Title"] = "Usuarios";
+}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Usuarios</h2>
+        <a asp-action="Crear" class="btn btn-success">Nuevo Usuario</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Nombre</th>
+                <th>Rol</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.Email</td>
+                    <td>@(u.Apellido + " " + u.Nombre)</td>
+                    <td>@u.Rol</td>
+                    <td>
+                        <a asp-action="Editar" asp-route-id="@u.Id" class="btn btn-sm btn-primary">Editar</a>
+                        <a asp-action="Eliminar" asp-route-id="@u.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+

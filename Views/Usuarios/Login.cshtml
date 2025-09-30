@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "Login";
+}
+<div class="container py-4">
+    <h2>Ingresar</h2>
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+    <form method="post">
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <div class="input-group">
+                <input type="password" name="password" id="password" class="form-control" required />
+                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                    <i class="ph ph-eye" id="toggleIcon"></i>
+                </button>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+</div>
+
+<script>
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordField = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.className = 'ph ph-eye-slash';
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.className = 'ph ph-eye';
+    }
+});
+</script>
+
+

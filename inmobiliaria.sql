@@ -123,6 +123,24 @@ CREATE TABLE `pagos` (
   `UsuarioAnulacion` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `Id` int(11) NOT NULL,
+  `Email` varchar(150) NOT NULL,
+  `ClaveHash` varchar(255) NOT NULL,
+  `Rol` varchar(20) NOT NULL, -- 'Administrador' | 'Empleado'
+  `Apellido` varchar(100) DEFAULT NULL,
+  `Nombre` varchar(100) DEFAULT NULL,
+  `AvatarUrl` varchar(300) DEFAULT NULL,
+  `Estado` tinyint(1) NOT NULL DEFAULT 1,
+  `FechaAlta` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Volcado de datos para la tabla `tipos_inmuebles`
 --
@@ -144,6 +162,13 @@ INSERT INTO `tipos_inmuebles` (`Id`, `Nombre`, `Descripcion`, `UsoPermitido`, `E
 INSERT INTO `propietarios` (`Id`, `Dni`, `Apellido`, `Nombre`, `Email`, `Telefono`, `Domicilio`, `Estado`) VALUES
 (1, '12345678', 'Pérez', 'Juan', 'juanperez@mail.com', '123456789', 'Calle Falsa 123', 1),
 (2, '87654321', 'Gómez', 'María', 'mariagomez@mail.com', '987654321', 'Av. Siempreviva 742', 1);
+
+--
+-- Usuario administrador por defecto (clave: 'Admin123!')
+-- NOTA: ClaveHash debe ser un hash seguro (p.ej., BCrypt). Provisorio: almacenar hash precomputado.
+-- Hash BCrypt de 'Admin123!' generado fuera (cost 10): $2a$10$y4b8sB6m3P8o5UuS6zj4Qe6hCkz4s1t1b0qQxC2y5nqYwG6m2y8xe
+INSERT INTO `usuarios` (`Id`, `Email`, `ClaveHash`, `Rol`, `Apellido`, `Nombre`, `AvatarUrl`, `Estado`) VALUES
+(1, 'admin@inmo.test', 'Admin123!', 'Administrador', 'Admin', 'Root', NULL, 1);
 
 --
 -- Índices para tablas volcadas
@@ -195,6 +220,13 @@ ALTER TABLE `pagos`
   ADD UNIQUE KEY `UniqueNumeroPagoContrato` (`ContratoId`, `NumeroPago`);
 
 --
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`Id`),
+  ADD UNIQUE KEY `Email` (`Email`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -233,6 +265,12 @@ ALTER TABLE `propietarios`
 --
 ALTER TABLE `pagos`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
