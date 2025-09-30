@@ -3,6 +3,8 @@ using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    [Authorize]
     public class PropietarioController : Controller
     {
         private readonly RepositorioPropietario repositorio;

@@ -14,9 +14,28 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Inmobiliaria_Grippo_Soto.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://unpkg.com/@@phosphor-icons/web@2.0.3/src/regular/style.css" />
 </head>
 
 <body>
+    <nav class="navbar bg-light border-bottom justify-content-end px-3">
+        @if (User?.Identity?.IsAuthenticated ?? false)
+        {
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small">@User.Identity.Name</span>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a class="btn btn-sm btn-outline-secondary" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
+                }
+                <a class="btn btn-sm btn-outline-primary" asp-controller="Usuarios" asp-action="Perfil">Mi Perfil</a>
+                <a class="btn btn-sm btn-primary" asp-controller="Usuarios" asp-action="Logout">Salir</a>
+            </div>
+        }
+        else
+        {
+            <a class="btn btn-sm btn-primary" asp-controller="Usuarios" asp-action="Login">Iniciar sesión</a>
+        }
+    </nav>
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-logo">
@@ -87,6 +106,7 @@
                                 </svg></span>Ayuda y Soporte
                         </a>
                     </div>
+                    
                 </div>
             </nav>
         </aside>

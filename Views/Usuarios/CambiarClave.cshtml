@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Cambiar Contraseña";
+}
+<div class="container py-4">
+    <h2>Cambiar Contraseña</h2>
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+    @if (ViewBag.Mensaje != null)
+    {
+        <div class="alert alert-success">@ViewBag.Mensaje</div>
+    }
+    <form method="post">
+        <div class="mb-3">
+            <label class="form-label">Contraseña actual</label>
+            <input type="password" name="claveActual" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nueva contraseña</label>
+            <input type="password" name="nuevaClave" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+    </form>
+</div>
+
+

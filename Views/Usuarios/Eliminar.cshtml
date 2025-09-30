@@ -1,0 +1,15 @@
+@model Inmobiliaria_.Net_Core.Models.Usuario
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+<div class="container py-4">
+    <h2>Eliminar Usuario</h2>
+    <div class="alert alert-warning">¿Seguro que desea eliminar a @Model.Email?</div>
+    <form method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+
