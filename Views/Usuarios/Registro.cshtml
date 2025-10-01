@@ -1,0 +1,85 @@
+@model Inmobiliaria_.Net_Core.Models.Usuario
+@{
+    ViewData["Title"] = "Registro de Usuario";
+}
+<div class="container py-4">
+    <h2>Registro de Usuario</h2>
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+    <form asp-action="Registro" method="post">
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <div class="input-group">
+                <input type="password" name="Password" id="Password" class="form-control" required />
+                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                    <i id="toggleIconPassword" class="ph ph-eye"></i>
+                </button>
+            </div>
+            <small class="text-muted">Temporalmente se guarda en texto plano para entorno local.</small>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Confirmar Contraseña</label>
+            <div class="input-group">
+                <input type="password" name="ConfirmPassword" id="ConfirmPassword" class="form-control" required />
+                <button type="button" class="btn btn-outline-secondary" id="toggleConfirmPassword">
+                    <i id="toggleIconConfirmPassword" class="ph ph-eye"></i>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Apellido</label>
+                <input asp-for="Apellido" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Nombre</label>
+                <input asp-for="Nombre" class="form-control" />
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Login" class="btn btn-secondary">Volver</a>
+        
+        <div class="mt-3">
+            <p>¿Ya tienes una cuenta? <a asp-action="Login">Iniciar Sesión</a></p>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('Password');
+            const toggleIcon = document.getElementById('toggleIconPassword');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.className = 'ph ph-eye-slash';
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.className = 'ph ph-eye';
+            }
+        });
+        
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('ConfirmPassword');
+            const toggleIcon = document.getElementById('toggleIconConfirmPassword');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.className = 'ph ph-eye-slash';
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.className = 'ph ph-eye';
+            }
+        });
+    </script>
+}

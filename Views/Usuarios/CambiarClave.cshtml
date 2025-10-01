@@ -14,14 +14,52 @@
     <form method="post">
         <div class="mb-3">
             <label class="form-label">Contraseña actual</label>
-            <input type="password" name="claveActual" class="form-control" required />
+            <div class="input-group">
+                <input type="password" name="claveActual" id="claveActual" class="form-control" required />
+                <button type="button" class="btn btn-outline-secondary" id="toggleClaveActual">
+                    <i id="toggleIconClaveActual" class="ph ph-eye"></i>
+                </button>
+            </div>
         </div>
         <div class="mb-3">
             <label class="form-label">Nueva contraseña</label>
-            <input type="password" name="nuevaClave" class="form-control" required />
+            <div class="input-group">
+                <input type="password" name="nuevaClave" id="nuevaClave" class="form-control" required />
+                <button type="button" class="btn btn-outline-secondary" id="toggleNuevaClave">
+                    <i id="toggleIconNuevaClave" class="ph ph-eye"></i>
+                </button>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Actualizar</button>
     </form>
 </div>
+
+<script>
+    document.getElementById('toggleClaveActual').addEventListener('click', function() {
+        const passwordField = document.getElementById('claveActual');
+        const toggleIcon = document.getElementById('toggleIconClaveActual');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.className = 'ph ph-eye-slash';
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.className = 'ph ph-eye';
+        }
+    });
+
+    document.getElementById('toggleNuevaClave').addEventListener('click', function() {
+        const passwordField = document.getElementById('nuevaClave');
+        const toggleIcon = document.getElementById('toggleIconNuevaClave');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.className = 'ph ph-eye-slash';
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.className = 'ph ph-eye';
+        }
+    });
+</script>
 
 

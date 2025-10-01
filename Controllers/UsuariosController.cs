@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +28,59 @@ namespace Inmobiliaria_.Net_Core.Controllers
         public IActionResult Login()
         {
             return View();
+        }
+        
+        [AllowAnonymous]
+        public IActionResult Registro()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult Registro(Usuario usuario, string Password, string ConfirmPassword)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Password) || Password != ConfirmPassword)
+                {
+                    ViewBag.Error = "Las contraseñas no coinciden";
+                    return View(usuario);
+                }
+
+                if (string.IsNullOrEmpty(usuario.Email))
+                {
+                    ViewBag.Error = "El email es obligatorio";
+                    return View(usuario);
+                }
+
+                if (repositorioUsuario.ExisteEmail(usuario.Email))
+                {
+                    ViewBag.Error = "Ya existe un usuario con ese email";
+                    return View(usuario);
+                }
+                
+                usuario.ClaveHash = Password; // En producción, usar hash
+                usuario.Rol = "Empleado"; // Por defecto, rol empleado
+                usuario.Estado = true;
+                
+                int res = repositorioUsuario.Alta(usuario);
+                if (res > 0)
+                {
+                    TempData["Mensaje"] = "Registro exitoso. Ahora puede iniciar sesión.";
+                    return RedirectToAction(nameof(Login));
+                }
+                else
+                {
+                    ViewBag.Error = "Error al registrar el usuario. Intente nuevamente.";
+                    return View(usuario);
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error al procesar el registro: " + ex.Message;
+                return View(usuario);
+            }
         }
 
         [HttpPost]
@@ -176,19 +230,50 @@ namespace Inmobiliaria_.Net_Core.Controllers
         [Authorize]
         public IActionResult CambiarClave(string claveActual, string nuevaClave)
         {
-            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (idClaim == null) return NotFound();
-            var id = int.Parse(idClaim);
-            var usuario = repositorioUsuario.ObtenerPorId(id);
-            if (usuario == null) return NotFound();
-            if (usuario.ClaveHash != claveActual)
+            try
             {
-                ViewBag.Error = "La clave actual no es correcta";
+                if (string.IsNullOrEmpty(claveActual) || string.IsNullOrEmpty(nuevaClave))
+                {
+                    ViewBag.Error = "Ambos campos son obligatorios";
+                    return View();
+                }
+                
+                var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (idClaim == null) return NotFound();
+                var id = int.Parse(idClaim);
+                var usuario = repositorioUsuario.ObtenerPorId(id);
+                if (usuario == null) return NotFound();
+                
+                if (usuario.ClaveHash != claveActual)
+                {
+                    ViewBag.Error = "La clave actual no es correcta";
+                    return View();
+                }
+                
+                if (nuevaClave == claveActual)
+                {
+                    ViewBag.Error = "La nueva contraseña debe ser diferente a la actual";
+                    return View();
+                }
+                
+                int resultado = repositorioUsuario.CambiarClave(id, nuevaClave);
+                if (resultado > 0)
+                {
+                    ViewBag.Mensaje = "Contraseña actualizada correctamente";
+                    // Actualizar la sesión con la nueva clave
+                    usuario.ClaveHash = nuevaClave;
+                }
+                else
+                {
+                    ViewBag.Error = "No se pudo actualizar la contraseña";
+                }
                 return View();
             }
-            repositorioUsuario.CambiarClave(id, nuevaClave);
-            ViewBag.Mensaje = "Contraseña actualizada";
-            return View();
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error al cambiar la contraseña: " + ex.Message;
+                return View();
+            }
         }
     }
 }
