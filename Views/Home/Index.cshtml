@@ -1,7 +1,114 @@
-﻿@{
+@{
     ViewData["Title"] = "Pagina de inicio";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Bienvenido a Inmobiliaria GriSoto</h1>
+    <h1 class="display-4 welcome-title">Bienvenido a Inmobiliaria GriSoto</h1>
+    
+    <!-- Carrusel de propiedades destacadas -->
+    <div id="propiedadesCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- Propiedad 1 -->
+            <div class="carousel-item active">
+                <div class="property-card">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="property-image-placeholder">
+                                <div class="placeholder-text">Acá iría imagen 1</div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="property-details p-3">
+                                <h2>$1,528,950</h2>
+                                <div class="d-flex flex-wrap gap-3 mb-3">
+                                    <span><i class="ph ph-ruler"></i> 233 m²</span>
+                                    <span><i class="ph ph-house"></i> 2 pisos</span>
+                                    <span><i class="ph ph-bed"></i> 4 habitaciones</span>
+                                    <span><i class="ph ph-bathtub"></i> 5 baños</span>
+                                </div>
+                                <p><i class="ph ph-map-pin"></i> Rosario, Santa Fe</p>
+                                <p>Casa en venta en un entorno tranquilo. Esta excepcional propiedad se caracteriza por su diseño moderno y amplios espacios.</p>
+                                <button class="btn btn-primary">Ver detalles</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Propiedad 2 -->
+            <div class="carousel-item">
+                <div class="property-card">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="property-image-placeholder">
+                                <div class="placeholder-text">Acá iría imagen 2</div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="property-details p-3">
+                                <h2>$950,000</h2>
+                                <div class="d-flex flex-wrap gap-3 mb-3">
+                                    <span><i class="ph ph-ruler"></i> 180 m²</span>
+                                    <span><i class="ph ph-house"></i> 1 piso</span>
+                                    <span><i class="ph ph-bed"></i> 3 habitaciones</span>
+                                    <span><i class="ph ph-bathtub"></i> 2 baños</span>
+                                </div>
+                                <p><i class="ph ph-map-pin"></i> Santa Fe, Santa Fe</p>
+                                <p>Apartamento moderno con excelente ubicación. Cuenta con acabados de primera calidad y vistas panorámicas.</p>
+                                <button class="btn btn-primary">Ver detalles</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Propiedad 3 -->
+            <div class="carousel-item">
+                <div class="property-card">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="property-image-placeholder">
+                                <div class="placeholder-text">Acá iría imagen 3</div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="property-details p-3">
+                                <h2>$1,200,000</h2>
+                                <div class="d-flex flex-wrap gap-3 mb-3">
+                                    <span><i class="ph ph-ruler"></i> 210 m²</span>
+                                    <span><i class="ph ph-house"></i> 2 pisos</span>
+                                    <span><i class="ph ph-bed"></i> 4 habitaciones</span>
+                                    <span><i class="ph ph-bathtub"></i> 3 baños</span>
+                                </div>
+                                <p><i class="ph ph-map-pin"></i> Córdoba, Córdoba</p>
+                                <p>Hermosa casa con jardín amplio y piscina. Perfecta para familias que buscan comodidad y espacio.</p>
+                                <button class="btn btn-primary">Ver detalles</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Controles del carrusel -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#propiedadesCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#propiedadesCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
 </div>
+
+<!-- Script para la animación del carrusel -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var carousel = document.getElementById('propiedadesCarousel');
+        var carouselInstance = new bootstrap.Carousel(carousel, {
+            interval: 5000,
+            wrap: true
+        });
+    });
+</script>
