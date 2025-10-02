@@ -1,4 +1,6 @@
 using MySql.Data.MySqlClient;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 
 namespace Inmobiliaria_.Net_Core.Models
@@ -48,15 +50,29 @@ namespace Inmobiliaria_.Net_Core.Models
             return null;
         }
 
-        public Usuario? ObtenerPorEmail(string email)
+        // Ahora permite incluir usuarios inactivos con soloActivos = false
+        public Usuario? ObtenerPorEmail(string email, bool soloActivos = true)
         {
+            if (string.IsNullOrEmpty(email)) return null;
+            var emailNorm = email.Trim().ToLowerInvariant();
+
             using (var connection = new MySqlConnection(connectionString))
             {
-                var sql = @"SELECT Id, Email, ClaveHash, Rol, Apellido, Nombre, AvatarUrl, Estado, FechaAlta
-                            FROM usuarios WHERE Email = @email AND Estado = 1";
+                string sql;
+                if (soloActivos)
+                {
+                    sql = @"SELECT Id, Email, ClaveHash, Rol, Apellido, Nombre, AvatarUrl, Estado, FechaAlta
+                            FROM usuarios WHERE LOWER(TRIM(Email)) = @email AND Estado = 1";
+                }
+                else
+                {
+                    sql = @"SELECT Id, Email, ClaveHash, Rol, Apellido, Nombre, AvatarUrl, Estado, FechaAlta
+                            FROM usuarios WHERE LOWER(TRIM(Email)) = @email";
+                }
+
                 using (var command = new MySqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@email", email);
+                    command.Parameters.AddWithValue("@email", emailNorm);
                     connection.Open();
                     using (var reader = command.ExecuteReader())
                     {
@@ -69,8 +85,49 @@ namespace Inmobiliaria_.Net_Core.Models
 
         public int Alta(Usuario usuario)
         {
+            if (usuario == null) throw new ArgumentNullException(nameof(usuario));
+            // Normalizar email antes de operar
+            usuario.Email = usuario.Email?.Trim().ToLowerInvariant();
+
             using (var connection = new MySqlConnection(connectionString))
             {
+                connection.Open();
+
+                // 1) Revisar si existe usuario (activo o inactivo) con ese email
+                var existente = ObtenerPorEmail(usuario.Email, soloActivos: false);
+                if (existente != null)
+                {
+                    if (!existente.Estado)
+                    {
+                        // Reactivar usuario inactivo: actualizamos campos relevantes y retornamos su id
+                        var sqlUpdate = @"UPDATE usuarios SET 
+                                            ClaveHash = @ClaveHash,
+                                            Rol = @Rol,
+                                            Apellido = @Apellido,
+                                            Nombre = @Nombre,
+                                            AvatarUrl = @AvatarUrl,
+                                            Estado = 1
+                                          WHERE Id = @Id";
+                        using (var command = new MySqlCommand(sqlUpdate, connection))
+                        {
+                            command.Parameters.AddWithValue("@ClaveHash", usuario.ClaveHash);
+                            command.Parameters.AddWithValue("@Rol", usuario.Rol);
+                            command.Parameters.AddWithValue("@Apellido", (object?)usuario.Apellido ?? DBNull.Value);
+                            command.Parameters.AddWithValue("@Nombre", (object?)usuario.Nombre ?? DBNull.Value);
+                            command.Parameters.AddWithValue("@AvatarUrl", (object?)usuario.AvatarUrl ?? DBNull.Value);
+                            command.Parameters.AddWithValue("@Id", existente.Id);
+                            command.ExecuteNonQuery();
+                        }
+                        return existente.Id;
+                    }
+                    else
+                    {
+                        // Ya existe activo: respetamos la restricción a nivel aplicación
+                        throw new InvalidOperationException("Ya existe un usuario activo con ese email.");
+                    }
+                }
+
+                // 2) Si no existe, insertar nuevo
                 var sql = @"INSERT INTO usuarios (Email, ClaveHash, Rol, Apellido, Nombre, AvatarUrl, Estado)
                             VALUES (@Email, @ClaveHash, @Rol, @Apellido, @Nombre, @AvatarUrl, @Estado);
                             SELECT LAST_INSERT_ID();";
@@ -83,7 +140,6 @@ namespace Inmobiliaria_.Net_Core.Models
                     command.Parameters.AddWithValue("@Nombre", (object?)usuario.Nombre ?? DBNull.Value);
                     command.Parameters.AddWithValue("@AvatarUrl", (object?)usuario.AvatarUrl ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Estado", usuario.Estado);
-                    connection.Open();
                     var result = command.ExecuteScalar();
                     return Convert.ToInt32(result);
                 }
@@ -100,7 +156,8 @@ namespace Inmobiliaria_.Net_Core.Models
                 using (var command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@Id", usuario.Id);
-                    command.Parameters.AddWithValue("@Email", usuario.Email);
+                    // Normalizar email al modificar
+                    command.Parameters.AddWithValue("@Email", usuario.Email?.Trim().ToLowerInvariant());
                     command.Parameters.AddWithValue("@Rol", usuario.Rol);
                     command.Parameters.AddWithValue("@Apellido", (object?)usuario.Apellido ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Nombre", (object?)usuario.Nombre ?? DBNull.Value);
@@ -126,6 +183,7 @@ namespace Inmobiliaria_.Net_Core.Models
             }
         }
 
+        // Soft-delete (conserva registro)
         public int Baja(int id)
         {
             using (var connection = new MySqlConnection(connectionString))
@@ -140,15 +198,33 @@ namespace Inmobiliaria_.Net_Core.Models
             }
         }
 
-        public bool ExisteEmail(string email, int? idExcluir = null)
+        // Hard-delete (por si querés borrar físicamente)
+        public int EliminarDefinitivo(int id)
         {
             using (var connection = new MySqlConnection(connectionString))
             {
-                var sql = "SELECT COUNT(*) FROM usuarios WHERE Email = @Email AND Estado = 1";
+                var sql = "DELETE FROM usuarios WHERE Id = @id";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    return command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public bool ExisteEmail(string email, int? idExcluir = null)
+        {
+            if (string.IsNullOrEmpty(email)) return false;
+            var emailNorm = email.Trim().ToLowerInvariant();
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var sql = "SELECT COUNT(*) FROM usuarios WHERE LOWER(TRIM(Email)) = @Email AND Estado = 1";
                 if (idExcluir.HasValue) sql += " AND Id != @IdExcluir";
                 using (var command = new MySqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@Email", emailNorm);
                     if (idExcluir.HasValue) command.Parameters.AddWithValue("@IdExcluir", idExcluir.Value);
                     connection.Open();
                     var result = command.ExecuteScalar();
@@ -174,5 +250,3 @@ namespace Inmobiliaria_.Net_Core.Models
         }
     }
 }
-
-

@@ -146,22 +146,57 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View();
         }
 
+        // ---- POST Crear modificado para recibir Password y ConfirmPassword ----
         [HttpPost]
         [Authorize(Roles = "Administrador")]
-        public IActionResult Crear(Usuario usuario)
+        public IActionResult Crear(Usuario usuario, string Password, string ConfirmPassword)
         {
-            if (ModelState.IsValid)
+            try
             {
+                // Validar password recibida desde el form
+                if (string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(ConfirmPassword))
+                {
+                    ModelState.AddModelError("Password", "La contraseña y su confirmación son obligatorias.");
+                    return View(usuario);
+                }
+
+                if (Password != ConfirmPassword)
+                {
+                    ModelState.AddModelError("Password", "Las contraseñas no coinciden.");
+                    return View(usuario);
+                }
+
+                // Asignar ClaveHash antes de validar ModelState y eliminar errores previos sobre ClaveHash
+                usuario.ClaveHash = Password; // En producción hash!
+                if (ModelState.ContainsKey("ClaveHash"))
+                    ModelState.Remove("ClaveHash");
+
+                // Asegurar estado por defecto
+                usuario.Estado = true;
+
+                // Validar resto del modelo
+                if (!ModelState.IsValid)
+                {
+                    return View(usuario);
+                }
+
+                // Validar email único
                 if (repositorioUsuario.ExisteEmail(usuario.Email))
                 {
                     ModelState.AddModelError("Email", "Ya existe un usuario con ese email");
                     return View(usuario);
                 }
+
                 repositorioUsuario.Alta(usuario);
                 return RedirectToAction(nameof(Index));
             }
-            return View(usuario);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error al crear el usuario: " + ex.Message);
+                return View(usuario);
+            }
         }
+        // ---------------------------------------------------------------------
 
         [Authorize(Roles = "Administrador")]
         public IActionResult Editar(int id)

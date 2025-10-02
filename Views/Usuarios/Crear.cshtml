@@ -2,39 +2,153 @@
 @{
     ViewData["Title"] = "Crear Usuario";
 }
+
 <div class="container py-4">
     <h2>Crear Usuario</h2>
-    <form method="post">
+
+    @* Resumen de errores generales (incluye errores agregados en ModelState) *@
+    @if (!ViewData.ModelState.IsValid || ViewBag.Error != null)
+    {
+        <div class="alert alert-danger" id="validation-summary">
+            <ul class="mb-0">
+                @* Errores estándar del ModelState *@
+                @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@err.ErrorMessage</li>
+                }
+                @* Mensaje específico por si lo pones en ViewBag.Error desde el controlador *@
+                @if (ViewBag.Error != null)
+                {
+                    <li>@ViewBag.Error</li>
+                }
+            </ul>
+        </div>
+    }
+
+    @* Zona donde colocaremos errores de validación client-side (injectada por JS) *@
+    <div class="alert alert-danger d-none" id="clientValidation" role="alert">
+        <ul class="mb-0" id="clientValidationList"></ul>
+    </div>
+
+    <form asp-action="Crear" method="post" id="crearUsuarioForm" novalidate>
+        @Html.AntiForgeryToken()
+
         <div class="mb-3">
             <label class="form-label">Email</label>
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
+
         <div class="mb-3">
             <label class="form-label">Contraseña</label>
-            <input asp-for="ClaveHash" class="form-control" />
-            <small class="text-muted">Temporalmente se guarda en texto plano para entorno local.</small>
+            <input name="Password" id="Password" type="password" class="form-control" />
+            <small class="text-muted">La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.</small>
+            @* Mostrar error de validación server-side asociado a la clave "Password" (si lo añadiste al ModelState) *@
+            @if (ViewData.ModelState["Password"]?.Errors?.Count > 0)
+            {
+                <div class="text-danger small mt-1">@ViewData.ModelState["Password"].Errors[0].ErrorMessage</div>
+            }
         </div>
+
+        <div class="mb-3">
+            <label class="form-label">Confirmar Contraseña</label>
+            <input name="ConfirmPassword" id="ConfirmPassword" type="password" class="form-control" />
+            @if (ViewData.ModelState["ConfirmPassword"]?.Errors?.Count > 0)
+            {
+                <div class="text-danger small mt-1">@ViewData.ModelState["ConfirmPassword"].Errors[0].ErrorMessage</div>
+            }
+        </div>
+
         <div class="mb-3">
             <label class="form-label">Rol</label>
             <select asp-for="Rol" class="form-select">
-                <option>Empleado</option>
-                <option>Administrador</option>
+                <option value="Empleado" selected="@(Model?.Rol == "Empleado")">Empleado</option>
+                <option value="Administrador" selected="@(Model?.Rol == "Administrador")">Administrador</option>
             </select>
+            <span asp-validation-for="Rol" class="text-danger"></span>
         </div>
+
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Apellido</label>
                 <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Nombre</label>
                 <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+
+        @* Preservamos AvatarUrl por si lo hay (hidden) *@
+        <input asp-for="AvatarUrl" type="hidden" />
+
+        <button type="submit" class="btn btn-primary">Crear</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Volver</a>
     </form>
 </div>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 
+    <script>
+        (function () {
+            const form = document.getElementById('crearUsuarioForm');
+            const pwd = document.getElementById('Password');
+            const confirmPwd = document.getElementById('ConfirmPassword');
+            const clientBox = document.getElementById('clientValidation');
+            const clientList = document.getElementById('clientValidationList');
+
+            function clearClientErrors() {
+                clientList.innerHTML = '';
+                clientBox.classList.add('d-none');
+            }
+
+            function addClientError(msg) {
+                const li = document.createElement('li');
+                li.textContent = msg;
+                clientList.appendChild(li);
+                clientBox.classList.remove('d-none');
+            }
+
+            form.addEventListener('submit', function (e) {
+                // Limpiar errores previos
+                clearClientErrors();
+
+                const password = pwd.value || '';
+                const confirm = confirmPwd.value || '';
+                const errors = [];
+
+                // Requisitos mínimos
+                if (!password) {
+                    errors.push('La contraseña es obligatoria.');
+                } else {
+                    if (password.length < 8) errors.push('La contraseña debe tener al menos 8 caracteres.');
+                    if (!/[A-Z]/.test(password)) errors.push('La contraseña debe contener al menos una letra mayúscula.');
+                    if (!/[0-9]/.test(password)) errors.push('La contraseña debe contener al menos un número.');
+                }
+
+                if (!confirm) {
+                    errors.push('La confirmación de contraseña es obligatoria.');
+                }
+
+                if (password && confirm && password !== confirm) {
+                    errors.push('Las contraseñas no coinciden.');
+                }
+
+                if (errors.length > 0) {
+                    e.preventDefault();
+                    errors.forEach(addClientError);
+                    // hacer focus en el primer campo con error
+                    if (!password) pwd.focus(); else if (password !== confirm) confirmPwd.focus();
+                    // evitar doble envío
+                    return false;
+                }
+
+                // Dejar que el formulario haga submit al servidor
+                return true;
+            });
+        })();
+    </script>
+}
