@@ -104,7 +104,9 @@ namespace Inmobiliaria_.Net_Core.Controllers
             {
                 new Claim(ClaimTypes.Name, usuario.Email),
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new Claim(ClaimTypes.Role, usuario.Rol)
+                new Claim(ClaimTypes.Role, usuario.Rol),
+                new Claim("NombreCompleto", $"{usuario.Nombre} {usuario.Apellido}".Trim()),
+                new Claim("AvatarUrl", usuario.AvatarUrl ?? "")
             };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
@@ -210,14 +212,84 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult Perfil(Usuario usuario)
+        public async Task<IActionResult> Perfil(Usuario usuario, IFormFile avatarFile)
         {
-            // Los empleados sólo pueden editar sus datos personales, no rol/email si así se desea.
-            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (idClaim == null) return NotFound();
-            usuario.Id = int.Parse(idClaim);
-            repositorioUsuario.Modificacion(usuario);
-            return RedirectToAction(nameof(Perfil));
+            try
+            {
+                // Los empleados sólo pueden editar sus datos personales, no rol/email si así se desea.
+                var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (idClaim == null) return NotFound();
+                usuario.Id = int.Parse(idClaim);
+
+                // Manejar subida de archivo de avatar
+                if (avatarFile != null && avatarFile.Length > 0)
+                {
+                    // Validar tipo de archivo
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                    var fileExtension = Path.GetExtension(avatarFile.FileName).ToLowerInvariant();
+                    
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("avatarFile", "Solo se permiten archivos JPG, JPEG, PNG y GIF");
+                        return View(usuario);
+                    }
+
+                    // Validar tamaño (máximo 5MB)
+                    if (avatarFile.Length > 5 * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("avatarFile", "El archivo no puede ser mayor a 5MB");
+                        return View(usuario);
+                    }
+
+                    // Crear nombre único para el archivo
+                    var fileName = $"avatar_{usuario.Id}_{DateTime.Now:yyyyMMddHHmmss}{fileExtension}";
+                    var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "avatars");
+                    
+                    // Asegurar que el directorio existe
+                    if (!Directory.Exists(uploadsPath))
+                    {
+                        Directory.CreateDirectory(uploadsPath);
+                    }
+
+                    var filePath = Path.Combine(uploadsPath, fileName);
+                    
+                    // Guardar el archivo
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await avatarFile.CopyToAsync(stream);
+                    }
+
+                    // Actualizar la URL del avatar
+                    usuario.AvatarUrl = $"/uploads/avatars/{fileName}";
+                }
+
+                repositorioUsuario.Modificacion(usuario);
+                
+                // Actualizar los claims de la sesión
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, usuario.Email),
+                    new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                    new Claim(ClaimTypes.Role, usuario.Rol),
+                    new Claim("NombreCompleto", $"{usuario.Nombre} {usuario.Apellido}".Trim()),
+                    new Claim("AvatarUrl", usuario.AvatarUrl ?? "")
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true
+                };
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                TempData["Mensaje"] = "Perfil actualizado correctamente";
+                return RedirectToAction(nameof(Perfil));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error al actualizar el perfil: " + ex.Message);
+                return View(usuario);
+            }
         }
 
         [Authorize]

@@ -22,13 +22,52 @@
         @if (User?.Identity?.IsAuthenticated ?? false)
         {
             <div class="d-flex align-items-center gap-2">
-                <span class="text-muted small">@User.Identity.Name</span>
-                @if (User.IsInRole("Administrador"))
-                {
-                    <a class="btn btn-sm btn-outline-secondary" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
+                @{
+                    var nombreCompleto = User.FindFirst("NombreCompleto")?.Value;
+                    var avatarUrl = User.FindFirst("AvatarUrl")?.Value;
+                    var displayName = !string.IsNullOrEmpty(nombreCompleto) ? nombreCompleto : User.Identity.Name;
                 }
-                <a class="btn btn-sm btn-outline-primary" asp-controller="Usuarios" asp-action="Perfil">Mi Perfil</a>
-                <a class="btn btn-sm btn-primary" asp-controller="Usuarios" asp-action="Logout">Salir</a>
+                <div class="user-dropdown-container">
+                    <button type="button" class="user-dropdown-toggle d-flex align-items-center gap-2" onclick="toggleUserDropdown()">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="text-muted small">@displayName</span>
+                            @if (!string.IsNullOrEmpty(avatarUrl))
+                            {
+                                <img src="@avatarUrl" alt="Avatar" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 14px; font-weight: 500;">
+                                    @(displayName?.Substring(0, 1).ToUpper() ?? "U")
+                                </div>
+                            }
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" class="dropdown-arrow">
+                            <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm45.66-109.66a8,8,0,0,1,0,11.32l-40,40a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L128,140.69l34.34-34.35A8,8,0,0,1,173.66,106.34Z"/>
+                        </svg>
+                    </button>
+                    <div id="userDropdown" class="user-dropdown-menu">
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <a class="user-dropdown-item" asp-controller="Usuarios" asp-action="Index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" class="me-2">
+                                    <path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Z"/>
+                                </svg>
+                                Usuarios
+                            </a>
+                        }
+                        <a class="user-dropdown-item" asp-controller="Usuarios" asp-action="Perfil">
+                            Mi Perfil
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <a class="user-dropdown-item" asp-controller="Usuarios" asp-action="Logout">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" class="me-2">
+                                <path d="M112,216a8,8,0,0,1-8-8V48a8,8,0,0,1,16,0V208A8,8,0,0,1,112,216Zm109.66-93.66-40-40A8,8,0,0,0,168,80V120H24a8,8,0,0,0,0,16H168v40a8,8,0,0,0,13.66,5.66l40-40A8,8,0,0,0,221.66,122.34Z"/>
+                            </svg>
+                            Salir
+                        </a>
+                    </div>
+                </div>
             </div>
         }
         else
@@ -197,6 +236,34 @@
             }
         }
 
+        function toggleUserDropdown() {
+            const userDropdown = document.getElementById('userDropdown');
+            const userToggle = document.querySelector('.user-dropdown-toggle');
+            
+            // Cerrar otros dropdowns
+            const allDropdowns = document.querySelectorAll('.dropdown-menu-custom');
+            allDropdowns.forEach(dropdown => {
+                if (dropdown.id !== 'userDropdown') {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            const allButtons = document.querySelectorAll('.btn-dropdown-primary, .btn-dropdown-secondary, .btn-dropdown-custom');
+            allButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            if (userDropdown && userToggle) {
+                if (userDropdown.classList.contains('show')) {
+                    userDropdown.classList.remove('show');
+                    userToggle.classList.remove('active');
+                } else {
+                    userDropdown.classList.add('show');
+                    userToggle.classList.add('active');
+                }
+            }
+        }
+
         // Manejar clicks en items del dropdown
         document.addEventListener('click', function (event) {
             if (event.target.classList.contains('dropdown-item-custom') && !event.target.classList.contains('disabled')) {
@@ -209,6 +276,26 @@
                     if (button) {
                         button.classList.remove('active');
                     }
+                }
+
+                // Solo prevenir navegación para enlaces demo (que tengan href="#")
+                if (event.target.getAttribute('href') === '#') {
+                    event.preventDefault();
+                }
+                // Los enlaces reales con asp-controller y asp-action funcionarán normalmente
+            }
+            
+            // Manejar clicks en items del dropdown de usuario
+            if (event.target.classList.contains('user-dropdown-item') && !event.target.classList.contains('disabled')) {
+                // Cerrar el dropdown de usuario al seleccionar un item
+                const userDropdown = document.getElementById('userDropdown');
+                const userToggle = document.querySelector('.user-dropdown-toggle');
+                
+                if (userDropdown) {
+                    userDropdown.classList.remove('show');
+                }
+                if (userToggle) {
+                    userToggle.classList.remove('active');
                 }
 
                 // Solo prevenir navegación para enlaces demo (que tengan href="#")

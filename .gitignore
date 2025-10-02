@@ -260,3 +260,6 @@ paket-files/
 __pycache__/
 *.pyc
 .vscode/*
+
+# Imagenes de usuarios
+wwwroot/uploads/avatars/*
