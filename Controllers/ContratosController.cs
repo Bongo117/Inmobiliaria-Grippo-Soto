@@ -8,14 +8,17 @@ namespace Inmobiliaria_.Net_Core.Controllers
         private readonly RepositorioContrato repositorio;
         private readonly RepositorioInquilino repositorioInquilino;
         private readonly RepositorioInmueble repositorioInmueble;
+        private readonly RepositorioPago repositorioPago;
 
         public ContratosController(RepositorioContrato repositorio, 
             RepositorioInquilino repositorioInquilino, 
-            RepositorioInmueble repositorioInmueble)
+            RepositorioInmueble repositorioInmueble,
+            RepositorioPago repositorioPago)
         {
             this.repositorio = repositorio;
             this.repositorioInquilino = repositorioInquilino;
             this.repositorioInmueble = repositorioInmueble;
+            this.repositorioPago = repositorioPago;
         }
 
         public IActionResult Index()
@@ -164,6 +167,139 @@ namespace Inmobiliaria_.Net_Core.Controllers
         public IActionResult Pagos(int id)
         {
             return RedirectToAction("PorContrato", "Pagos", new { contratoId = id });
+        }
+
+        // Métodos para terminación anticipada
+        public IActionResult TerminarAnticipadamente(int id)
+        {
+            var contrato = repositorio.ObtenerPorId(id);
+            if (contrato == null)
+            {
+                return NotFound();
+            }
+            
+            if (contrato.TieneTerminacionAnticipada)
+            {
+                TempData["Error"] = "Este contrato ya fue terminado anticipadamente";
+                return RedirectToAction(nameof(Index));
+            }
+            
+            if (!contrato.EsVigente)
+            {
+                TempData["Error"] = "Solo se pueden terminar contratos vigentes";
+                return RedirectToAction(nameof(Index));
+            }
+            
+            return View(contrato);
+        }
+
+        [HttpPost]
+        public IActionResult TerminarAnticipadamente(int id, DateTime fechaTerminacion, string motivo)
+        {
+            var contrato = repositorio.ObtenerPorId(id);
+            if (contrato == null)
+            {
+                return NotFound();
+            }
+            
+            if (contrato.TieneTerminacionAnticipada)
+            {
+                TempData["Error"] = "Este contrato ya fue terminado anticipadamente";
+                return RedirectToAction(nameof(Index));
+            }
+            
+            if (!contrato.EsVigente)
+            {
+                TempData["Error"] = "Solo se pueden terminar contratos vigentes";
+                return RedirectToAction(nameof(Index));
+            }
+            
+            // Validar que la fecha de terminación sea posterior a la fecha de inicio
+            if (fechaTerminacion < contrato.FechaInicio)
+            {
+                ModelState.AddModelError("FechaTerminacionAnticipada", "La fecha de terminación debe ser posterior a la fecha de inicio del contrato");
+                return View(contrato);
+            }
+            
+            // Validar que la fecha de terminación sea anterior a la fecha de fin original
+            if (fechaTerminacion >= contrato.FechaFin)
+            {
+                ModelState.AddModelError("FechaTerminacionAnticipada", "La fecha de terminación debe ser anterior a la fecha de finalización original del contrato");
+                return View(contrato);
+            }
+            
+            if (string.IsNullOrWhiteSpace(motivo))
+            {
+                ModelState.AddModelError("MotivoTerminacion", "El motivo de terminación es obligatorio");
+                return View(contrato);
+            }
+            
+            try
+            {
+                // Actualizar el contrato con la terminación anticipada
+                contrato.FechaTerminacionAnticipada = fechaTerminacion;
+                contrato.MotivoTerminacion = motivo;
+                contrato.MultaAplicada = contrato.MontoMultaCalculado;
+                contrato.FechaAplicacionMulta = DateTime.Today;
+                
+                repositorio.Modificacion(contrato);
+                
+                // Crear pago de multa automáticamente
+                CrearPagoMulta(contrato);
+                
+                TempData["Mensaje"] = $"Contrato terminado anticipadamente. Multa aplicada: ${contrato.MultaAplicada:F2}";
+                return RedirectToAction(nameof(Detalles), new { id = contrato.Id });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error al terminar el contrato: " + ex.Message);
+                return View(contrato);
+            }
+        }
+
+        public IActionResult CalcularMulta(int id)
+        {
+            var contrato = repositorio.ObtenerPorId(id);
+            if (contrato == null)
+            {
+                return NotFound();
+            }
+            
+            return Json(new
+            {
+                montoMulta = contrato.MontoMultaCalculado,
+                porcentajeTiempo = contrato.PorcentajeTiempoTranscurrido,
+                mesesMulta = contrato.PorcentajeTiempoTranscurrido < 50 ? 2 : 1,
+                fechaInicio = contrato.FechaInicio.ToString("yyyy-MM-dd"),
+                fechaFin = contrato.FechaFin.ToString("yyyy-MM-dd"),
+                duracionDias = contrato.DuracionDias
+            });
+        }
+
+        private void CrearPagoMulta(Contrato contrato)
+        {
+            try
+            {
+                var pagoMulta = new Pago
+                {
+                    ContratoId = contrato.Id,
+                    NumeroPago = repositorioPago.ObtenerSiguienteNumeroPago(contrato.Id),
+                    FechaPago = DateTime.Today,
+                    Detalle = $"Multa por terminación anticipada - {contrato.MotivoTerminacion}",
+                    Importe = contrato.MultaAplicada!.Value,
+                    Estado = true,
+                    FechaCreacion = DateTime.Now,
+                    UsuarioCreador = "Sistema"
+                };
+
+                repositorioPago.Alta(pagoMulta);
+            }
+            catch (Exception ex)
+            {
+                // Log del error pero no interrumpir el flujo principal
+                // En un entorno de producción, se debería usar un logger apropiado
+                Console.WriteLine($"Error al crear pago de multa: {ex.Message}");
+            }
         }
     }
 }

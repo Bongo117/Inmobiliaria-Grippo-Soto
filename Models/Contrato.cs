@@ -31,6 +31,21 @@ namespace Inmobiliaria_.Net_Core.Models
         
         public bool Estado { get; set; } = true;
         
+        [DataType(DataType.Date)]
+        [Display(Name = "Fecha de Terminación Anticipada")]
+        public DateTime? FechaTerminacionAnticipada { get; set; }
+        
+        [Display(Name = "Motivo de Terminación")]
+        [StringLength(500, ErrorMessage = "El motivo no puede exceder los 500 caracteres")]
+        public string? MotivoTerminacion { get; set; }
+        
+        [Display(Name = "Multa Aplicada")]
+        public decimal? MultaAplicada { get; set; }
+        
+        [Display(Name = "Fecha de Aplicación de Multa")]
+        [DataType(DataType.Date)]
+        public DateTime? FechaAplicacionMulta { get; set; }
+        
         public Inquilino? Inquilino { get; set; }
         public Inmueble? Inmueble { get; set; }
         
@@ -50,5 +65,52 @@ namespace Inmobiliaria_.Net_Core.Models
         
         [Display(Name = "Contrato Vigente")]
         public bool EsVigente => DateTime.Today >= FechaInicio && DateTime.Today <= FechaFin && Estado;
+        
+        // Propiedades calculadas para terminación anticipada
+        [Display(Name = "Tiene Terminación Anticipada")]
+        public bool TieneTerminacionAnticipada => FechaTerminacionAnticipada.HasValue;
+        
+        [Display(Name = "Porcentaje de Tiempo Transcurrido")]
+        public double PorcentajeTiempoTranscurrido
+        {
+            get
+            {
+                if (!TieneTerminacionAnticipada) return 0;
+                
+                var fechaTerminacion = FechaTerminacionAnticipada!.Value;
+                var duracionTotal = (FechaFin - FechaInicio).TotalDays;
+                var tiempoTranscurrido = (fechaTerminacion - FechaInicio).TotalDays;
+                
+                return (tiempoTranscurrido / duracionTotal) * 100;
+            }
+        }
+        
+        [Display(Name = "Monto de Multa Calculado")]
+        public decimal MontoMultaCalculado
+        {
+            get
+            {
+                if (!TieneTerminacionAnticipada) return 0;
+                
+                var porcentaje = PorcentajeTiempoTranscurrido;
+                var mesesMulta = porcentaje < 50 ? 2 : 1;
+                return MontoMensual * mesesMulta;
+            }
+        }
+        
+        [Display(Name = "Estado del Contrato")]
+        public string EstadoContrato
+        {
+            get
+            {
+                if (TieneTerminacionAnticipada)
+                    return "Terminado Anticipadamente";
+                if (!EsVigente && DateTime.Today > FechaFin)
+                    return "Finalizado";
+                if (EsVigente)
+                    return "Vigente";
+                return "Inactivo";
+            }
+        }
     }
 }

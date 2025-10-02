@@ -1,0 +1,197 @@
+@model Inmobiliaria_.Net_Core.Models.Contrato
+
+@{
+    ViewData["Title"] = "Terminar Contrato Anticipadamente";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Terminar Contrato Anticipadamente
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Información del Contrato:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li><strong>Inquilino:</strong> @Model.Inquilino?.Apellido, @Model.Inquilino?.Nombre</li>
+                            <li><strong>Inmueble:</strong> @Model.Inmueble?.Direccion</li>
+                            <li><strong>Período:</strong> @Model.FechaInicio.ToString("dd/MM/yyyy") - @Model.FechaFin.ToString("dd/MM/yyyy")</li>
+                            <li><strong>Monto Mensual:</strong> $@Model.MontoMensual.ToString("N2")</li>
+                        </ul>
+                    </div>
+
+                    <form asp-action="TerminarAnticipadamente" method="post" id="terminarForm">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="FechaTerminacionAnticipada" class="form-label">Fecha de Terminación *</label>
+                                    <input asp-for="FechaTerminacionAnticipada" type="date" class="form-control" 
+                                           min="@Model.FechaInicio.ToString("yyyy-MM-dd")" 
+                                           max="@Model.FechaFin.AddDays(-1).ToString("yyyy-MM-dd")" 
+                                           required />
+                                    <span asp-validation-for="FechaTerminacionAnticipada" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Motivo de Terminación *</label>
+                                    <textarea asp-for="MotivoTerminacion" class="form-control" rows="3" 
+                                              placeholder="Describa el motivo de la terminación anticipada..." required></textarea>
+                                    <span asp-validation-for="MotivoTerminacion" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card bg-light">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Cálculo de Multa</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="calculoMulta">
+                                            <p class="text-muted">Seleccione una fecha para calcular la multa</p>
+                                        </div>
+                                        <div class="mt-3">
+                                            <button type="button" class="btn-custom btn-secondary-custom btn-sm" id="calcularBtn">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                                                    <path d="M80,48a8,8,0,0,1,8-8h80a8,8,0,0,1,0,16H88A8,8,0,0,1,80,48Zm8,72h80a8,8,0,0,0,0-16H88a8,8,0,0,0,0,16Zm0,32h80a8,8,0,0,0,0-16H88a8,8,0,0,0,0,16ZM232,56V208a16,16,0,0,1-16,16H40a16,16,0,0,1-16-16V56A16,16,0,0,1,40,40H216A16,16,0,0,1,232,56ZM216,208V56H40V208H216ZM96,80a8,8,0,0,0,8,8h48a8,8,0,0,0,0-16H104A8,8,0,0,0,96,80Zm0,32a8,8,0,0,0,8,8h48a8,8,0,0,0,0-16H104A8,8,0,0,0,96,112Zm0,32a8,8,0,0,0,8,8h48a8,8,0,0,0,0-16H104A8,8,0,0,0,96,144Z"/>
+                                                </svg>
+                                                <span class="ms-1">Calcular Multa</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions mt-4">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn-custom btn-outline-custom" id="confirmarBtn" disabled
+                                        style="color: #dc2626; border-color: #dc2626;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 256 256">
+                                        <path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z"/>
+                                    </svg>
+                                    <span class="ms-2">Confirmar Terminación</span>
+                                </button>
+                                <a asp-action="Detalles" asp-route-id="@Model.Id" class="btn-custom btn-ghost-custom">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 256 256">
+                                        <path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/>
+                                    </svg>
+                                    <span class="ms-2">Cancelar</span>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">Información sobre Multas</h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Política de Multas:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li><strong>Menos del 50% del tiempo:</strong> 2 meses de multa</li>
+                            <li><strong>50% o más del tiempo:</strong> 1 mes de multa</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Nota:</strong> La multa se registrará automáticamente como un pago especial en el sistema.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            const contratoId = @Model.Id;
+            const fechaInicio = '@Model.FechaInicio.ToString("yyyy-MM-dd")';
+            const fechaFin = '@Model.FechaFin.ToString("yyyy-MM-dd")';
+            const montoMensual = @Model.MontoMensual;
+            
+            $('#FechaTerminacionAnticipada').on('change', function() {
+                const fechaSeleccionada = $(this).val();
+                if (fechaSeleccionada) {
+                    calcularMulta(fechaSeleccionada);
+                }
+            });
+            
+            $('#calcularBtn').on('click', function() {
+                const fechaSeleccionada = $('#FechaTerminacionAnticipada').val();
+                if (fechaSeleccionada) {
+                    calcularMulta(fechaSeleccionada);
+                } else {
+                    alert('Por favor seleccione una fecha de terminación');
+                }
+            });
+            
+            function calcularMulta(fechaTerminacion) {
+                const fechaInicioDate = new Date(fechaInicio);
+                const fechaFinDate = new Date(fechaFin);
+                const fechaTerminacionDate = new Date(fechaTerminacion);
+                
+                const duracionTotal = (fechaFinDate - fechaInicioDate) / (1000 * 60 * 60 * 24);
+                const tiempoTranscurrido = (fechaTerminacionDate - fechaInicioDate) / (1000 * 60 * 60 * 24);
+                const porcentaje = (tiempoTranscurrido / duracionTotal) * 100;
+                
+                const mesesMulta = porcentaje < 50 ? 2 : 1;
+                const montoMulta = montoMensual * mesesMulta;
+                
+                let html = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Porcentaje de tiempo transcurrido:</strong><br>
+                            <span class="badge badge-${porcentaje < 50 ? 'danger' : 'warning'}">${porcentaje.toFixed(1)}%</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Meses de multa:</strong><br>
+                            <span class="badge badge-info">${mesesMulta} mes${mesesMulta > 1 ? 'es' : ''}</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="text-danger">
+                            <strong>Multa a aplicar: $${montoMulta.toLocaleString('es-AR', {minimumFractionDigits: 2})}</strong>
+                        </h5>
+                    </div>
+                `;
+                
+                $('#calculoMulta').html(html);
+                $('#confirmarBtn').prop('disabled', false);
+            }
+            
+            // Validación del formulario
+            $('#terminarForm').on('submit', function(e) {
+                const fechaTerminacion = $('#FechaTerminacionAnticipada').val();
+                const motivo = $('#MotivoTerminacion').val().trim();
+                
+                if (!fechaTerminacion || !motivo) {
+                    e.preventDefault();
+                    alert('Por favor complete todos los campos obligatorios');
+                    return false;
+                }
+                
+                if (!confirm('¿Está seguro de que desea terminar este contrato anticipadamente? Esta acción no se puede deshacer.')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}
