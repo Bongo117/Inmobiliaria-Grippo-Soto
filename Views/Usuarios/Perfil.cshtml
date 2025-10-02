@@ -12,48 +12,70 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
     
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" asp-action="Perfil">
+        @Html.AntiForgeryToken()
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Apellido</label>
                 <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Nombre</label>
                 <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
         </div>
+
         <div class="mb-3">
             <label class="form-label">Foto de Perfil</label>
             <div class="d-flex align-items-center gap-3">
                 @if (!string.IsNullOrEmpty(Model.AvatarUrl))
                 {
-                    <img src="@Model.AvatarUrl" alt="Avatar actual" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;" />
+                    <img src="@Model.AvatarUrl" alt="Avatar actual" class="rounded-circle" 
+                         style="width: 80px; height: 80px; object-fit: cover;" />
                 }
                 else
                 {
-                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 24px;">
+                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; font-size: 24px;">
                         @(Model.Nombre?.Substring(0, 1).ToUpper() ?? "U")
                     </div>
                 }
-                <div>
+                <div class="ms-3">
                     <input type="file" name="avatarFile" accept="image/*" class="form-control" />
-                    <small class="text-muted">Selecciona una imagen desde tu computadora</small>
+                    <small class="text-muted">Selecciona una imagen desde tu computadora (JPG, PNG, GIF) - Máx 5MB</small>
                     @if (ViewData.ModelState["avatarFile"]?.Errors?.Count > 0)
                     {
-                        <div class="text-danger small">
+                        <div class="text-danger small mt-1">
                             @ViewData.ModelState["avatarFile"]?.Errors?[0]?.ErrorMessage
                         </div>
                     }
                 </div>
             </div>
         </div>
+
         <button type="submit" class="btn btn-primary">Guardar</button>
     </form>
+
+    @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+    {
+        <form asp-action="EliminarAvatar" method="post" class="mt-3">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger">Eliminar Foto</button>
+        </form>
+    }
+
     <div class="mt-4">
         <a asp-action="CambiarClave" class="btn btn-outline-secondary">Cambiar Contraseña</a>
     </div>
 </div>
 
-
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

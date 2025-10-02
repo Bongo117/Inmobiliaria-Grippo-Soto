@@ -1,8 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Inmobiliaria_.Net_Core.Models;
 
@@ -216,36 +221,38 @@ namespace Inmobiliaria_.Net_Core.Controllers
         {
             try
             {
-                // Los empleados sólo pueden editar sus datos personales, no rol/email si así se desea.
                 var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (idClaim == null) return NotFound();
                 usuario.Id = int.Parse(idClaim);
 
+                // Obtener usuario actual desde BD para conservar campos no enviados por el formulario
+                var usuarioDb = repositorioUsuario.ObtenerPorId(usuario.Id);
+                if (usuarioDb == null) return NotFound();
+
+                // Validaciones basicas (puedes agregar más)
+                // Si usuario intenta cambiar Email / Rol y no está autorizado, podés bloquearlo aquí.
+                
                 // Manejar subida de archivo de avatar
                 if (avatarFile != null && avatarFile.Length > 0)
                 {
-                    // Validar tipo de archivo
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
                     var fileExtension = Path.GetExtension(avatarFile.FileName).ToLowerInvariant();
                     
                     if (!allowedExtensions.Contains(fileExtension))
                     {
                         ModelState.AddModelError("avatarFile", "Solo se permiten archivos JPG, JPEG, PNG y GIF");
-                        return View(usuario);
+                        return View(usuarioDb);
                     }
 
-                    // Validar tamaño (máximo 5MB)
                     if (avatarFile.Length > 5 * 1024 * 1024)
                     {
                         ModelState.AddModelError("avatarFile", "El archivo no puede ser mayor a 5MB");
-                        return View(usuario);
+                        return View(usuarioDb);
                     }
 
-                    // Crear nombre único para el archivo
                     var fileName = $"avatar_{usuario.Id}_{DateTime.Now:yyyyMMddHHmmss}{fileExtension}";
                     var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "avatars");
                     
-                    // Asegurar que el directorio existe
                     if (!Directory.Exists(uploadsPath))
                     {
                         Directory.CreateDirectory(uploadsPath);
@@ -253,26 +260,40 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
                     var filePath = Path.Combine(uploadsPath, fileName);
                     
-                    // Guardar el archivo
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await avatarFile.CopyToAsync(stream);
                     }
 
+                    // eliminar avatar anterior si existía
+                    if (!string.IsNullOrEmpty(usuarioDb.AvatarUrl))
+                    {
+                        var prevPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", usuarioDb.AvatarUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(prevPath))
+                        {
+                            try { System.IO.File.Delete(prevPath); } catch { /* no bloquear si falla borrado */ }
+                        }
+                    }
+
                     // Actualizar la URL del avatar
-                    usuario.AvatarUrl = $"/uploads/avatars/{fileName}";
+                    usuarioDb.AvatarUrl = $"/uploads/avatars/{fileName}";
                 }
 
-                repositorioUsuario.Modificacion(usuario);
+                // Actualizar otros campos (apellido/nombre)
+                usuarioDb.Apellido = usuario.Apellido;
+                usuarioDb.Nombre = usuario.Nombre;
+                // NO cambiar ClaveHash ni Rol aquí (a menos que sea administrador y lo autorices)
+
+                repositorioUsuario.Modificacion(usuarioDb);
                 
-                // Actualizar los claims de la sesión
+                // Actualizar los claims de la sesión para reflejar cambios
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, usuario.Email),
-                    new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                    new Claim(ClaimTypes.Role, usuario.Rol),
-                    new Claim("NombreCompleto", $"{usuario.Nombre} {usuario.Apellido}".Trim()),
-                    new Claim("AvatarUrl", usuario.AvatarUrl ?? "")
+                    new Claim(ClaimTypes.Name, usuarioDb.Email),
+                    new Claim(ClaimTypes.NameIdentifier, usuarioDb.Id.ToString()),
+                    new Claim(ClaimTypes.Role, usuarioDb.Rol),
+                    new Claim("NombreCompleto", $"{usuarioDb.Nombre} {usuarioDb.Apellido}".Trim()),
+                    new Claim("AvatarUrl", usuarioDb.AvatarUrl ?? "")
                 };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
@@ -288,8 +309,60 @@ namespace Inmobiliaria_.Net_Core.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Error al actualizar el perfil: " + ex.Message);
-                return View(usuario);
+                var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var usuarioDb = idClaim != null ? repositorioUsuario.ObtenerPorId(int.Parse(idClaim)) : null;
+                return View(usuarioDb ?? usuario);
             }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> EliminarAvatar()
+        {
+            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (idClaim == null) return NotFound();
+            var id = int.Parse(idClaim);
+
+            var usuario = repositorioUsuario.ObtenerPorId(id);
+            if (usuario == null) return NotFound();
+
+            // Eliminar archivo físico si existe
+            if (!string.IsNullOrEmpty(usuario.AvatarUrl))
+            {
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", usuario.AvatarUrl.TrimStart('/'));
+                if (System.IO.File.Exists(filePath))
+                {
+                    try
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                    catch
+                    {
+                        // No bloquear si falla el borrado físico
+                    }
+                }
+            }
+
+            // Quitar referencia en la base
+            usuario.AvatarUrl = null;
+            repositorioUsuario.Modificacion(usuario);
+
+            // Actualizar claims (para que la sesión ya no tenga AvatarUrl)
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, usuario.Email),
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                new Claim(ClaimTypes.Role, usuario.Rol),
+                new Claim("NombreCompleto", $"{usuario.Nombre} {usuario.Apellido}".Trim()),
+                new Claim("AvatarUrl", "")
+            };
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties { IsPersistent = true };
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity), authProperties);
+
+            TempData["Mensaje"] = "Foto de perfil eliminada correctamente";
+            return RedirectToAction(nameof(Perfil));
         }
 
         [Authorize]
@@ -349,5 +422,3 @@ namespace Inmobiliaria_.Net_Core.Controllers
         }
     }
 }
-
-
