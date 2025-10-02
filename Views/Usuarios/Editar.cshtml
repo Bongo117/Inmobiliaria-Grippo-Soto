@@ -4,33 +4,60 @@
 }
 <div class="container py-4">
     <h2>Editar Usuario</h2>
-    <form method="post">
-        <input type="hidden" asp-for="Id" />
+
+    @* Mostrar resumen de errores *@
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach (var item in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@item.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="Editar" method="post">
+        @Html.AntiForgeryToken()
+
+        <input asp-for="Id" type="hidden" />
+        @* Preservamos AvatarUrl para que no se pierda si no manejamos upload desde admin *@
+        <input asp-for="AvatarUrl" type="hidden" />
+
         <div class="mb-3">
             <label class="form-label">Email</label>
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
+
         <div class="mb-3">
             <label class="form-label">Rol</label>
             <select asp-for="Rol" class="form-select">
-                <option>Empleado</option>
-                <option>Administrador</option>
+                <option value="Empleado" selected="@(Model?.Rol == "Empleado")">Empleado</option>
+                <option value="Administrador" selected="@(Model?.Rol == "Administrador")">Administrador</option>
             </select>
+            <span asp-validation-for="Rol" class="text-danger"></span>
         </div>
+
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Apellido</label>
                 <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Nombre</label>
                 <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
         </div>
+
         <button type="submit" class="btn btn-primary">Guardar</button>
-        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Volver</a>
     </form>
 </div>
 
-
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -175,17 +175,83 @@ namespace Inmobiliaria_.Net_Core.Controllers
         [Authorize(Roles = "Administrador")]
         public IActionResult Editar(Usuario usuario)
         {
-            if (ModelState.IsValid)
+            try
             {
+                if (usuario == null) return BadRequest();
+
+                // Si por algún motivo el Id no vino en el binding (Id == 0), intentamos tomarlo del form
+                if (usuario.Id == 0)
+                {
+                    if (int.TryParse(Request.Form["Id"], out var idFromForm))
+                        usuario.Id = idFromForm;
+                    else
+                        return BadRequest("Id de usuario faltante.");
+                }
+
+                // Obtener usuario actual desde BD para preservar campos no enviados (ClaveHash, AvatarUrl, FechaAlta, etc.)
+                var usuarioDb = repositorioUsuario.ObtenerPorId(usuario.Id);
+                if (usuarioDb == null) return NotFound();
+
+                // El model binder ya ejecutó la validación: como el formulario de editar NO envía ClaveHash,
+                // ModelState tendrá error por ClaveHash (porque en el modelo está marcado Required).
+                // Eliminamos cualquier error de ModelState sobre ClaveHash y asignamos la clave actual para que la validación continúe ok.
+                if (ModelState.ContainsKey("ClaveHash"))
+                    ModelState.Remove("ClaveHash");
+                usuario.ClaveHash = usuarioDb.ClaveHash;
+
+                // Preservar AvatarUrl si no fue enviado desde el form (tenemos input hidden en la vista)
+                if (string.IsNullOrEmpty(usuario.AvatarUrl))
+                    usuario.AvatarUrl = usuarioDb.AvatarUrl;
+
+                if (!ModelState.IsValid)
+                {
+                    return View(usuario);
+                }
+
                 if (repositorioUsuario.ExisteEmail(usuario.Email, usuario.Id))
                 {
                     ModelState.AddModelError("Email", "Ya existe un usuario con ese email");
                     return View(usuario);
                 }
-                repositorioUsuario.Modificacion(usuario);
+
+                var rows = repositorioUsuario.Modificacion(usuario);
+
+                if (rows <= 0)
+                {
+                    // No se actualizó; informar
+                    ModelState.AddModelError("", "No se pudieron guardar los cambios. Revise los datos e intente nuevamente.");
+                    return View(usuario);
+                }
+
+                // Si el usuario editado es el mismo que está logueado, actualizamos los claims para que la sesión refleje los cambios
+                var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (idClaim != null && int.TryParse(idClaim, out var currentUserId) && currentUserId == usuario.Id)
+                {
+                    var usuarioActualizado = repositorioUsuario.ObtenerPorId(usuario.Id);
+                    if (usuarioActualizado != null)
+                    {
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, usuarioActualizado.Email),
+                            new Claim(ClaimTypes.NameIdentifier, usuarioActualizado.Id.ToString()),
+                            new Claim(ClaimTypes.Role, usuarioActualizado.Rol),
+                            new Claim("NombreCompleto", $"{usuarioActualizado.Nombre} {usuarioActualizado.Apellido}".Trim()),
+                            new Claim("AvatarUrl", usuarioActualizado.AvatarUrl ?? "")
+                        };
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var authProperties = new AuthenticationProperties { IsPersistent = true };
+                        HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(claimsIdentity), authProperties).GetAwaiter().GetResult();
+                    }
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(usuario);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error al editar el usuario: " + ex.Message);
+                return View(usuario);
+            }
         }
 
         [Authorize(Roles = "Administrador")]
@@ -229,9 +295,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 var usuarioDb = repositorioUsuario.ObtenerPorId(usuario.Id);
                 if (usuarioDb == null) return NotFound();
 
-                // Validaciones basicas (puedes agregar más)
-                // Si usuario intenta cambiar Email / Rol y no está autorizado, podés bloquearlo aquí.
-                
                 // Manejar subida de archivo de avatar
                 if (avatarFile != null && avatarFile.Length > 0)
                 {
