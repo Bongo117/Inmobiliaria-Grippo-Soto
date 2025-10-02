@@ -1936,3 +1936,53 @@ html {
   margin: 0.5rem 0;
   background-color: rgba(59, 130, 246, 0.1);
 }
+
+/* ===== RESPONSIVE LAYOUT WITHOUT SIDEBAR ===== */
+
+/* Cuando no hay sidebar, el contenido principal debe ocupar todo el ancho */
+.app-container:not(:has(.sidebar)) .main-content {
+  margin-left: 0;
+}
+
+/* Botón de menú móvil solo visible cuando hay sidebar */
+.mobile-sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1001;
+  background-color: var(--btn-primary-bg);
+  color: white;
+  border: none;
+  border-radius: var(--btn-border-radius);
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all var(--transition-duration) ease-in-out;
+}
+
+.mobile-sidebar-toggle:hover {
+  background-color: var(--btn-primary-hover);
+  transform: scale(1.05);
+}
+
+/* Mostrar botón móvil solo en pantallas pequeñas y cuando hay sidebar */
+@media (max-width: 768px) {
+  .app-container:has(.sidebar) .mobile-sidebar-toggle {
+    display: block;
+  }
+  
+  .app-container:has(.sidebar) .main-content {
+    margin-left: 0;
+  }
+  
+  .app-container:has(.sidebar) .sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--transition-duration) ease-in-out;
+  }
+  
+  .app-container:has(.sidebar) .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+}
