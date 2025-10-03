@@ -14,7 +14,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         public IActionResult Index()
         {
-            var lista = repositorio.ObtenerTodos();
+            var lista = repositorio.ObtenerTodos(true); // incluir inactivos para filtros
             return View(lista);
         }
 

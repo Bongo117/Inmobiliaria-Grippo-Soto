@@ -7,16 +7,19 @@ namespace Inmobiliaria_.Net_Core.Models
     {
         public RepositorioTipoInmueble(IConfiguration configuration) : base(configuration) { }
 
-        public List<TipoInmueble> ObtenerTodos()
+        public List<TipoInmueble> ObtenerTodos(bool incluirInactivos = false)
         {
             var lista = new List<TipoInmueble>();
 
             using (var connection = new MySqlConnection(connectionString))
             {
-                var sql = @"SELECT Id, Nombre, Descripcion, UsoPermitido, EsComercial, Estado 
-                            FROM tipos_inmuebles 
-                            WHERE Estado = 1 
-                            ORDER BY Nombre";
+                var sql = @"SELECT Id, Nombre, Descripcion, UsoPermitido, EsComercial, Estado
+                            FROM tipos_inmuebles ";
+                if (!incluirInactivos)
+                {
+                    sql += "WHERE Estado = 1 ";
+                }
+                sql += "ORDER BY Nombre";
 
                 using (var command = new MySqlCommand(sql, connection))
                 {
