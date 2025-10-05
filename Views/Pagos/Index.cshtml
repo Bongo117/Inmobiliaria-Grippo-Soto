@@ -104,14 +104,17 @@
                                                 </svg>
                                                 <span class="ms-1">Editar</span>
                                             </a>
-                                            <a asp-action="Anular" asp-route-id="@pago.Id" 
-                                               class="btn-custom btn-outline-custom btn-sm" title="Anular pago"
-                                               style="color: #dc2626; border-color: #dc2626;">
+                                            @if (User.IsInRole("Administrador"))
+                                            {
+                                                <a asp-action="Anular" asp-route-id="@pago.Id" 
+                                                   class="btn-custom btn-outline-custom btn-sm" title="Anular pago"
+                                                   style="color: #dc2626; border-color: #dc2626;">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
                                                     <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM149.66,93.66a8,8,0,0,1,0,11.32L139.31,115.31l10.35,10.35a8,8,0,0,1-11.32,11.32L128,126.63l-10.34,10.35a8,8,0,0,1-11.32-11.32L116.69,115.31,106.34,105a8,8,0,0,1,11.32-11.32L128,104l10.34-10.34A8,8,0,0,1,149.66,93.66Z"/>
                                                 </svg>
                                                 <span class="ms-1">Anular</span>
                                             </a>
+                                            }
                                         }
                                     </div>
                                 </td>

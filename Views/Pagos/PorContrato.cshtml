@@ -128,10 +128,13 @@
                                                class="btn btn-warning btn-sm" title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <a asp-action="Anular" asp-route-id="@pago.Id" 
-                                               class="btn btn-danger btn-sm" title="Anular pago">
-                                                <i class="fas fa-ban"></i>
-                                            </a>
+                                            @if (User.IsInRole("Administrador"))
+                                            {
+                                                <a asp-action="Anular" asp-route-id="@pago.Id" 
+                                                   class="btn btn-danger btn-sm" title="Anular pago">
+                                                    <i class="fas fa-ban"></i>
+                                                </a>
+                                            }
                                         }
                                     </div>
                                 </td>

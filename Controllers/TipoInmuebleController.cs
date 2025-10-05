@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Inmobiliaria_.Net_Core.Models;
 
 namespace Inmobiliaria_.Net_Core.Controllers
@@ -88,6 +89,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View(tipoInmueble);
         }
 
+        [Authorize(Policy = "SoloAdminParaEliminar")]
         public IActionResult Eliminar(int id)
         {
             var tipoInmueble = repositorio.ObtenerPorId(id);
@@ -108,6 +110,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         [HttpPost]
         [ActionName("Eliminar")]
+        [Authorize(Policy = "SoloAdminParaEliminar")]
         public IActionResult EliminarConfirmado(int id)
         {
             try

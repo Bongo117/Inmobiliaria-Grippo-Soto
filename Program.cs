@@ -22,6 +22,16 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Usuarios/AccesoDenegado";
     });
 
+// Configurar políticas de autorización
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SoloAdmin", policy =>
+        policy.RequireRole("Administrador"));
+    
+    options.AddPolicy("SoloAdminParaEliminar", policy =>
+        policy.RequireRole("Administrador"));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

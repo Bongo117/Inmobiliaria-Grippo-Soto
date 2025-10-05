@@ -95,6 +95,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View(propietario);
         }
 
+        [Authorize(Policy = "SoloAdminParaEliminar")]
         public IActionResult Eliminar(int id)
         {
             var propietario = repositorio.ObtenerPorId(id);
@@ -107,6 +108,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         [HttpPost]
         [ActionName("Eliminar")]
+        [Authorize(Policy = "SoloAdminParaEliminar")]
         public IActionResult EliminarConfirmado(int id)
         {
             try
