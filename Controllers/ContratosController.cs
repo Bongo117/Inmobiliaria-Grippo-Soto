@@ -137,6 +137,96 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View(contrato);
         }
 
+        // Renovación de contrato: crea un nuevo contrato con mismo inquilino e inmueble
+        public IActionResult Renovar(int id)
+        {
+            var contrato = repositorio.ObtenerPorIdIncluyeInactivos(id);
+            if (contrato == null)
+            {
+                return NotFound();
+            }
+
+            var nuevo = new Contrato
+            {
+                InquilinoId = contrato.InquilinoId,
+                InmuebleId = contrato.InmuebleId,
+                FechaInicio = contrato.FechaFin.AddDays(1),
+                FechaFin = contrato.FechaFin.AddYears(1),
+                MontoMensual = contrato.MontoMensual
+            };
+
+            ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
+            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+            ViewBag.ContratoOriginal = contrato;
+            return View("Crear", nuevo);
+        }
+
+        [HttpPost]
+        public IActionResult Renovar(int id, DateTime fechaInicio, DateTime fechaFin, decimal montoMensual)
+        {
+            var original = repositorio.ObtenerPorIdIncluyeInactivos(id);
+            if (original == null)
+            {
+                return NotFound();
+            }
+
+            var contrato = new Contrato
+            {
+                InquilinoId = original.InquilinoId,
+                InmuebleId = original.InmuebleId,
+                FechaInicio = fechaInicio,
+                FechaFin = fechaFin,
+                MontoMensual = montoMensual,
+                Estado = true,
+                FechaCreacion = DateTime.Now,
+                UsuarioCreador = User?.Identity?.Name
+            };
+
+            // Validaciones iguales a Crear
+            if (contrato.FechaFin <= contrato.FechaInicio)
+            {
+                ModelState.AddModelError("FechaFin", "La fecha de finalización debe ser posterior a la fecha de inicio");
+            }
+            if (repositorio.ExisteContratoEnFechas(contrato.InmuebleId, contrato.FechaInicio, contrato.FechaFin))
+            {
+                ModelState.AddModelError("", "Ya existe un contrato para ese inmueble en las fechas seleccionadas");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
+                ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+                ViewBag.ContratoOriginal = original;
+                return View("Crear", contrato);
+            }
+
+            try
+            {
+                repositorio.Alta(contrato);
+                TempData["Mensaje"] = "Contrato renovado exitosamente";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error al renovar el contrato: " + ex.Message);
+                ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
+                ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+                ViewBag.ContratoOriginal = original;
+                return View("Crear", contrato);
+            }
+        }
+
+        // Contratos que finalizan en N días
+        public IActionResult FinalizanEn(int dias = 30)
+        {
+            var hoy = DateTime.Today;
+            var hasta = hoy.AddDays(dias);
+            var todos = repositorio.ObtenerTodos();
+            var proximos = todos.Where(c => c.Estado && c.FechaFin >= hoy && c.FechaFin <= hasta).ToList();
+            ViewBag.Titulo = $"Contratos que finalizan en {dias} días";
+            return View("Index", proximos);
+        }
+
         [Authorize(Policy = "SoloAdminParaEliminar")]
         public IActionResult Eliminar(int id)
         {
@@ -175,6 +265,14 @@ namespace Inmobiliaria_.Net_Core.Controllers
         public IActionResult Pagos(int id)
         {
             return RedirectToAction("PorContrato", "Pagos", new { contratoId = id });
+        }
+
+        // Contratos por inmueble
+        public IActionResult PorInmueble(int inmuebleId)
+        {
+            var lista = repositorio.ObtenerPorInmueble(inmuebleId);
+            ViewBag.Titulo = $"Contratos del Inmueble #{inmuebleId}";
+            return View("Index", lista);
         }
 
         // Métodos para terminación anticipada

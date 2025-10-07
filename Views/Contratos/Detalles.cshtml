@@ -368,6 +368,9 @@
                 </a>
             }
         }
+        <a asp-action="Renovar" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+            <i class="fas fa-sync-alt"></i> Renovar Contrato
+        </a>
         @if (User.IsInRole("Administrador"))
         {
             <a asp-action="Eliminar" asp-route-id="@Model.Id" class="btn-custom btn-outline-custom" 

@@ -10,6 +10,9 @@
         <small class="text-muted">@("Filtro Disponibles: " + (ViewBag.FiltroDisponibles ?? "Todos"))</small>
     </div>
     <div class="d-flex gap-2">
+        <a asp-action="LibresEntreFechas" class="btn btn-outline-primary">
+            <i class="fas fa-calendar-check"></i> Libres entre fechas
+        </a>
         <a asp-action="Index" asp-route-disponibles="true" class="btn btn-outline-success">Disponibles</a>
         <a asp-action="Index" asp-route-disponibles="false" class="btn btn-outline-danger">No disponibles</a>
         <a asp-action="Index" class="btn btn-outline-secondary">Todos</a>
