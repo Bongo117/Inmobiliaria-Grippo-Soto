@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-10-2025 a las 17:07:39
+-- Tiempo de generación: 07-10-2025 a las 17:29:44
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -127,7 +127,7 @@ CREATE TABLE `pagos` (
 --
 
 INSERT INTO `pagos` (`Id`, `NumeroPago`, `FechaPago`, `Detalle`, `Importe`, `ContratoId`, `Estado`, `FechaCreacion`, `UsuarioCreador`, `FechaAnulacion`, `UsuarioAnulacion`) VALUES
-(1, 1, '2025-10-07', 'Mensualidad', 450000.00, 1, 0, '2025-10-07 11:31:41', 'Sistema', '2025-10-07 12:03:46', 'admin@inmo.test');
+(2, 2, '2025-10-07', 'Mensualidad', 98998988.00, 2, 1, '2025-10-07 12:10:58', 'admin@inmo.test', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -291,7 +291,7 @@ ALTER TABLE `inquilinos`
 -- AUTO_INCREMENT de la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `propietarios`
