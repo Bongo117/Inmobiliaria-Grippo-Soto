@@ -1,0 +1,87 @@
+@{
+    ViewData["Title"] = "Inmuebles libres entre fechas";
+    var resultados = ViewBag.Resultados as IEnumerable<Inmobiliaria_.Net_Core.Models.Inmueble>;
+    DateTime? fechaDesde = ViewBag.FechaDesde as DateTime?;
+    DateTime? fechaHasta = ViewBag.FechaHasta as DateTime?;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Inmuebles libres entre fechas</h2>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
+    </div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form asp-action="LibresEntreFechas" method="post" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Fecha desde</label>
+                <input type="date" name="fechaDesde" class="form-control" value="@(fechaDesde?.ToString("yyyy-MM-dd") ?? DateTime.Today.ToString("yyyy-MM-dd"))" required />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Fecha hasta</label>
+                <input type="date" name="fechaHasta" class="form-control" value="@(fechaHasta?.ToString("yyyy-MM-dd") ?? DateTime.Today.AddMonths(1).ToString("yyyy-MM-dd"))" required />
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Buscar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (resultados != null)
+{
+    <div class="card">
+        <div class="card-body">
+            @if (resultados.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Id</th>
+                                <th>Dirección</th>
+                                <th>Tipo</th>
+                                <th>Ambientes</th>
+                                <th>Precio</th>
+                                <th>Propietario</th>
+                                <th width="150">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var i in resultados)
+                            {
+                                <tr>
+                                    <td>@i.Id</td>
+                                    <td>@i.Direccion</td>
+                                    <td>@(i.TipoInmueble?.Nombre ?? i.Tipo)</td>
+                                    <td>@i.Ambientes</td>
+                                    <td>$@i.Precio.ToString("N2")</td>
+                                    <td>@(i.Propietario?.Apellido + ", " + i.Propietario?.Nombre)</td>
+                                    <td>
+                                        <a asp-action="Detalles" asp-route-id="@i.Id" class="btn btn-outline-info btn-sm">Ver</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4">
+                    <i class="fas fa-info-circle text-muted"></i> No se encontraron inmuebles disponibles en el rango indicado.
+                </div>
+            }
+        </div>
+    </div>
+}
+
+

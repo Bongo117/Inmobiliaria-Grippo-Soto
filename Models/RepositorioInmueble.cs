@@ -252,5 +252,72 @@ namespace Inmobiliaria_.Net_Core.Models
                 }
             }
         }
+
+        public List<Inmueble> ObtenerDisponiblesEntreFechas(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            var lista = new List<Inmueble>();
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var sql = @"SELECT i.Id, i.Direccion, i.Tipo, i.TipoInmuebleId, i.Ambientes, i.Precio, i.PropietarioId, i.Estado,
+                            p.Dni, p.Apellido, p.Nombre, p.Email, p.Telefono, p.Domicilio,
+                            ti.Nombre AS TipoNombre, ti.Descripcion AS TipoDescripcion, ti.UsoPermitido, ti.EsComercial
+                            FROM inmuebles i
+                            INNER JOIN propietarios p ON i.PropietarioId = p.Id
+                            LEFT JOIN tipos_inmuebles ti ON i.TipoInmuebleId = ti.Id
+                            WHERE i.Estado = 1 AND NOT EXISTS (
+                                SELECT 1 FROM contratos c
+                                WHERE c.InmuebleId = i.Id
+                                  AND c.Estado = 1
+                                  AND NOT (c.FechaFin < @desde OR c.FechaInicio > @hasta)
+                            )";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@desde", fechaDesde.Date);
+                    command.Parameters.AddWithValue("@hasta", fechaHasta.Date);
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var inmueble = new Inmueble
+                            {
+                                Id = reader.GetInt32("Id"),
+                                Direccion = reader["Direccion"].ToString() ?? "",
+                                Tipo = reader["Tipo"].ToString() ?? "",
+                                TipoInmuebleId = reader["TipoInmuebleId"] == DBNull.Value ? null : reader.GetInt32("TipoInmuebleId"),
+                                Ambientes = reader.GetInt32("Ambientes"),
+                                Precio = reader.GetDecimal("Precio"),
+                                PropietarioId = reader.GetInt32("PropietarioId"),
+                                Estado = Convert.ToBoolean(reader["Estado"]),
+                                Propietario = new Propietario
+                                {
+                                    Id = reader.GetInt32("PropietarioId"),
+                                    Dni = reader["Dni"].ToString() ?? "",
+                                    Apellido = reader["Apellido"].ToString() ?? "",
+                                    Nombre = reader["Nombre"].ToString() ?? "",
+                                    Email = reader["Email"] == DBNull.Value ? null : reader["Email"].ToString(),
+                                    Telefono = reader["Telefono"] == DBNull.Value ? null : reader["Telefono"].ToString(),
+                                    Domicilio = reader["Domicilio"] == DBNull.Value ? null : reader["Domicilio"].ToString()
+                                },
+                                TipoInmueble = reader["TipoInmuebleId"] == DBNull.Value ? null : new TipoInmueble
+                                {
+                                    Id = reader.GetInt32("TipoInmuebleId"),
+                                    Nombre = reader["TipoNombre"]?.ToString() ?? "",
+                                    Descripcion = reader["TipoDescripcion"] == DBNull.Value ? null : reader["TipoDescripcion"].ToString(),
+                                    UsoPermitido = reader["UsoPermitido"]?.ToString() ?? "",
+                                    EsComercial = reader["EsComercial"] == DBNull.Value ? false : Convert.ToBoolean(reader["EsComercial"])
+                                }
+                            };
+                            lista.Add(inmueble);
+                        }
+                    }
+                }
+            }
+
+            return lista;
+        }
     }
 }

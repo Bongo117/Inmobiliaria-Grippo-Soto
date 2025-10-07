@@ -17,9 +17,21 @@ namespace Inmobiliaria_.Net_Core.Controllers
             this.repositorioTipoInmueble = repositorioTipoInmueble;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(bool? disponibles = null)
         {
             var lista = repositorio.ObtenerTodos();
+            if (disponibles.HasValue)
+            {
+                if (disponibles.Value)
+                {
+                    lista = lista.Where(i => i.Estado).ToList();
+                }
+                else
+                {
+                    lista = lista.Where(i => !i.Estado).ToList();
+                }
+                ViewBag.FiltroDisponibles = disponibles.Value ? "Sí" : "No";
+            }
             return View(lista);
         }
 
@@ -95,6 +107,29 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 return NotFound();
             }
             return View(inmueble);
+        }
+
+        public IActionResult LibresEntreFechas()
+        {
+            ViewBag.Resultados = null;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult LibresEntreFechas(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            if (fechaHasta < fechaDesde)
+            {
+                TempData["Error"] = "La fecha hasta debe ser posterior a la fecha desde";
+                ViewBag.Resultados = null;
+                return View();
+            }
+
+            var libres = repositorio.ObtenerDisponiblesEntreFechas(fechaDesde, fechaHasta);
+            ViewBag.Resultados = libres;
+            ViewBag.FechaDesde = fechaDesde;
+            ViewBag.FechaHasta = fechaHasta;
+            return View();
         }
 
         [Authorize(Policy = "SoloAdminParaEliminar")]
