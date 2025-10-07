@@ -20,7 +20,7 @@
 
 <div class="card mb-4">
     <div class="card-body">
-        <form asp-action="LibresEntreFechas" method="post" class="row g-3">
+        <form asp-action="LibresEntreFechasPost" method="post" class="row g-3">
             <div class="col-md-4">
                 <label class="form-label">Fecha desde</label>
                 <input type="date" name="fechaDesde" class="form-control" value="@(fechaDesde?.ToString("yyyy-MM-dd") ?? DateTime.Today.ToString("yyyy-MM-dd"))" required />

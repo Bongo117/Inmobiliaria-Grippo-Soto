@@ -109,27 +109,31 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View(inmueble);
         }
 
-        public IActionResult LibresEntreFechas()
+        public IActionResult LibresEntreFechas(DateTime? fechaDesde = null, DateTime? fechaHasta = null)
         {
             ViewBag.Resultados = null;
+            ViewBag.FechaDesde = fechaDesde;
+            ViewBag.FechaHasta = fechaHasta;
+
+            if (fechaDesde.HasValue && fechaHasta.HasValue)
+            {
+                if (fechaHasta.Value < fechaDesde.Value)
+                {
+                    TempData["Error"] = "La fecha hasta debe ser posterior a la fecha desde";
+                    return View();
+                }
+
+                var libres = repositorio.ObtenerDisponiblesEntreFechas(fechaDesde.Value, fechaHasta.Value);
+                ViewBag.Resultados = libres;
+            }
             return View();
         }
 
         [HttpPost]
-        public IActionResult LibresEntreFechas(DateTime fechaDesde, DateTime fechaHasta)
+        public IActionResult LibresEntreFechasPost(DateTime fechaDesde, DateTime fechaHasta)
         {
-            if (fechaHasta < fechaDesde)
-            {
-                TempData["Error"] = "La fecha hasta debe ser posterior a la fecha desde";
-                ViewBag.Resultados = null;
-                return View();
-            }
-
-            var libres = repositorio.ObtenerDisponiblesEntreFechas(fechaDesde, fechaHasta);
-            ViewBag.Resultados = libres;
-            ViewBag.FechaDesde = fechaDesde;
-            ViewBag.FechaHasta = fechaHasta;
-            return View();
+            // PRG: redirigir con querystring para evitar reenvío al volver/recargar
+            return RedirectToAction(nameof(LibresEntreFechas), new { fechaDesde = fechaDesde.ToString("yyyy-MM-dd"), fechaHasta = fechaHasta.ToString("yyyy-MM-dd") });
         }
 
         [Authorize(Policy = "SoloAdminParaEliminar")]
