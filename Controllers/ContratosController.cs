@@ -56,6 +56,10 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 {
                     try
                     {
+                        // Auditoría
+                        contrato.FechaCreacion = DateTime.Now;
+                        contrato.UsuarioCreador = User?.Identity?.Name;
+
                         repositorio.Alta(contrato);
                         TempData["Mensaje"] = "Contrato creado exitosamente";
                         return RedirectToAction(nameof(Index));
@@ -124,7 +128,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         public IActionResult Detalles(int id)
         {
-            var contrato = repositorio.ObtenerPorId(id);
+            // Permitir ver detalles aun si el contrato no está activo
+            var contrato = repositorio.ObtenerPorIdIncluyeInactivos(id);
             if (contrato == null)
             {
                 return NotFound();
@@ -244,6 +249,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 contrato.MotivoTerminacion = motivo;
                 contrato.MultaAplicada = contrato.MontoMultaCalculado;
                 contrato.FechaAplicacionMulta = DateTime.Today;
+                contrato.FechaTerminacionRegistro = DateTime.Now;
+                contrato.UsuarioTerminacion = User?.Identity?.Name;
                 
                 repositorio.Modificacion(contrato);
                 

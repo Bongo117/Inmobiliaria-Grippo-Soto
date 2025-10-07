@@ -1,0 +1,47 @@
+@model Inmobiliaria_.Net_Core.Models.Pago
+
+@{
+    ViewData["Title"] = "Eliminar Pago";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación Permanente</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <strong>Advertencia:</strong> Esta acción eliminará <u>permanentemente</u> el pago. No se mostrará como "Anulado"; desaparecerá del sistema y no podrá recuperarse.
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Contrato</dt>
+                    <dd class="col-sm-8">@Model.ContratoId</dd>
+
+                    <dt class="col-sm-4">N° Pago</dt>
+                    <dd class="col-sm-8">@Model.NumeroPago</dd>
+
+                    <dt class="col-sm-4">Fecha</dt>
+                    <dd class="col-sm-8">@Model.FechaPago.ToString("dd/MM/yyyy")</dd>
+
+                    <dt class="col-sm-4">Importe</dt>
+                    <dd class="col-sm-8">$@Model.Importe.ToString("N2")</dd>
+
+                    <dt class="col-sm-4">Detalle</dt>
+                    <dd class="col-sm-8">@Model.Detalle</dd>
+                </dl>
+
+                <form asp-action="Eliminar" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Eliminar Permanentemente
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary ms-2">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

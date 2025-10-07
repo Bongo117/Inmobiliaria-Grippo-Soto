@@ -245,6 +245,21 @@ namespace Inmobiliaria_.Net_Core.Models
             }
         }
 
+        public int EliminarPago(int id)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var sql = @"DELETE FROM pagos WHERE Id = @id";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    return command.ExecuteNonQuery();
+                }
+            }
+        }
+
         public int ObtenerSiguienteNumeroPago(int contratoId)
         {
             using (var connection = new MySqlConnection(connectionString))

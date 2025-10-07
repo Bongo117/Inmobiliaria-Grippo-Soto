@@ -48,6 +48,19 @@ namespace Inmobiliaria_.Net_Core.Models
         
         public Inquilino? Inquilino { get; set; }
         public Inmueble? Inmueble { get; set; }
+
+        // Auditoría
+        [Display(Name = "Fecha de Creación")]
+        public DateTime FechaCreacion { get; set; } = DateTime.Now;
+
+        [Display(Name = "Usuario Creador")]
+        public string? UsuarioCreador { get; set; }
+
+        [Display(Name = "Fecha de Registro de Terminación")]
+        public DateTime? FechaTerminacionRegistro { get; set; }
+
+        [Display(Name = "Usuario que Terminó")]
+        public string? UsuarioTerminacion { get; set; }
         
         // Propiedades calculadas
         [Display(Name = "Duración (días)")]

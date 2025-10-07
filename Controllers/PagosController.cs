@@ -23,7 +23,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         public IActionResult PorContrato(int contratoId)
         {
-            var contrato = repositorioContrato.ObtenerPorId(contratoId);
+            // Incluir contratos inactivos para poder ver pagos históricos
+            var contrato = repositorioContrato.ObtenerPorIdIncluyeInactivos(contratoId);
             if (contrato == null)
             {
                 return NotFound();
@@ -33,6 +34,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
             ViewBag.Contrato = contrato;
             ViewBag.TotalPagos = repositorio.ObtenerTotalPagos(contratoId);
             ViewBag.SiguienteNumeroPago = repositorio.ObtenerSiguienteNumeroPago(contratoId);
+            ViewBag.ContratoVigente = contrato.EsVigente;
             return View(pagos);
         }
 
@@ -92,7 +94,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
                     try
                     {
                         pago.FechaCreacion = DateTime.Now;
-                        pago.UsuarioCreador = "Sistema"; // TODO: Implementar usuarios cuando esté disponible
+                        pago.UsuarioCreador = User?.Identity?.Name;
                         repositorio.Alta(pago);
                         TempData["Mensaje"] = "Pago registrado exitosamente";
                         
@@ -221,13 +223,47 @@ namespace Inmobiliaria_.Net_Core.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                string usuarioAnulacion = "Sistema"; // TODO: Implementar usuarios cuando esté disponible
+                string usuarioAnulacion = User?.Identity?.Name ?? "Sistema";
                 repositorio.AnularPago(id, usuarioAnulacion);
                 TempData["Mensaje"] = "Pago anulado exitosamente";
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Error al anular el pago: " + ex.Message;
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Policy = "SoloAdminParaEliminar")]
+        public IActionResult Eliminar(int id)
+        {
+            var pago = repositorio.ObtenerPorId(id);
+            if (pago == null)
+            {
+                return NotFound();
+            }
+            return View(pago);
+        }
+
+        [HttpPost]
+        [ActionName("Eliminar")]
+        [Authorize(Policy = "SoloAdminParaEliminar")]
+        public IActionResult EliminarConfirmado(int id)
+        {
+            try
+            {
+                var pago = repositorio.ObtenerPorId(id);
+                if (pago == null)
+                {
+                    return NotFound();
+                }
+
+                repositorio.EliminarPago(id);
+                TempData["Mensaje"] = "Pago eliminado permanentemente";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al eliminar el pago: " + ex.Message;
             }
             return RedirectToAction(nameof(Index));
         }
@@ -256,7 +292,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 try
                 {
                     pago.FechaCreacion = DateTime.Now;
-                    pago.UsuarioCreador = "Sistema"; // TODO: Implementar usuarios cuando esté disponible
+                    pago.UsuarioCreador = User?.Identity?.Name;
                     repositorio.Alta(pago);
                     TempData["Mensaje"] = "Pago registrado exitosamente";
                 }

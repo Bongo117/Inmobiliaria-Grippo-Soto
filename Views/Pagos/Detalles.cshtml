@@ -77,29 +77,32 @@
 
                 <hr>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 class="text-muted">Fecha de Creación</h6>
-                        <p>@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")</p>
-                        @if (!string.IsNullOrEmpty(Model.UsuarioCreador))
-                        {
-                            <h6 class="text-muted">Creado por</h6>
-                            <p>@Model.UsuarioCreador</p>
-                        }
-                    </div>
-                    <div class="col-md-6">
-                        @if (!Model.Estado && Model.FechaAnulacion.HasValue)
-                        {
-                            <h6 class="text-muted">Fecha de Anulación</h6>
-                            <p class="text-danger">@Model.FechaAnulacion.Value.ToString("dd/MM/yyyy HH:mm:ss")</p>
-                            @if (!string.IsNullOrEmpty(Model.UsuarioAnulacion))
+                @if (User.IsInRole("Administrador"))
+                {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Fecha de Creación</h6>
+                            <p>@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm:ss")</p>
+                            @if (!string.IsNullOrEmpty(Model.UsuarioCreador))
                             {
-                                <h6 class="text-muted">Anulado por</h6>
-                                <p class="text-danger">@Model.UsuarioAnulacion</p>
+                                <h6 class="text-muted">Creado por</h6>
+                                <p>@Model.UsuarioCreador</p>
                             }
-                        }
+                        </div>
+                        <div class="col-md-6">
+                            @if (!Model.Estado && Model.FechaAnulacion.HasValue)
+                            {
+                                <h6 class="text-muted">Fecha de Anulación</h6>
+                                <p class="text-danger">@Model.FechaAnulacion.Value.ToString("dd/MM/yyyy HH:mm:ss")</p>
+                                @if (!string.IsNullOrEmpty(Model.UsuarioAnulacion))
+                                {
+                                    <h6 class="text-muted">Anulado por</h6>
+                                    <p class="text-danger">@Model.UsuarioAnulacion</p>
+                                }
+                            }
+                        </div>
                     </div>
-                </div>
+                }
 
             </div>
         </div>
@@ -164,6 +167,12 @@
                             <span class="ms-2">Anular Pago</span>
                         </a>
                         }
+                    }
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Eliminar" asp-route-id="@Model.Id" class="btn btn-danger" onclick="return confirm('Esta acción eliminará permanentemente el pago. No se verá como Anulado, desaparecerá del sistema. ¿Desea continuar?');">
+                            <i class="fas fa-trash-alt"></i> Eliminar Permanentemente
+                        </a>
                     }
                     else
                     {

@@ -14,6 +14,8 @@ namespace Inmobiliaria_.Net_Core.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 var sql = @"SELECT c.Id, c.FechaInicio, c.FechaFin, c.MontoMensual, c.InquilinoId, c.InmuebleId, c.Estado,
+                            c.FechaTerminacionAnticipada, c.MotivoTerminacion, c.MultaAplicada, c.FechaAplicacionMulta,
+                            c.FechaCreacion, c.UsuarioCreador, c.FechaTerminacionRegistro, c.UsuarioTerminacion,
                             inq.Dni as InquilinoDni, inq.Apellido as InquilinoApellido, inq.Nombre as InquilinoNombre,
                             inq.Email as InquilinoEmail, inq.Telefono as InquilinoTelefono, inq.Domicilio as InquilinoDomicilio,
                             i.Direccion, i.Tipo, i.Ambientes, i.Precio as InmueblePrecio,
@@ -40,6 +42,14 @@ namespace Inmobiliaria_.Net_Core.Models
                                 InquilinoId = reader.GetInt32("InquilinoId"),
                                 InmuebleId = reader.GetInt32("InmuebleId"),
                                 Estado = Convert.ToBoolean(reader["Estado"]),
+                                FechaTerminacionAnticipada = reader["FechaTerminacionAnticipada"] == DBNull.Value ? null : reader.GetDateTime("FechaTerminacionAnticipada"),
+                                MotivoTerminacion = reader["MotivoTerminacion"] == DBNull.Value ? null : reader["MotivoTerminacion"].ToString(),
+                                MultaAplicada = reader["MultaAplicada"] == DBNull.Value ? null : reader.GetDecimal("MultaAplicada"),
+                                FechaAplicacionMulta = reader["FechaAplicacionMulta"] == DBNull.Value ? null : reader.GetDateTime("FechaAplicacionMulta"),
+                                FechaCreacion = reader["FechaCreacion"] == DBNull.Value ? DateTime.MinValue : reader.GetDateTime("FechaCreacion"),
+                                UsuarioCreador = reader["UsuarioCreador"] == DBNull.Value ? null : reader["UsuarioCreador"].ToString(),
+                                FechaTerminacionRegistro = reader["FechaTerminacionRegistro"] == DBNull.Value ? null : reader.GetDateTime("FechaTerminacionRegistro"),
+                                UsuarioTerminacion = reader["UsuarioTerminacion"] == DBNull.Value ? null : reader["UsuarioTerminacion"].ToString(),
                                 Inquilino = new Inquilino
                                 {
                                     Id = reader.GetInt32("InquilinoId"),
@@ -79,6 +89,8 @@ namespace Inmobiliaria_.Net_Core.Models
             using (var connection = new MySqlConnection(connectionString))
             {
                 var sql = @"SELECT c.Id, c.FechaInicio, c.FechaFin, c.MontoMensual, c.InquilinoId, c.InmuebleId, c.Estado,
+                            c.FechaTerminacionAnticipada, c.MotivoTerminacion, c.MultaAplicada, c.FechaAplicacionMulta,
+                            c.FechaCreacion, c.UsuarioCreador, c.FechaTerminacionRegistro, c.UsuarioTerminacion,
                             inq.Dni as InquilinoDni, inq.Apellido as InquilinoApellido, inq.Nombre as InquilinoNombre,
                             inq.Email as InquilinoEmail, inq.Telefono as InquilinoTelefono, inq.Domicilio as InquilinoDomicilio,
                             i.Direccion, i.Tipo, i.Ambientes, i.Precio as InmueblePrecio,
@@ -108,6 +120,95 @@ namespace Inmobiliaria_.Net_Core.Models
                                 InquilinoId = reader.GetInt32("InquilinoId"),
                                 InmuebleId = reader.GetInt32("InmuebleId"),
                                 Estado = Convert.ToBoolean(reader["Estado"]),
+                                FechaTerminacionAnticipada = reader["FechaTerminacionAnticipada"] == DBNull.Value ? null : reader.GetDateTime("FechaTerminacionAnticipada"),
+                                MotivoTerminacion = reader["MotivoTerminacion"] == DBNull.Value ? null : reader["MotivoTerminacion"].ToString(),
+                                MultaAplicada = reader["MultaAplicada"] == DBNull.Value ? null : reader.GetDecimal("MultaAplicada"),
+                                FechaAplicacionMulta = reader["FechaAplicacionMulta"] == DBNull.Value ? null : reader.GetDateTime("FechaAplicacionMulta"),
+                                FechaCreacion = reader["FechaCreacion"] == DBNull.Value ? DateTime.MinValue : reader.GetDateTime("FechaCreacion"),
+                                UsuarioCreador = reader["UsuarioCreador"] == DBNull.Value ? null : reader["UsuarioCreador"].ToString(),
+                                FechaTerminacionRegistro = reader["FechaTerminacionRegistro"] == DBNull.Value ? null : reader.GetDateTime("FechaTerminacionRegistro"),
+                                UsuarioTerminacion = reader["UsuarioTerminacion"] == DBNull.Value ? null : reader["UsuarioTerminacion"].ToString(),
+                                Inquilino = new Inquilino
+                                {
+                                    Id = reader.GetInt32("InquilinoId"),
+                                    Dni = reader["InquilinoDni"].ToString() ?? "",
+                                    Apellido = reader["InquilinoApellido"].ToString() ?? "",
+                                    Nombre = reader["InquilinoNombre"].ToString() ?? "",
+                                    Email = reader["InquilinoEmail"] == DBNull.Value ? null : reader["InquilinoEmail"].ToString(),
+                                    Telefono = reader["InquilinoTelefono"] == DBNull.Value ? null : reader["InquilinoTelefono"].ToString(),
+                                    Domicilio = reader["InquilinoDomicilio"] == DBNull.Value ? null : reader["InquilinoDomicilio"].ToString()
+                                },
+                                Inmueble = new Inmueble
+                                {
+                                    Id = reader.GetInt32("InmuebleId"),
+                                    Direccion = reader["Direccion"].ToString() ?? "",
+                                    Tipo = reader["Tipo"].ToString() ?? "",
+                                    Ambientes = reader.GetInt32("Ambientes"),
+                                    Precio = reader.GetDecimal("InmueblePrecio"),
+                                    PropietarioId = reader.GetInt32("PropietarioId"),
+                                    Propietario = new Propietario
+                                    {
+                                        Id = reader.GetInt32("PropietarioId"),
+                                        Dni = reader["PropietarioDni"].ToString() ?? "",
+                                        Apellido = reader["PropietarioApellido"].ToString() ?? "",
+                                        Nombre = reader["PropietarioNombre"].ToString() ?? "",
+                                        Email = reader["PropietarioEmail"] == DBNull.Value ? null : reader["PropietarioEmail"].ToString(),
+                                        Telefono = reader["PropietarioTelefono"] == DBNull.Value ? null : reader["PropietarioTelefono"].ToString(),
+                                        Domicilio = reader["PropietarioDomicilio"] == DBNull.Value ? null : reader["PropietarioDomicilio"].ToString()
+                                    }
+                                }
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        public Contrato? ObtenerPorIdIncluyeInactivos(int id)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var sql = @"SELECT c.Id, c.FechaInicio, c.FechaFin, c.MontoMensual, c.InquilinoId, c.InmuebleId, c.Estado,
+                            c.FechaTerminacionAnticipada, c.MotivoTerminacion, c.MultaAplicada, c.FechaAplicacionMulta,
+                            c.FechaCreacion, c.UsuarioCreador, c.FechaTerminacionRegistro, c.UsuarioTerminacion,
+                            inq.Dni as InquilinoDni, inq.Apellido as InquilinoApellido, inq.Nombre as InquilinoNombre,
+                            inq.Email as InquilinoEmail, inq.Telefono as InquilinoTelefono, inq.Domicilio as InquilinoDomicilio,
+                            i.Direccion, i.Tipo, i.Ambientes, i.Precio as InmueblePrecio,
+                            p.Id as PropietarioId, p.Dni as PropietarioDni, p.Apellido as PropietarioApellido, p.Nombre as PropietarioNombre,
+                            p.Email as PropietarioEmail, p.Telefono as PropietarioTelefono, p.Domicilio as PropietarioDomicilio
+                            FROM contratos c
+                            INNER JOIN inquilinos inq ON c.InquilinoId = inq.Id
+                            INNER JOIN inmuebles i ON c.InmuebleId = i.Id
+                            INNER JOIN propietarios p ON i.PropietarioId = p.Id
+                            WHERE c.Id = @id";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Contrato
+                            {
+                                Id = reader.GetInt32("Id"),
+                                FechaInicio = reader.GetDateTime("FechaInicio"),
+                                FechaFin = reader.GetDateTime("FechaFin"),
+                                MontoMensual = reader.GetDecimal("MontoMensual"),
+                                InquilinoId = reader.GetInt32("InquilinoId"),
+                                InmuebleId = reader.GetInt32("InmuebleId"),
+                                Estado = Convert.ToBoolean(reader["Estado"]),
+                                FechaTerminacionAnticipada = reader["FechaTerminacionAnticipada"] == DBNull.Value ? null : reader.GetDateTime("FechaTerminacionAnticipada"),
+                                MotivoTerminacion = reader["MotivoTerminacion"] == DBNull.Value ? null : reader["MotivoTerminacion"].ToString(),
+                                MultaAplicada = reader["MultaAplicada"] == DBNull.Value ? null : reader.GetDecimal("MultaAplicada"),
+                                FechaAplicacionMulta = reader["FechaAplicacionMulta"] == DBNull.Value ? null : reader.GetDateTime("FechaAplicacionMulta"),
+                                FechaCreacion = reader["FechaCreacion"] == DBNull.Value ? DateTime.MinValue : reader.GetDateTime("FechaCreacion"),
+                                UsuarioCreador = reader["UsuarioCreador"] == DBNull.Value ? null : reader["UsuarioCreador"].ToString(),
+                                FechaTerminacionRegistro = reader["FechaTerminacionRegistro"] == DBNull.Value ? null : reader.GetDateTime("FechaTerminacionRegistro"),
+                                UsuarioTerminacion = reader["UsuarioTerminacion"] == DBNull.Value ? null : reader["UsuarioTerminacion"].ToString(),
                                 Inquilino = new Inquilino
                                 {
                                     Id = reader.GetInt32("InquilinoId"),
@@ -149,8 +250,8 @@ namespace Inmobiliaria_.Net_Core.Models
         {
             using (var connection = new MySqlConnection(connectionString))
             {
-                var sql = @"INSERT INTO contratos (FechaInicio, FechaFin, MontoMensual, InquilinoId, InmuebleId, Estado) 
-                            VALUES (@fechaInicio, @fechaFin, @montoMensual, @inquilinoId, @inmuebleId, @estado);
+                var sql = @"INSERT INTO contratos (FechaInicio, FechaFin, MontoMensual, InquilinoId, InmuebleId, Estado, FechaCreacion, UsuarioCreador) 
+                            VALUES (@fechaInicio, @fechaFin, @montoMensual, @inquilinoId, @inmuebleId, @estado, @fechaCreacion, @usuarioCreador);
                             SELECT LAST_INSERT_ID();";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -161,6 +262,8 @@ namespace Inmobiliaria_.Net_Core.Models
                     command.Parameters.AddWithValue("@inquilinoId", contrato.InquilinoId);
                     command.Parameters.AddWithValue("@inmuebleId", contrato.InmuebleId);
                     command.Parameters.AddWithValue("@estado", contrato.Estado);
+                    command.Parameters.AddWithValue("@fechaCreacion", contrato.FechaCreacion);
+                    command.Parameters.AddWithValue("@usuarioCreador", contrato.UsuarioCreador ?? (object)DBNull.Value);
 
                     connection.Open();
                     var result = command.ExecuteScalar();
@@ -175,7 +278,13 @@ namespace Inmobiliaria_.Net_Core.Models
             {
                 var sql = @"UPDATE contratos SET 
                             FechaInicio = @fechaInicio, FechaFin = @fechaFin, MontoMensual = @montoMensual,
-                            InquilinoId = @inquilinoId, InmuebleId = @inmuebleId
+                            InquilinoId = @inquilinoId, InmuebleId = @inmuebleId,
+                            FechaTerminacionAnticipada = @fechaTerminacionAnticipada,
+                            MotivoTerminacion = @motivoTerminacion,
+                            MultaAplicada = @multaAplicada,
+                            FechaAplicacionMulta = @fechaAplicacionMulta,
+                            FechaTerminacionRegistro = @fechaTerminacionRegistro,
+                            UsuarioTerminacion = @usuarioTerminacion
                             WHERE Id = @id";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -186,6 +295,12 @@ namespace Inmobiliaria_.Net_Core.Models
                     command.Parameters.AddWithValue("@montoMensual", contrato.MontoMensual);
                     command.Parameters.AddWithValue("@inquilinoId", contrato.InquilinoId);
                     command.Parameters.AddWithValue("@inmuebleId", contrato.InmuebleId);
+                    command.Parameters.AddWithValue("@fechaTerminacionAnticipada", (object?)contrato.FechaTerminacionAnticipada ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@motivoTerminacion", (object?)contrato.MotivoTerminacion ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@multaAplicada", (object?)contrato.MultaAplicada ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@fechaAplicacionMulta", (object?)contrato.FechaAplicacionMulta ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@fechaTerminacionRegistro", (object?)contrato.FechaTerminacionRegistro ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@usuarioTerminacion", (object?)contrato.UsuarioTerminacion ?? DBNull.Value);
 
                     connection.Open();
                     return command.ExecuteNonQuery();

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-10-2025 a las 20:07:09
+-- Tiempo de generación: 07-10-2025 a las 17:07:39
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -38,8 +38,20 @@ CREATE TABLE `contratos` (
   `FechaTerminacionAnticipada` date DEFAULT NULL,
   `MotivoTerminacion` varchar(500) DEFAULT NULL,
   `MultaAplicada` decimal(18,2) DEFAULT NULL,
-  `FechaAplicacionMulta` date DEFAULT NULL
+  `FechaAplicacionMulta` date DEFAULT NULL,
+  `FechaCreacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `UsuarioCreador` varchar(100) DEFAULT NULL,
+  `FechaTerminacionRegistro` datetime DEFAULT NULL,
+  `UsuarioTerminacion` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `contratos`
+--
+
+INSERT INTO `contratos` (`Id`, `FechaInicio`, `FechaFin`, `MontoMensual`, `InquilinoId`, `InmuebleId`, `Estado`, `FechaTerminacionAnticipada`, `MotivoTerminacion`, `MultaAplicada`, `FechaAplicacionMulta`, `FechaCreacion`, `UsuarioCreador`, `FechaTerminacionRegistro`, `UsuarioTerminacion`) VALUES
+(1, '2025-10-07', '2026-10-07', 450000.00, 1, 1, 0, NULL, NULL, NULL, NULL, '2025-10-07 12:01:43', NULL, NULL, NULL),
+(2, '2025-10-07', '2026-10-07', 1000000.00, 1, 2, 1, NULL, NULL, NULL, NULL, '2025-10-07 12:03:24', 'admin@inmo.test', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -83,6 +95,13 @@ CREATE TABLE `inquilinos` (
   `Estado` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `inquilinos`
+--
+
+INSERT INTO `inquilinos` (`Id`, `Dni`, `Apellido`, `Nombre`, `Email`, `Telefono`, `Domicilio`, `Estado`) VALUES
+(1, '656565655656', 'alpargata', 'eusebio', 'safsaf@gmial.com', '26664898987', 'el baldio de aca a la vuelta', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -102,6 +121,13 @@ CREATE TABLE `pagos` (
   `FechaAnulacion` datetime DEFAULT NULL,
   `UsuarioAnulacion` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pagos`
+--
+
+INSERT INTO `pagos` (`Id`, `NumeroPago`, `FechaPago`, `Detalle`, `Importe`, `ContratoId`, `Estado`, `FechaCreacion`, `UsuarioCreador`, `FechaAnulacion`, `UsuarioAnulacion`) VALUES
+(1, 1, '2025-10-07', 'Mensualidad', 450000.00, 1, 0, '2025-10-07 11:31:41', 'Sistema', '2025-10-07 12:03:46', 'admin@inmo.test');
 
 -- --------------------------------------------------------
 
@@ -247,7 +273,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `contratos`
 --
 ALTER TABLE `contratos`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `inmuebles`
@@ -259,13 +285,13 @@ ALTER TABLE `inmuebles`
 -- AUTO_INCREMENT de la tabla `inquilinos`
 --
 ALTER TABLE `inquilinos`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `propietarios`

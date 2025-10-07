@@ -91,6 +91,42 @@
                         <span class="h5 text-success">$@Model.MontoMensual.ToString("N2")</span>
                     </p>
                 </div>
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Fecha de Creación:</label>
+                                <p class="form-control-plaintext">@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Creado por:</label>
+                                <p class="form-control-plaintext">@Model.UsuarioCreador</p>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.TieneTerminacionAnticipada)
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Fecha de Registro de Terminación:</label>
+                                    <p class="form-control-plaintext">@Model.FechaTerminacionRegistro?.ToString("dd/MM/yyyy HH:mm")</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Terminado por:</label>
+                                    <p class="form-control-plaintext">@Model.UsuarioTerminacion</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>

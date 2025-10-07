@@ -27,9 +27,12 @@
         <a asp-action="Index" class="btn btn-secondary me-2">
             <i class="fas fa-arrow-left"></i> Volver a Lista
         </a>
-        <a asp-action="Crear" asp-route-contratoId="@(contrato?.Id)" class="btn-custom btn-primary-custom">
-            <i class="fas fa-plus"></i> Nuevo Pago
-        </a>
+        @if (contrato != null && (contrato.EsVigente || (contrato.TieneTerminacionAnticipada && contrato.MultaAplicada.HasValue)))
+        {
+            <a asp-action="Crear" asp-route-contratoId="@(contrato.Id)" class="btn-custom btn-primary-custom">
+                <i class="fas fa-plus"></i> Nuevo Pago
+            </a>
+        }
     </div>
 </div>
 
@@ -136,6 +139,14 @@
                                                 </a>
                                             }
                                         }
+                                        @if (User.IsInRole("Administrador"))
+                                        {
+                                            <a asp-action="Eliminar" asp-route-id="@pago.Id"
+                                               class="btn btn-outline-danger btn-sm" title="Eliminar permanentemente"
+                                               onclick="return confirm('Esta acción eliminará permanentemente el pago. No se verá como Anulado, desaparecerá del sistema. ¿Desea continuar?');">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        }
                                     </div>
                                 </td>
                             </tr>
@@ -150,9 +161,12 @@
                 <i class="fas fa-money-bill-wave fa-3x text-muted mb-3"></i>
                 <h5 class="text-muted">No hay pagos registrados para este contrato</h5>
                 <p class="text-muted">Comienza registrando el primer pago</p>
-                <a asp-action="Crear" asp-route-contratoId="@(contrato?.Id)" class="btn-custom btn-primary-custom">
-                    <i class="fas fa-plus"></i> Crear Primer Pago
-                </a>
+                @if (contrato != null && (contrato.EsVigente || (contrato.TieneTerminacionAnticipada && contrato.MultaAplicada.HasValue)))
+                {
+                    <a asp-action="Crear" asp-route-contratoId="@(contrato.Id)" class="btn-custom btn-primary-custom">
+                        <i class="fas fa-plus"></i> Crear Primer Pago
+                    </a>
+                }
             </div>
         }
     </div>

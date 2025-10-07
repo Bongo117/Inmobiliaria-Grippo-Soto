@@ -114,6 +114,12 @@
                                                 </svg>
                                                 <span class="ms-1">Anular</span>
                                             </a>
+                                                <a asp-action="Eliminar" asp-route-id="@pago.Id" 
+                                                   class="btn btn-danger btn-sm" title="Eliminar pago permanentemente"
+                                                   onclick="return confirm('Esta acción eliminará permanentemente el pago. No se verá como Anulado, desaparecerá del sistema. ¿Desea continuar?');">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                    <span class="ms-1">Eliminar</span>
+                                                </a>
                                             }
                                         }
                                     </div>
