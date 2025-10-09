@@ -128,7 +128,7 @@
         $(document).ready(function() {
             $('#TipoInmuebleId').change(function() {
                 var selectedOption = $(this).find('option:selected');
-                var tipoNombre = selectedOption.text().split(' - ')[0];
+                var tipoNombre = selectedOption.text().split(' - ')[0].trim();
                 var uso = selectedOption.data('uso');
                 var esComercial = selectedOption.data('comercial');
                 

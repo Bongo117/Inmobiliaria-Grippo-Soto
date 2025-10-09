@@ -1,7 +1,3 @@
-/* ===== ALERT STYLES ===== */
-/* Estilos para alertas y notificaciones */
-
-/* Alertas base */
 .alert {
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
@@ -27,7 +23,6 @@
   padding: 1.25rem 1rem;
 }
 
-/* Alertas de éxito */
 .alert-success {
   color: #0f5132;
   background-color: #d1e7dd;
@@ -38,7 +33,6 @@
   color: #0a3622;
 }
 
-/* Alertas de información */
 .alert-info {
   color: #055160;
   background-color: #cff4fc;
@@ -49,7 +43,6 @@
   color: #032830;
 }
 
-/* Alertas de advertencia */
 .alert-warning {
   color: #664d03;
   background-color: #fff3cd;
@@ -60,7 +53,6 @@
   color: #523e02;
 }
 
-/* Alertas de peligro */
 .alert-danger {
   color: #842029;
   background-color: #f8d7da;
@@ -71,7 +63,6 @@
   color: #6a1a21;
 }
 
-/* Alertas personalizadas */
 .alert-custom {
   border: none;
   box-shadow: var(--shadow-sm);
@@ -98,7 +89,6 @@
   color: white;
 }
 
-/* Iconos en alertas */
 .alert-icon {
   flex-shrink: 0;
   width: 1.25rem;
@@ -112,7 +102,6 @@
   fill: currentColor;
 }
 
-/* Contenido de alerta */
 .alert-content {
   flex: 1;
   min-width: 0;
@@ -128,7 +117,6 @@
   opacity: 0.9;
 }
 
-/* Botón de cierre personalizado */
 .btn-close {
   background: none;
   border: none;
@@ -163,7 +151,6 @@
   line-height: 1;
 }
 
-/* Alertas con animación */
 .alert-fade-in {
   animation: alertFadeIn 0.3s ease-out;
 }
@@ -179,7 +166,6 @@
   }
 }
 
-/* Alertas deslizantes */
 .alert-slide-in {
   animation: alertSlideIn 0.4s ease-out;
 }
@@ -195,7 +181,6 @@
   }
 }
 
-/* Alertas toast */
 .alert-toast {
   position: fixed;
   top: 1rem;
@@ -218,7 +203,6 @@
   right: 1rem;
 }
 
-/* Alertas en línea */
 .alert-inline {
   display: inline-flex;
   align-items: center;
@@ -228,14 +212,12 @@
   border-radius: var(--border-radius-sm);
 }
 
-/* Alertas compactas */
 .alert-compact {
   padding: 0.5rem 0.75rem;
   font-size: 0.8125rem;
   margin-bottom: 0.5rem;
 }
 
-/* Estados de alerta */
 .alert-loading {
   position: relative;
   pointer-events: none;
@@ -255,7 +237,6 @@
   animation: spin 1s linear infinite;
 }
 
-/* Responsive alerts */
 @media (max-width: 768px) {
   .alert {
     padding: 0.75rem 1rem;
@@ -278,7 +259,6 @@
   }
 }
 
-/* Alertas con progreso */
 .alert-progress {
   position: relative;
   overflow: hidden;
