@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-10-2025 a las 17:29:44
+-- Tiempo de generación: 09-10-2025 a las 20:32:55
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -206,8 +206,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`Id`, `Email`, `ClaveHash`, `Rol`, `Apellido`, `Nombre`, `AvatarUrl`, `Estado`, `FechaAlta`) VALUES
-(1, 'admin@inmo.test', 'Admin123!', 'Administrador', 'Administrador', 'Jefaso', '/uploads/avatars/avatar_1_20251002173758.png', 1, '2025-10-02 19:56:28'),
-(6, 'juanjo@gmail.com', 'Pitorrico123', 'Empleado', 'torrico', 'juanpi', NULL, 1, '2025-10-02 18:55:12');
+(1, 'admin@inmo.test', 'Admin123!', 'Administrador', 'Administrador', 'Jefaso', NULL, 1, '2025-10-02 19:56:28'),
+(7, 'empleado@gmail.com', 'Empleado123', 'Empleado', 'Gonzalez', 'Martín', NULL, 1, '2025-10-09 15:31:22');
 
 --
 -- Índices para tablas volcadas
@@ -309,7 +309,7 @@ ALTER TABLE `tipos_inmuebles`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Restricciones para tablas volcadas
