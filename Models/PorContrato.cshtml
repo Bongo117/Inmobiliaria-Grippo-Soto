@@ -11,7 +11,7 @@
         <p class="text-muted">Inmueble: @contrato?.Inmueble?.Direccion</p>
     </div>
     <div>
-        @if (ViewBag.ContratoVigente == true)
+        @if (ViewBag.ContratoVigente)
         {
             <a asp-action="Crear" asp-route-contratoId="@contrato?.Id" class="btn-custom btn-primary-custom me-2">
                 <i class="fas fa-plus"></i> Nuevo Pago
@@ -117,9 +117,9 @@
                         </div>
                         <h5>No hay pagos registrados</h5>
                         <p>Aún no se han registrado pagos para este contrato.</p>
-                        @if (ViewBag.ContratoVigente == true)
+                        @if (ViewBag.ContratoVigente)
                         {
-                            <a asp-action="Crear" asp-route-contratoId="@contrato?.Id" class="btn-custom btn-primary-custom">
+                            <a asp-action="Crear" asp-route-contratoId="@contrato.Id" class="btn-custom btn-primary-custom">
                                 <i class="fas fa-plus me-2"></i>
                                 Registrar Primer Pago
                             </a>
@@ -135,35 +135,32 @@
                 <h5><i class="fas fa-info-circle"></i> Resumen del Contrato</h5>
             </div>
             <div class="card-body">
-                @if (contrato != null)
-                {
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Inquilino
-                            <span class="text-end">@contrato.Inquilino?.Apellido, @contrato.Inquilino?.Nombre</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Período
-                            <span class="text-end">@contrato.FechaInicio.ToString("dd/MM/yy") - @contrato.FechaFin.ToString("dd/MM/yy")</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Monto Mensual
-                            <span class="badge bg-primary rounded-pill">$@contrato.MontoMensual.ToString("N2")</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Total Pagado
-                            <span class="badge bg-success rounded-pill">$@ViewBag.TotalPagos.ToString("N2")</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Próximo N° de Pago
-                            <span class="badge bg-secondary rounded-pill">@ViewBag.SiguienteNumeroPago</span>
-                        </li>
-                    </ul>
-                }
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Inquilino
+                        <span class="text-end">@contrato?.Inquilino?.Apellido, @contrato?.Inquilino?.Nombre</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Período
+                        <span class="text-end">@contrato.FechaInicio.ToString("dd/MM/yy") - @contrato.FechaFin.ToString("dd/MM/yy")</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Monto Mensual
+                        <span class="badge bg-primary rounded-pill">$@contrato.MontoMensual.ToString("N2")</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Pagado
+                        <span class="badge bg-success rounded-pill">$@ViewBag.TotalPagos.ToString("N2")</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Próximo N° de Pago
+                        <span class="badge bg-secondary rounded-pill">@ViewBag.SiguienteNumeroPago</span>
+                    </li>
+                </ul>
             </div>
         </div>
 
-        @if (ViewBag.ContratoVigente == true && contrato != null)
+        @if (ViewBag.ContratoVigente)
         {
             <div class="card mt-3">
                 <div class="card-header">
@@ -175,7 +172,7 @@
                         <input type="hidden" name="NumeroPago" value="@ViewBag.SiguienteNumeroPago" />
                         <div class="mb-3">
                             <label for="Importe" class="form-label">Importe</label>
-                            <input type="number" step="0.01" name="Importe" class="form-control" value="@contrato?.MontoMensual.ToString("F2")" required />
+                            <input type="number" step="0.01" name="Importe" class="form-control" value="@contrato.MontoMensual.ToString("F2")" required />
                         </div>
                         <div class="mb-3">
                             <label for="FechaPago" class="form-label">Fecha de Pago</label>

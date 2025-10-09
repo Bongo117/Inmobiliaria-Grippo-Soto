@@ -98,11 +98,8 @@ namespace Inmobiliaria_.Net_Core.Controllers
                         repositorio.Alta(pago);
                         TempData["Mensaje"] = "Pago registrado exitosamente";
                         
-                        if (Request.Headers["Referer"].ToString().Contains("PorContrato"))
-                        {
-                            return RedirectToAction(nameof(PorContrato), new { contratoId = pago.ContratoId });
-                        }
-                        return RedirectToAction(nameof(Index));
+                        // Si se creó desde la vista de un contrato, volver a ella.
+                        return RedirectToAction(nameof(PorContrato), new { contratoId = pago.ContratoId });
                     }
                     catch (Exception ex)
                     {
@@ -220,7 +217,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 if (!pago.Estado)
                 {
                     TempData["Error"] = "El pago ya está anulado";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(PorContrato), new { contratoId = pago.ContratoId });
                 }
 
                 string usuarioAnulacion = User?.Identity?.Name ?? "Sistema";
@@ -231,7 +228,10 @@ namespace Inmobiliaria_.Net_Core.Controllers
             {
                 TempData["Error"] = "Error al anular el pago: " + ex.Message;
             }
-            return RedirectToAction(nameof(Index));
+
+            // Siempre redirigir a la vista de pagos del contrato
+            var pagoAnulado = repositorio.ObtenerPorId(id); // Obtener el pago para conseguir el ContratoId
+            return RedirectToAction(nameof(PorContrato), new { contratoId = pagoAnulado.ContratoId });
         }
 
         [Authorize(Policy = "SoloAdminParaEliminar")]
