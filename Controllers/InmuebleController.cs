@@ -178,5 +178,22 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: Inmuebles por Propietario
+        public IActionResult PorPropietario(int id)
+        {
+            var propietario = repositorioPropietario.ObtenerPorId(id);
+            if (propietario == null)
+            {
+                TempData["Error"] = "El propietario especificado no existe.";
+                return RedirectToAction("Index", "Propietario"); // Redirige a la lista de propietarios
+            }
+
+            var lista = repositorio.ObtenerTodos().Where(i => i.PropietarioId == id).ToList();
+            
+            ViewBag.Titulo = $"Inmuebles de {propietario.Nombre} {propietario.Apellido}";
+            ViewBag.Propietario = propietario;
+            return View("Index", lista);
+        }
     }
 }

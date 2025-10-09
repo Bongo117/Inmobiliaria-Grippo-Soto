@@ -13,9 +13,37 @@ namespace Inmobiliaria_.Net_Core.Controllers
             this.repositorio = repositorio;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string? id, string? nombre, string? uso, bool? esComercial, bool? estado)
         {
-            var lista = repositorio.ObtenerTodos(true); // incluir inactivos para filtros
+            var lista = repositorio.ObtenerTodos(true); // Obtener todos, incluyendo inactivos
+
+            if (!string.IsNullOrEmpty(id) && int.TryParse(id, out int idFilter))
+            {
+                lista = lista.Where(t => t.Id == idFilter).ToList();
+            }
+            if (!string.IsNullOrEmpty(nombre))
+            {
+                lista = lista.Where(t => t.Nombre.Contains(nombre, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (!string.IsNullOrEmpty(uso))
+            {
+                lista = lista.Where(t => t.UsoPermitido.Equals(uso, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (esComercial.HasValue)
+            {
+                lista = lista.Where(t => t.EsComercial == esComercial.Value).ToList();
+            }
+            if (estado.HasValue)
+            {
+                lista = lista.Where(t => t.Estado == estado.Value).ToList();
+            }
+
+            ViewBag.FiltroId = id;
+            ViewBag.FiltroNombre = nombre;
+            ViewBag.FiltroUso = uso;
+            ViewBag.FiltroEsComercial = esComercial;
+            ViewBag.FiltroEstado = estado;
+
             return View(lista);
         }
 

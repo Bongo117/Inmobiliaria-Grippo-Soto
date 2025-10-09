@@ -5,16 +5,31 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>@ViewBag.Titulo Lista de Contratos</h2>
-    <div class="d-flex gap-2">
+    <div class="d-flex align-items-center gap-3">
+        <h2>@ViewData["Title"]</h2>
+        @if (ViewBag.Titulo != null)
+        {
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary" title="Volver a la lista completa">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        }
+    </div>
+    <div class="d-flex gap-2 align-items-center">
         @if (ViewBag.Titulo == null)
         {
             <a asp-action="Vigentes" class="btn-custom btn-secondary-custom">
                 <i class="fas fa-check-circle"></i> Vigentes
             </a>
-            <a asp-action="FinalizanEn" asp-route-dias="30" class="btn btn-outline-secondary">Finalizan en 30 días</a>
-            <a asp-action="FinalizanEn" asp-route-dias="60" class="btn btn-outline-secondary">Finalizan en 60 días</a>
-            <a asp-action="FinalizanEn" asp-route-dias="90" class="btn btn-outline-secondary me-2">Finalizan en 90 días</a>
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-hourglass-end"></i> Vencen Próximamente
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" asp-action="FinalizanEn" asp-route-dias="30">En 30 días</a></li>
+                    <li><a class="dropdown-item" asp-action="FinalizanEn" asp-route-dias="60">En 60 días</a></li>
+                    <li><a class="dropdown-item" asp-action="FinalizanEn" asp-route-dias="90">En 90 días</a></li>
+                </ul>
+            </div>
         }
         <a asp-action="Crear" class="btn-custom btn-primary-custom">
             <i class="fas fa-plus"></i> Nuevo Contrato

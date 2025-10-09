@@ -36,120 +36,45 @@
     <div class="card-body">
         @if (Model != null && Model.Any())
         {
+            <form asp-action="Index" method="get" class="mb-4">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-2"><label>ID</label><input type="text" name="id" value="@ViewBag.FiltroId" class="form-control" /></div>
+                    <div class="col-md-3"><label>Nombre</label><input type="text" name="nombre" value="@ViewBag.FiltroNombre" class="form-control" /></div>
+                    <div class="col-md-2">
+                        <label>Uso</label>
+                        <select name="uso" class="form-select" asp-items='new SelectList(new[] { "Residencial", "Comercial", "Mixto" }, (string)ViewBag.FiltroUso)'><option value="">Todos</option></select>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Estado</label>
+                        <select name="estado" class="form-select">
+                            <option value="">Todos</option>
+                            <option value="true" selected="@(ViewBag.FiltroEstado as bool? == true)">Activo</option>
+                            <option value="false" selected="@(ViewBag.FiltroEstado as bool? == false)">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Filtrar</button>
+                        <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-eraser"></i> Limpiar</a>
+                    </div>
+                </div>
+            </form>
             <div class="table-shadcn-container">
-                <table class="table-shadcn" id="tiposTable">
+                <table class="table-shadcn">
                     <caption class="table-shadcn-caption">
                         Lista de tipos de inmuebles registrados en el sistema.
                     </caption>
                     <thead class="table-shadcn-header">
                         <tr class="table-shadcn-header-row">
-                            <th class="table-shadcn-head" style="width: 80px;">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <span>Id</span>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-dark dropdown-toggle filter-dropdown" type="button" data-bs-toggle="dropdown" data-column="0" title="Filtrar por ID">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M3.5 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5v-1z"/>
-                                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-                                            </svg>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><input type="text" class="form-control form-control-sm filter-input" data-column="0" placeholder="Buscar ID" style="margin: 5px; width: calc(100% - 10px);"></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </th>
-                            <th class="table-shadcn-head">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <span>Nombre</span>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-dark dropdown-toggle filter-dropdown" type="button" data-bs-toggle="dropdown" data-column="1" title="Filtrar por Nombre">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M3.5 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5v-1z"/>
-                                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-                                            </svg>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><input type="text" class="form-control form-control-sm filter-input" data-column="1" placeholder="Buscar Nombre" style="margin: 5px; width: calc(100% - 10px);"></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </th>
-                            <th class="table-shadcn-head">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <span>Descripción</span>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-dark dropdown-toggle filter-dropdown" type="button" data-bs-toggle="dropdown" data-column="2" title="Filtrar por Descripción">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M3.5 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5v-1z"/>
-                                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-                                            </svg>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><input type="text" class="form-control form-control-sm filter-input" data-column="2" placeholder="Buscar Descripción" style="margin: 5px; width: calc(100% - 10px);"></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </th>
-                            <th class="table-shadcn-head" style="width: 140px;">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <span>Uso Permitido</span>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-dark dropdown-toggle filter-dropdown" type="button" data-bs-toggle="dropdown" data-column="3" title="Filtrar por Uso Permitido">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M3.5 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5v-1z"/>
-                                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-                                            </svg>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item filter-option" href="#" data-value="" data-column="3">Todos</a></li>
-                                            <li><a class="dropdown-item filter-option" href="#" data-value="Residencial" data-column="3">Residencial</a></li>
-                                            <li><a class="dropdown-item filter-option" href="#" data-value="Comercial" data-column="3">Comercial</a></li>
-                                            <li><a class="dropdown-item filter-option" href="#" data-value="Mixto" data-column="3">Mixto</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </th>
-                            <th class="table-shadcn-head" style="width: 120px;">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <span>Es Comercial</span>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-dark dropdown-toggle filter-dropdown" type="button" data-bs-toggle="dropdown" data-column="4" title="Filtrar por Es Comercial">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M3.5 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5v-1z"/>
-                                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-                                            </svg>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item filter-option" href="#" data-value="" data-column="4">Todos</a></li>
-                                            <li><a class="dropdown-item filter-option" href="#" data-value="Sí" data-column="4">Sí</a></li>
-                                            <li><a class="dropdown-item filter-option" href="#" data-value="No" data-column="4">No</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </th>
-                            <th class="table-shadcn-head" style="width: 100px;">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <span>Estado</span>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-dark dropdown-toggle filter-dropdown" type="button" data-bs-toggle="dropdown" data-column="5" title="Filtrar por Estado">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M3.5 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5v-1z"/>
-                                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-                                            </svg>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item filter-option" href="#" data-value="" data-column="5">Todos</a></li>
-                                            <li><a class="dropdown-item filter-option" href="#" data-value="Activo" data-column="5">Activo</a></li>
-                                            <li><a class="dropdown-item filter-option" href="#" data-value="Inactivo" data-column="5">Inactivo</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </th>
+                            <th class="table-shadcn-head" style="width: 80px;">Id</th>
+                            <th class="table-shadcn-head">Nombre</th>
+                            <th class="table-shadcn-head">Descripción</th>
+                            <th class="table-shadcn-head" style="width: 140px;">Uso Permitido</th>
+                            <th class="table-shadcn-head" style="width: 120px;">Es Comercial</th>
+                            <th class="table-shadcn-head" style="width: 100px;">Estado</th>
                             <th class="table-shadcn-head text-center" style="width: 200px;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="table-shadcn-body" id="tableBody">
+                    <tbody class="table-shadcn-body">
                         @foreach (var tipo in Model)
                         {
                             <tr class="table-shadcn-row">
@@ -237,117 +162,3 @@
         }
     </div>
 </div>
-
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            console.log("Filtro JS cargado y ejecutándose");
-
-            // Store filter values
-            var filters = {};
-
-            // Filter function
-            function filterTable() {
-                $('#tableBody tr').each(function() {
-                    var show = true;
-                    var $row = $(this);
-                    
-                    $row.find('td').each(function(index) {
-                        if (filters[index] !== undefined && filters[index] !== '') {
-                            var cellText = '';
-                            var filterValue = filters[index].toLowerCase();
-                            
-                            if (index === 3) { // Uso Permitido
-                                cellText = $(this).find('.badge').text().toLowerCase().trim();
-                            } else if (index === 4) { // Es Comercial
-                                cellText = $(this).find('.badge').text().toLowerCase().trim();
-                            } else if (index === 5) { // Estado
-                                cellText = $(this).find('.badge').text().toLowerCase().trim();
-                            } else {
-                                cellText = $(this).text().toLowerCase().trim();
-                            }
-                            
-                            // Para filtros de dropdown, hacer comparación exacta
-                            if (index === 3 || index === 4 || index === 5) {
-                                if (cellText !== filterValue) {
-                                    show = false;
-                                }
-                            } else {
-                                // Para filtros de texto, hacer búsqueda parcial
-                                if (cellText.indexOf(filterValue) === -1) {
-                                    show = false;
-                                }
-                            }
-                        }
-                    });
-                    
-                    $row.toggle(show);
-                });
-            }
-
-            // Handle text input filters
-            $('.filter-input').on('input', function() {
-                var col = $(this).data('column');
-                filters[col] = $(this).val().toLowerCase();
-                filterTable();
-            });
-
-            // Handle dropdown option filters
-            $('.filter-option').on('click', function(e) {
-                e.preventDefault();
-                var col = $(this).data('column');
-                var value = $(this).data('value');
-                
-                // Convertir valores para comparación
-                if (col === 4) { // Es Comercial
-                    if (value === 'Sí') {
-                        filters[col] = 'sí';
-                    } else if (value === 'No') {
-                        filters[col] = 'no';
-                    } else {
-                        filters[col] = value.toLowerCase();
-                    }
-                } else if (col === 5) { // Estado
-                    if (value === 'Activo') {
-                        filters[col] = 'activo';
-                    } else if (value === 'Inactivo') {
-                        filters[col] = 'inactivo';
-                    } else {
-                        filters[col] = value.toLowerCase();
-                    }
-                } else {
-                    filters[col] = value.toLowerCase();
-                }
-                
-                // Update button text to show selected option
-                var button = $(this).closest('.dropdown').find('.filter-dropdown');
-                var buttonText = $(this).text();
-                if (value === '') {
-                    button.attr('title', 'Filtrar por ' + button.attr('title').split(' ').slice(2).join(' '));
-                } else {
-                    button.attr('title', 'Filtro: ' + buttonText);
-                }
-                
-                // Close dropdown
-                $(this).closest('.dropdown').removeClass('show');
-                $(this).closest('.dropdown').find('.dropdown-menu').removeClass('show');
-                
-                filterTable();
-            });
-
-            // Prevent dropdown from closing when clicking inside
-            $('.dropdown-menu').on('click', function(e) {
-                e.stopPropagation();
-            });
-
-            // Close dropdown when clicking outside
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('.dropdown').length) {
-                    $('.dropdown').removeClass('show');
-                    $('.dropdown-menu').removeClass('show');
-                }
-            });
-        });
-    </script>
-}
