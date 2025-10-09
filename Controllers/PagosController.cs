@@ -231,7 +231,12 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             // Siempre redirigir a la vista de pagos del contrato
             var pagoAnulado = repositorio.ObtenerPorId(id); // Obtener el pago para conseguir el ContratoId
-            return RedirectToAction(nameof(PorContrato), new { contratoId = pagoAnulado.ContratoId });
+            if (pagoAnulado != null)
+            {
+                return RedirectToAction(nameof(PorContrato), new { contratoId = pagoAnulado.ContratoId });
+            }
+            // Si el pago no se encuentra (caso muy raro), redirigir al index general
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize(Policy = "SoloAdminParaEliminar")]

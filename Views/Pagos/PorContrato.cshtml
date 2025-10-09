@@ -171,7 +171,7 @@
                 </div>
                 <div class="card-body">
                     <form asp-action="CrearDesdeContrato" method="post">
-                        <input type="hidden" name="contratoId" value="@contrato.Id" />
+                        <input type="hidden" name="contratoId" value="@contrato?.Id" />
                         <input type="hidden" name="NumeroPago" value="@ViewBag.SiguienteNumeroPago" />
                         <div class="mb-3">
                             <label for="Importe" class="form-label">Importe</label>
