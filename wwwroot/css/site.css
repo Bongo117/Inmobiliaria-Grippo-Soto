@@ -64,3 +64,51 @@
   color: var(--gray-500);
   margin-bottom: 1rem;
 }
+
+.dashboard-card {
+    border: 1px solid var(--gray-200);
+    border-left-width: 5px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+    overflow: hidden;
+    background-color: white;
+}
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.dashboard-card .card-title {
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+.dashboard-card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-disponibles {
+    border-left-color: var(--success-color);
+    background-color: rgba(25, 135, 84, 0.05);
+}
+.card-disponibles .dashboard-card-icon { color: var(--success-color); }
+ 
+.card-contratos {
+    border-left-color: var(--primary-color);
+    background-color: rgba(13, 110, 253, 0.05);
+}
+.card-contratos .dashboard-card-icon { color: var(--primary-color); }
+ 
+.card-inquilinos {
+    border-left-color: var(--warning-color);
+    background-color: rgba(255, 193, 7, 0.05);
+}
+.card-inquilinos .dashboard-card-icon { color: var(--warning-color); }
+ 
+.card-propietarios {
+    border-left-color: var(--gray-600);
+    background-color: rgba(108, 117, 125, 0.05);
+}
+.card-propietarios .dashboard-card-icon { color: var(--gray-600); }

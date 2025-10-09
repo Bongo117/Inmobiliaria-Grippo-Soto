@@ -1,114 +1,150 @@
+@model Inmobiliaria_.Net_Core.Models.DashboardViewModel
 @{
-    ViewData["Title"] = "Pagina de inicio";
+    ViewData["Title"] = "Dashboard";
 }
 
 <div class="text-center">
     <h1 class="display-4 welcome-title">Bienvenido a Inmobiliaria GriSoto</h1>
-    
-    <!-- Carrusel de propiedades destacadas -->
-    <div id="propiedadesCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <!-- Propiedad 1 -->
-            <div class="carousel-item active">
-                <div class="property-card">
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="property-image-placeholder">
-                                <div class="placeholder-text">Acá iría imagen 1</div>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="property-details p-3">
-                                <h2>$1,528,950</h2>
-                                <div class="d-flex flex-wrap gap-3 mb-3">
-                                    <span><i class="ph ph-ruler"></i> 233 m²</span>
-                                    <span><i class="ph ph-house"></i> 2 pisos</span>
-                                    <span><i class="ph ph-bed"></i> 4 habitaciones</span>
-                                    <span><i class="ph ph-bathtub"></i> 5 baños</span>
-                                </div>
-                                <p><i class="ph ph-map-pin"></i> Rosario, Santa Fe</p>
-                                <p>Casa en venta en un entorno tranquilo. Esta excepcional propiedad se caracteriza por su diseño moderno y amplios espacios.</p>
-                                <button class="btn btn-primary">Ver detalles</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+</div>
+
+<!-- Estadísticas -->
+<div class="row text-start g-4 mb-4">
+    <!-- Columna de Estadísticas -->
+    <div class="col-lg-4">
+        <div class="card dashboard-card card-disponibles mb-4">
+            <div class="card-body">
+                <div class="dashboard-card-icon"><i class="fas fa-home"></i></div>
+                <h5 class="card-title text-muted">Inmuebles Disponibles</h5>
+                <p class="card-text display-4 fw-bold text-dark">@Model.InmueblesDisponibles</p>
             </div>
-            
-            <!-- Propiedad 2 -->
-            <div class="carousel-item">
-                <div class="property-card">
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="property-image-placeholder">
-                                <div class="placeholder-text">Acá iría imagen 2</div>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="property-details p-3">
-                                <h2>$950,000</h2>
-                                <div class="d-flex flex-wrap gap-3 mb-3">
-                                    <span><i class="ph ph-ruler"></i> 180 m²</span>
-                                    <span><i class="ph ph-house"></i> 1 piso</span>
-                                    <span><i class="ph ph-bed"></i> 3 habitaciones</span>
-                                    <span><i class="ph ph-bathtub"></i> 2 baños</span>
-                                </div>
-                                <p><i class="ph ph-map-pin"></i> Santa Fe, Santa Fe</p>
-                                <p>Apartamento moderno con excelente ubicación. Cuenta con acabados de primera calidad y vistas panorámicas.</p>
-                                <button class="btn btn-primary">Ver detalles</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        </div>
+        <div class="card dashboard-card card-contratos mb-4">
+            <div class="card-body">
+                <div class="dashboard-card-icon"><i class="fas fa-file-signature"></i></div>
+                <h5 class="card-title text-muted">Contratos Vigentes</h5>
+                <p class="card-text display-4 fw-bold text-dark">@Model.ContratosVigentes</p>
             </div>
-            
-            <!-- Propiedad 3 -->
-            <div class="carousel-item">
-                <div class="property-card">
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="property-image-placeholder">
-                                <div class="placeholder-text">Acá iría imagen 3</div>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="property-details p-3">
-                                <h2>$1,200,000</h2>
-                                <div class="d-flex flex-wrap gap-3 mb-3">
-                                    <span><i class="ph ph-ruler"></i> 210 m²</span>
-                                    <span><i class="ph ph-house"></i> 2 pisos</span>
-                                    <span><i class="ph ph-bed"></i> 4 habitaciones</span>
-                                    <span><i class="ph ph-bathtub"></i> 3 baños</span>
-                                </div>
-                                <p><i class="ph ph-map-pin"></i> Córdoba, Córdoba</p>
-                                <p>Hermosa casa con jardín amplio y piscina. Perfecta para familias que buscan comodidad y espacio.</p>
-                                <button class="btn btn-primary">Ver detalles</button>
-                            </div>
-                        </div>
-                    </div>
+        </div>
+        <div class="card dashboard-card card-inquilinos mb-4">
+            <div class="card-body">
+                <div class="dashboard-card-icon"><i class="fas fa-users"></i></div>
+                <h5 class="card-title text-muted">Inquilinos Activos</h5>
+                <p class="card-text display-4 fw-bold text-dark">@Model.InquilinosActivos</p>
+            </div>
+        </div>
+        <div class="card dashboard-card card-propietarios mb-4">
+            <div class="card-body">
+                <div class="dashboard-card-icon"><i class="fas fa-user-tie"></i></div>
+                <h5 class="card-title text-muted">Propietarios Activos</h5>
+                <p class="card-text display-4 fw-bold text-dark">@Model.PropietariosActivos</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna de Gráfico -->
+    <div class="col-lg-8 d-flex flex-column">
+        <div class="card">
+            <div class="card-header">
+                <h4>Estado de Inmuebles</h4>
+            </div>
+            <div class="card-body d-flex align-items-center justify-content-center" style="position: relative;">
+                <div style="max-height: 550px; width: 100%;">
+                    <canvas id="inmueblesChart"></canvas>
                 </div>
             </div>
         </div>
-        
-        <!-- Controles del carrusel -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#propiedadesCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#propiedadesCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
-        </button>
     </div>
 </div>
 
-<!-- Script para la animación del carrusel -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var carousel = document.getElementById('propiedadesCarousel');
-        var carouselInstance = new bootstrap.Carousel(carousel, {
-            interval: 5000,
-            wrap: true
+<!-- Accesos Rápidos y Contratos por Vencer -->
+<div class="row text-start g-4">
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h4>Accesos Rápidos</h4>
+            </div>
+            <div class="list-group list-group-flush">
+                <a asp-controller="Contratos" asp-action="Crear" class="list-group-item list-group-item-action text-center">
+                    <i class="fas fa-file-signature me-2"></i> Nuevo Contrato
+                </a>
+                <a asp-controller="Inmueble" asp-action="Crear" class="list-group-item list-group-item-action text-center">
+                    <i class="fas fa-home me-2"></i> Nuevo Inmueble
+                </a>
+                <a asp-controller="Inquilino" asp-action="Crear" class="list-group-item list-group-item-action text-center">
+                    <i class="fas fa-user-plus me-2"></i> Nuevo Inquilino
+                </a>
+                <a asp-controller="Propietario" asp-action="Crear" class="list-group-item list-group-item-action text-center">
+                    <i class="fas fa-user-tie me-2"></i> Nuevo Propietario
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-hourglass-end me-2 text-warning"></i>Contratos por Vencer (Próximos 30 días)</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.ContratosPorVencer.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var contrato in Model.ContratosPorVencer)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Inmueble:</strong> @contrato.Inmueble?.Direccion <br>
+                                    <small class="text-muted">Inquilino: @contrato.Inquilino?.Nombre @contrato.Inquilino?.Apellido</small>
+                                </div>
+                                <div>
+                                    <span class="badge bg-warning text-dark">Vence: @contrato.FechaFin.ToString("dd/MM/yyyy")</span>
+                                    <a asp-controller="Contratos" asp-action="Detalles" asp-route-id="@contrato.Id" class="btn btn-sm btn-outline-primary ms-2">Ver</a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">No hay contratos que venzan en los próximos 30 días.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const ctx = document.getElementById('inmueblesChart').getContext('2d');
+            const disponibles = @Model.InmueblesDisponibles;
+            const ocupados = @(Model.TotalInmuebles - Model.InmueblesDisponibles);
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Disponibles', 'Ocupados'],
+                    datasets: [{
+                        label: 'Estado de Inmuebles',
+                        data: [disponibles, ocupados],
+                        backgroundColor: [
+                            'rgba(25, 135, 84, 0.7)', // Verde (Success)
+                            'rgba(255, 193, 7, 0.7)'  // Amarillo (Warning)
+                        ],
+                        borderColor: [
+                            'rgba(25, 135, 84, 1)',
+                            'rgba(255, 193, 7, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' }
+                    }
+                }
+            });
         });
-    });
-</script>
+    </script>
+}
