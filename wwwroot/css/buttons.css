@@ -1,0 +1,264 @@
+/* ===== BUTTON STYLES ===== */
+/* Estilos para botones personalizados */
+
+/* Botón base */
+.btn-custom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-custom:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+.btn-custom:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Efecto de deslizamiento */
+.btn-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-custom:hover::before {
+  left: 100%;
+}
+
+/* Botón primario */
+.btn-primary-custom {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-primary-custom:active {
+  background-color: var(--primary-active);
+  border-color: var(--primary-active);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.4);
+}
+
+/* Botón secundario */
+.btn-secondary-custom {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-color: transparent;
+}
+
+.btn-secondary-custom:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.btn-secondary-custom:active {
+  background-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.15);
+}
+
+/* Botón outline */
+.btn-outline-custom {
+  background-color: transparent;
+  color: var(--primary-color);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.btn-outline-custom:hover {
+  background-color: var(--primary-lighter);
+  border-color: var(--primary-color);
+  color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.btn-outline-custom:active {
+  background-color: var(--primary-light);
+  border-color: var(--primary-hover);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Botón ghost */
+.btn-ghost-custom {
+  background-color: transparent;
+  color: var(--primary-color);
+  border-color: transparent;
+}
+
+.btn-ghost-custom:hover {
+  background-color: var(--primary-light);
+  color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.btn-ghost-custom:active {
+  background-color: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Botón danger */
+.btn-danger-custom {
+  background-color: transparent;
+  color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+.btn-danger-custom:hover {
+  background-color: var(--danger-color);
+  color: white;
+  border-color: var(--danger-color);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn-danger-custom:active {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);
+}
+
+/* Botón danger outline (para eliminar/anular) */
+.btn-outline-danger-custom {
+  background-color: transparent;
+  color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+.btn-outline-danger-custom:hover {
+  background-color: var(--danger-color);
+  color: white;
+  border-color: var(--danger-color);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn-outline-danger-custom:active {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);
+}
+
+/* Tamaños de botones */
+.btn-custom.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.btn-custom.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+/* Botones de dropdown */
+.btn-dropdown-custom {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  position: relative;
+  padding-right: 2.5rem;
+}
+
+.btn-dropdown-custom::after {
+  content: '';
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  background-color: currentColor;
+  mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 256 256'><path d='M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm45.66-109.66a8,8,0,0,1,0,11.32l-40,40a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L128,140.69l34.34-34.35A8,8,0,0,1,173.66,106.34Z'/></svg>");
+  -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 256 256'><path d='M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm45.66-109.66a8,8,0,0,1,0,11.32l-40,40a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L128,140.69l34.34-34.35A8,8,0,0,1,173.66,106.34Z'/></svg>");
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+  transition: transform var(--transition-normal);
+}
+
+.btn-dropdown-custom:hover {
+  background-color: var(--primary-lighter);
+  border-color: var(--primary-color);
+  color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.btn-dropdown-custom:active {
+  background-color: var(--primary-light);
+  border-color: var(--primary-hover);
+}
+
+.btn-dropdown-custom.active::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Variantes de dropdown */
+.btn-dropdown-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  padding-right: 2.5rem;
+}
+
+.btn-dropdown-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-dropdown-primary:active {
+  background-color: var(--primary-active);
+  border-color: var(--primary-active);
+}
+
+.btn-dropdown-primary.active::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.btn-dropdown-secondary {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-color: transparent;
+  padding-right: 2.5rem;
+}
+
+.btn-dropdown-secondary:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.btn-dropdown-secondary:active {
+  background-color: rgba(59, 130, 246, 0.25);
+}
+
+.btn-dropdown-secondary.active::after {
+  transform: translateY(-50%) rotate(180deg);
+}

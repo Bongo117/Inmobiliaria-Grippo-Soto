@@ -1,0 +1,245 @@
+/* ===== TABLE STYLES ===== */
+/* Estilos para tablas estilo shadcn */
+
+/* Contenedor de tabla principal */
+.table-shadcn {
+  width: 100%;
+  caption-side: bottom;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  border-spacing: 0;
+}
+
+/* Caption estilo shadcn */
+.table-shadcn-caption {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--gray-500);
+  text-align: center;
+}
+
+/* Header de la tabla */
+.table-shadcn-header {
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.table-shadcn-header-row {
+  border-bottom: 1px solid var(--gray-200);
+  transition: colors var(--transition-normal);
+}
+
+.table-shadcn-header-row:hover {
+  background-color: var(--primary-lighter);
+}
+
+/* Celdas del header */
+.table-shadcn-head {
+  height: 3rem;
+  padding: 0.75rem;
+  text-align: left;
+  vertical-align: middle;
+  font-weight: 500;
+  color: var(--gray-700);
+  background-color: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+  position: relative;
+}
+
+.table-shadcn-head:first-child {
+  border-top-left-radius: var(--border-radius);
+}
+
+.table-shadcn-head:last-child {
+  border-top-right-radius: var(--border-radius);
+}
+
+/* Body de la tabla */
+.table-shadcn-body {
+  background-color: white;
+}
+
+/* Filas del body */
+.table-shadcn-row {
+  border-bottom: 1px solid var(--gray-100);
+  transition: all var(--transition-normal);
+}
+
+.table-shadcn-row:hover {
+  background-color: var(--primary-lighter);
+}
+
+.table-shadcn-row:last-child {
+  border-bottom: none;
+}
+
+/* Celdas del body */
+.table-shadcn-cell {
+  height: 3rem;
+  padding: 0.75rem;
+  text-align: left;
+  vertical-align: middle;
+  color: var(--gray-700);
+}
+
+.table-shadcn-cell.font-medium {
+  font-weight: 500;
+}
+
+.table-shadcn-cell.text-right {
+  text-align: right;
+}
+
+.table-shadcn-cell.text-center {
+  text-align: center;
+}
+
+/* Footer de la tabla */
+.table-shadcn-footer {
+  border-top: 1px solid var(--gray-200);
+  background-color: var(--gray-50);
+  font-weight: 500;
+}
+
+.table-shadcn-footer-row {
+  border-bottom: none;
+}
+
+.table-shadcn-footer-row:hover {
+  background-color: transparent;
+}
+
+/* Contenedor responsive */
+.table-shadcn-container {
+  position: relative;
+  width: 100%;
+  overflow: auto;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius);
+  background-color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Estados especiales */
+.table-shadcn-row.selected {
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
+.table-shadcn-row.selected:hover {
+  background-color: rgba(59, 130, 246, 0.12);
+}
+
+/* Botones de acción en tablas */
+.table-actions {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.table-actions .btn-custom {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  border-radius: calc(var(--border-radius) - 1px);
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  transition: all var(--transition-normal);
+}
+
+.table-actions .btn-custom:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.table-actions .btn-custom svg {
+  flex-shrink: 0;
+}
+
+/* Botones de acción específicos */
+.table-actions .btn-danger-custom:hover {
+  background-color: var(--danger-color);
+  color: white !important;
+  border-color: var(--danger-color);
+}
+
+.table-actions .btn-danger-custom:hover svg {
+  color: white;
+}
+
+/* Badges para estados */
+.table-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: calc(var(--border-radius) - 2px);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.table-badge.badge-success {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+}
+
+.table-badge.badge-warning {
+  background-color: rgba(234, 179, 8, 0.1);
+  color: #a16207;
+}
+
+.table-badge.badge-danger {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+}
+
+.table-badge.badge-info {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+}
+
+/* Empty state */
+.table-empty-state {
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--gray-500);
+}
+
+.table-empty-state-icon {
+  margin-bottom: 1rem;
+  color: var(--gray-300);
+}
+
+.table-empty-state h5 {
+  margin-bottom: 0.5rem;
+  color: var(--gray-700);
+  font-weight: 500;
+}
+
+.table-empty-state p {
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--gray-500);
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+  .table-shadcn-container {
+    font-size: 0.8rem;
+  }
+  
+  .table-shadcn-cell {
+    padding: 0.5rem;
+  }
+  
+  .table-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .table-actions .btn-custom {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -31,28 +31,49 @@
     <div class="card-body">
         @if (Model != null && Model.Any())
         {
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Id</th>
-                            <th>DNI</th>
-                            <th>Nombre Completo</th>
-                            <th>Email</th>
-                            <th>Teléfono</th>
-                            <th width="200">Acciones</th>
+            <div class="table-shadcn-container">
+                <table class="table-shadcn">
+                    <caption class="table-shadcn-caption">
+                        Lista de inquilinos registrados en el sistema.
+                    </caption>
+                    <thead class="table-shadcn-header">
+                        <tr class="table-shadcn-header-row">
+                            <th class="table-shadcn-head" style="width: 80px;">Id</th>
+                            <th class="table-shadcn-head" style="width: 120px;">DNI</th>
+                            <th class="table-shadcn-head">Nombre Completo</th>
+                            <th class="table-shadcn-head">Email</th>
+                            <th class="table-shadcn-head">Teléfono</th>
+                            <th class="table-shadcn-head text-center" style="width: 180px;">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-shadcn-body">
                         @foreach (var inquilino in Model)
                         {
-                            <tr>
-                                <td>@inquilino.Id</td>
-                                <td>@inquilino.Dni</td>
-                                <td>@inquilino.Apellido, @inquilino.Nombre</td>
-                                <td>@(inquilino.Email ?? "No especificado")</td>
-                                <td>@(inquilino.Telefono ?? "No especificado")</td>
-                                <td>
+                            <tr class="table-shadcn-row">
+                                <td class="table-shadcn-cell font-medium">@inquilino.Id</td>
+                                <td class="table-shadcn-cell">@inquilino.Dni</td>
+                                <td class="table-shadcn-cell">@inquilino.Apellido, @inquilino.Nombre</td>
+                                <td class="table-shadcn-cell">
+                                    @if (string.IsNullOrEmpty(inquilino.Email))
+                                    {
+                                        <span class="text-muted">No especificado</span>
+                                    }
+                                    else
+                                    {
+                                        @inquilino.Email
+                                    }
+                                </td>
+                                <td class="table-shadcn-cell">
+                                    @if (string.IsNullOrEmpty(inquilino.Telefono))
+                                    {
+                                        <span class="text-muted">No especificado</span>
+                                    }
+                                    else
+                                    {
+                                        @inquilino.Telefono
+                                    }
+                                </td>
+                                <td class="table-shadcn-cell">
                                     <div class="table-actions">
                                         <a asp-action="Detalles" asp-route-id="@inquilino.Id" 
                                            class="btn-custom btn-outline-custom btn-sm" title="Ver detalles del inquilino">
@@ -71,8 +92,7 @@
                                         @if (User.IsInRole("Administrador"))
                                         {
                                             <a asp-action="Eliminar" asp-route-id="@inquilino.Id" 
-                                               class="btn-custom btn-outline-custom btn-sm" title="Eliminar inquilino"
-                                               style="color: #dc2626; border-color: #dc2626;">
+                                               class="btn-custom btn-outline-danger-custom btn-sm" title="Eliminar inquilino">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
                                                     <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"/>
                                                 </svg>
@@ -89,12 +109,21 @@
         }
         else
         {
-            <div class="text-center py-5">
-                <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No hay inquilinos registrados</h5>
-                <p class="text-muted">Comienza creando tu primer inquilino</p>
-                <a asp-action="Crear" class="btn-custom btn-primary-custom me-2">
-                    <i class="fas fa-plus"></i> Crear Inquilino
+            <div class="table-empty-state">
+                <div class="table-empty-state-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.7a8,8,0,0,1-11.07-2.33A79.83,79.83,0,0,0,172,168a8,8,0,0,1,0-16,96,96,0,0,1,81.09,45.58A8,8,0,0,1,250.14,206.7ZM172,96a44,44,0,1,1-16.34-84.87,8,8,0,1,1-5.94,14.85,28,28,0,1,0,0,52.09,8,8,0,1,1,5.94,14.85A43.85,43.85,0,0,1,172,96Z"/>
+                    </svg>
+                </div>
+                <h5>No hay inquilinos registrados</h5>
+                <p>Comienza creando tu primer inquilino para gestionar las propiedades</p>
+                <a asp-action="Crear" class="btn-custom btn-primary-custom">
+                    <span class="sidebar-icon me-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                            <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/>
+                        </svg>
+                    </span>
+                    Crear Inquilino
                 </a>
             </div>
         }

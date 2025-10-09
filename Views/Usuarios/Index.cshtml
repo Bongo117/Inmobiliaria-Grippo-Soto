@@ -1,36 +1,108 @@
 @model IEnumerable<Inmobiliaria_.Net_Core.Models.Usuario>
 @{
-    ViewData["Title"] = "Usuarios";
+    ViewData["Title"] = "Lista de Usuarios";
 }
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Usuarios</h2>
-        <a asp-action="Crear" class="btn btn-success">Nuevo Usuario</a>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Lista de Usuarios</h2>
+    <a asp-action="Crear" class="btn-custom btn-primary-custom">
+        <span class="sidebar-icon me-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/>
+            </svg>
+        </span>
+        Nuevo Usuario
+    </a>
+</div>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Mensaje"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>Nombre</th>
-                <th>Rol</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var u in Model)
-            {
-                <tr>
-                    <td>@u.Email</td>
-                    <td>@(u.Apellido + " " + u.Nombre)</td>
-                    <td>@u.Rol</td>
-                    <td>
-                        <a asp-action="Editar" asp-route-id="@u.Id" class="btn btn-sm btn-primary">Editar</a>
-                        <a asp-action="Eliminar" asp-route-id="@u.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-shadcn-container">
+                <table class="table-shadcn">
+                    <caption class="table-shadcn-caption">
+                        Lista de usuarios registrados en el sistema.
+                    </caption>
+                    <thead class="table-shadcn-header">
+                        <tr class="table-shadcn-header-row">
+                            <th class="table-shadcn-head">Email</th>
+                            <th class="table-shadcn-head">Nombre Completo</th>
+                            <th class="table-shadcn-head" style="width: 120px;">Rol</th>
+                            <th class="table-shadcn-head text-center" style="width: 180px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-shadcn-body">
+                        @foreach (var u in Model)
+                        {
+                            <tr class="table-shadcn-row">
+                                <td class="table-shadcn-cell font-medium">@u.Email</td>
+                                <td class="table-shadcn-cell">@(u.Apellido + " " + u.Nombre)</td>
+                                <td class="table-shadcn-cell">
+                                    <span class="badge @(u.Rol == "Administrador" ? "bg-danger" : "bg-primary")">@u.Rol</span>
+                                </td>
+                                <td class="table-shadcn-cell">
+                                    <div class="table-actions">
+                                        <a asp-action="Editar" asp-route-id="@u.Id" 
+                                           class="btn-custom btn-secondary-custom btn-sm" title="Editar usuario">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                                                <path d="M227.31,73.37,182.63,28.69a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31l83.67-83.66,3.48,13.9L173.27,216H216a16,16,0,0,0,16-16V163.31A15.86,15.86,0,0,0,227.31,152ZM51.31,188,68,171.31,84.69,188Zm48,0L120,171.31,136.69,188Zm48-48L168,123.31,184.69,140Zm16-57.37L147.32,64l16.68-16.69L180.69,66.34Z"/>
+                                            </svg>
+                                            <span class="ms-1">Editar</span>
+                                        </a>
+                                        <a asp-action="Eliminar" asp-route-id="@u.Id" 
+                                           class="btn-custom btn-outline-custom btn-sm" title="Eliminar usuario"
+                                           style="color: #dc2626; border-color: #dc2626;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                                                <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"/>
+                                            </svg>
+                                            <span class="ms-1">Eliminar</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="table-empty-state">
+                <div class="table-empty-state-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.7a8,8,0,0,1-11.07-2.33A79.83,79.83,0,0,0,172,168a8,8,0,0,1,0-16,96,96,0,0,1,81.09,45.58A8,8,0,0,1,250.14,206.7ZM172,96a44,44,0,1,1-16.34-84.87,8,8,0,1,1-5.94,14.85,28,28,0,1,0,0,52.09,8,8,0,1,1,5.94,14.85A43.85,43.85,0,0,1,172,96Z"/>
+                    </svg>
+                </div>
+                <h5>No hay usuarios registrados</h5>
+                <p>Comienza creando el primer usuario para gestionar el sistema</p>
+                <a asp-action="Crear" class="btn-custom btn-primary-custom">
+                    <span class="sidebar-icon me-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                            <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/>
+                        </svg>
+                    </span>
+                    Crear Usuario
+                </a>
+            </div>
+        }
+    </div>
 </div>
 
 
