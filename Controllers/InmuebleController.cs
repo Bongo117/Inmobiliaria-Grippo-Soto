@@ -17,20 +17,29 @@ namespace Inmobiliaria_.Net_Core.Controllers
             this.repositorioTipoInmueble = repositorioTipoInmueble;
         }
 
-        public IActionResult Index(bool? disponibles = null)
+        public IActionResult Index(bool? disponibles = null, bool? todos = null)
         {
-            var lista = repositorio.ObtenerTodos();
+            // Si se está filtrando por disponibles, no disponibles, o se quiere ver todos, incluir inactivos
+            var incluirInactivos = disponibles.HasValue || todos.HasValue;
+            var lista = repositorio.ObtenerTodos(incluirInactivos);
+            
             if (disponibles.HasValue)
             {
                 if (disponibles.Value)
                 {
                     lista = lista.Where(i => i.Estado).ToList();
+                    ViewBag.FiltroDisponibles = "Sí";
                 }
                 else
                 {
                     lista = lista.Where(i => !i.Estado).ToList();
+                    ViewBag.FiltroDisponibles = "No";
                 }
-                ViewBag.FiltroDisponibles = disponibles.Value ? "Sí" : "No";
+            }
+            else if (todos.HasValue)
+            {
+                // Cuando se hace clic en "Todos", mostrar todos (activos e inactivos)
+                ViewBag.FiltroDisponibles = "Todos";
             }
             return View(lista);
         }

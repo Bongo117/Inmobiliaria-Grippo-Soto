@@ -7,7 +7,7 @@ namespace Inmobiliaria_.Net_Core.Models
     {
         public RepositorioInmueble(IConfiguration configuration) : base(configuration) { }
 
-        public List<Inmueble> ObtenerTodos()
+        public List<Inmueble> ObtenerTodos(bool incluirInactivos = false)
         {
             var lista = new List<Inmueble>();
 
@@ -18,8 +18,12 @@ namespace Inmobiliaria_.Net_Core.Models
                             ti.Nombre AS TipoNombre, ti.Descripcion AS TipoDescripcion, ti.UsoPermitido, ti.EsComercial
                             FROM inmuebles i
                             INNER JOIN propietarios p ON i.PropietarioId = p.Id
-                            LEFT JOIN tipos_inmuebles ti ON i.TipoInmuebleId = ti.Id
-                            WHERE i.Estado = 1";
+                            LEFT JOIN tipos_inmuebles ti ON i.TipoInmuebleId = ti.Id";
+                
+                if (!incluirInactivos)
+                {
+                    sql += " WHERE i.Estado = 1";
+                }
 
                 using (var command = new MySqlCommand(sql, connection))
                 {
@@ -154,7 +158,8 @@ namespace Inmobiliaria_.Net_Core.Models
             {
                 var sql = @"UPDATE inmuebles SET 
                             Direccion = @direccion, Tipo = @tipo, TipoInmuebleId = @tipoInmuebleId, 
-                            Ambientes = @ambientes, Precio = @precio, PropietarioId = @propietarioId 
+                            Ambientes = @ambientes, Precio = @precio, PropietarioId = @propietarioId, 
+                            Estado = @estado 
                             WHERE Id = @id";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -166,6 +171,7 @@ namespace Inmobiliaria_.Net_Core.Models
                     command.Parameters.AddWithValue("@ambientes", inmueble.Ambientes);
                     command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@propietarioId", inmueble.PropietarioId);
+                    command.Parameters.AddWithValue("@estado", inmueble.Estado);
 
                     connection.Open();
                     return command.ExecuteNonQuery();

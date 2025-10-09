@@ -108,7 +108,8 @@ namespace Inmobiliaria_.Net_Core.Models
             {
                 var sql = @"UPDATE tipos_inmuebles SET 
                             Nombre = @nombre, Descripcion = @descripcion, 
-                            UsoPermitido = @usoPermitido, EsComercial = @esComercial 
+                            UsoPermitido = @usoPermitido, EsComercial = @esComercial, 
+                            Estado = @estado 
                             WHERE Id = @id";
 
                 using (var command = new MySqlCommand(sql, connection))
@@ -118,6 +119,7 @@ namespace Inmobiliaria_.Net_Core.Models
                     command.Parameters.AddWithValue("@descripcion", tipoInmueble.Descripcion ?? (object)DBNull.Value);
                     command.Parameters.AddWithValue("@usoPermitido", tipoInmueble.UsoPermitido ?? "");
                     command.Parameters.AddWithValue("@esComercial", tipoInmueble.EsComercial);
+                    command.Parameters.AddWithValue("@estado", tipoInmueble.Estado);
 
                     connection.Open();
                     return command.ExecuteNonQuery();
