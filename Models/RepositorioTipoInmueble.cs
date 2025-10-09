@@ -46,13 +46,18 @@ namespace Inmobiliaria_.Net_Core.Models
             return lista;
         }
 
-        public TipoInmueble? ObtenerPorId(int id)
+        public TipoInmueble? ObtenerPorId(int id, bool incluirInactivos = false)
         {
             using (var connection = new MySqlConnection(connectionString))
             {
                 var sql = @"SELECT Id, Nombre, Descripcion, UsoPermitido, EsComercial, Estado 
                             FROM tipos_inmuebles 
-                            WHERE Id = @id AND Estado = 1";
+                            WHERE Id = @id";
+                
+                if (!incluirInactivos)
+                {
+                    sql += " AND Estado = 1";
+                }
 
                 using (var command = new MySqlCommand(sql, connection))
                 {

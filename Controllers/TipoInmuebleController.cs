@@ -76,7 +76,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         public IActionResult Editar(int id)
         {
-            var tipoInmueble = repositorio.ObtenerPorId(id);
+            var tipoInmueble = repositorio.ObtenerPorId(id, true); // Incluir inactivos
             if (tipoInmueble == null)
             {
                 return NotFound();
@@ -109,7 +109,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         public IActionResult Detalles(int id)
         {
-            var tipoInmueble = repositorio.ObtenerPorId(id);
+            var tipoInmueble = repositorio.ObtenerPorId(id, true); // Incluir inactivos
             if (tipoInmueble == null)
             {
                 return NotFound();
@@ -120,7 +120,7 @@ namespace Inmobiliaria_.Net_Core.Controllers
         [Authorize(Policy = "SoloAdminParaEliminar")]
         public IActionResult Eliminar(int id)
         {
-            var tipoInmueble = repositorio.ObtenerPorId(id);
+            var tipoInmueble = repositorio.ObtenerPorId(id, true); // Incluir inactivos
             if (tipoInmueble == null)
             {
                 return NotFound();
