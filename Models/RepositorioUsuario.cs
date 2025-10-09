@@ -86,14 +86,14 @@ namespace Inmobiliaria_.Net_Core.Models
         public int Alta(Usuario usuario)
         {
             if (usuario == null) throw new ArgumentNullException(nameof(usuario));
-            // Normalizar email antes de operar
-            usuario.Email = usuario.Email?.Trim().ToLowerInvariant();
+            // Normalizar email antes de operar, asegurando que no sea nulo
+            usuario.Email = (usuario.Email ?? string.Empty).Trim().ToLowerInvariant();
 
             using (var connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
 
-                // 1) Revisar si existe usuario (activo o inactivo) con ese email
+                // 1) Revisar si existe usuario (activo o inactivo) con ese email (aseguramos que no sea nulo)
                 var existente = ObtenerPorEmail(usuario.Email, soloActivos: false);
                 if (existente != null)
                 {

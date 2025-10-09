@@ -30,9 +30,12 @@
                         <label asp-for="UsoPermitido" class="form-label"></label>
                         <select asp-for="UsoPermitido" class="form-select">
                             <option value="">Seleccione el uso permitido</option>
-                            @foreach (var uso in ViewBag.UsoPermitido as List<string>)
+                            @if (ViewBag.UsoPermitido is List<string> usos)
                             {
-                                <option value="@uso">@uso</option>
+                                @foreach (var uso in usos)
+                                {
+                                    <option value="@uso">@uso</option>
+                                }
                             }
                         </select>
                         <span asp-validation-for="UsoPermitido" class="text-danger"></span>
