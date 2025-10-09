@@ -308,22 +308,38 @@
             function filterTable() {
                 $('#tableBody tr').each(function() {
                     var show = true;
-                    $(this).find('td').each(function(index) {
+                    var $row = $(this);
+                    
+                    $row.find('td').each(function(index) {
                         if (filters[index] !== undefined && filters[index] !== '') {
-                            var cellText = $(this).text().toLowerCase().trim();
+                            var cellText = '';
+                            var filterValue = filters[index].toLowerCase();
+                            
                             if (index === 3) { // Uso Permitido
                                 cellText = $(this).find('.badge').text().toLowerCase().trim();
                             } else if (index === 4) { // Es Comercial
                                 cellText = $(this).find('.badge').text().toLowerCase().trim();
                             } else if (index === 5) { // Estado
                                 cellText = $(this).find('.badge').text().toLowerCase().trim();
+                            } else {
+                                cellText = $(this).text().toLowerCase().trim();
                             }
-                            if (cellText.indexOf(filters[index]) === -1) {
-                                show = false;
+                            
+                            // Para filtros de dropdown, hacer comparación exacta
+                            if (index === 3 || index === 4 || index === 5) {
+                                if (cellText !== filterValue) {
+                                    show = false;
+                                }
+                            } else {
+                                // Para filtros de texto, hacer búsqueda parcial
+                                if (cellText.indexOf(filterValue) === -1) {
+                                    show = false;
+                                }
                             }
                         }
                     });
-                    $(this).toggle(show);
+                    
+                    $row.toggle(show);
                 });
             }
 
@@ -339,7 +355,27 @@
                 e.preventDefault();
                 var col = $(this).data('column');
                 var value = $(this).data('value');
-                filters[col] = value;
+                
+                // Convertir valores para comparación
+                if (col === 4) { // Es Comercial
+                    if (value === 'Sí') {
+                        filters[col] = 'sí';
+                    } else if (value === 'No') {
+                        filters[col] = 'no';
+                    } else {
+                        filters[col] = value.toLowerCase();
+                    }
+                } else if (col === 5) { // Estado
+                    if (value === 'Activo') {
+                        filters[col] = 'activo';
+                    } else if (value === 'Inactivo') {
+                        filters[col] = 'inactivo';
+                    } else {
+                        filters[col] = value.toLowerCase();
+                    }
+                } else {
+                    filters[col] = value.toLowerCase();
+                }
                 
                 // Update button text to show selected option
                 var button = $(this).closest('.dropdown').find('.filter-dropdown');

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Lucho\\OneDrive\\Escritorio\\Proyecto Inmobiliaria\\Inmobiliaria-Grippo-Soto\\Inmobiliaria-Grippo-Soto.csproj": {}
+    "C:\\Users\\fedeg\\Desktop\\Inmobiliaria-Grippo-Soto\\Inmobiliaria-Grippo-Soto.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Lucho\\OneDrive\\Escritorio\\Proyecto Inmobiliaria\\Inmobiliaria-Grippo-Soto\\Inmobiliaria-Grippo-Soto.csproj": {
+    "C:\\Users\\fedeg\\Desktop\\Inmobiliaria-Grippo-Soto\\Inmobiliaria-Grippo-Soto.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Lucho\\OneDrive\\Escritorio\\Proyecto Inmobiliaria\\Inmobiliaria-Grippo-Soto\\Inmobiliaria-Grippo-Soto.csproj",
+        "projectUniqueName": "C:\\Users\\fedeg\\Desktop\\Inmobiliaria-Grippo-Soto\\Inmobiliaria-Grippo-Soto.csproj",
         "projectName": "Inmobiliaria-Grippo-Soto",
-        "projectPath": "C:\\Users\\Lucho\\OneDrive\\Escritorio\\Proyecto Inmobiliaria\\Inmobiliaria-Grippo-Soto\\Inmobiliaria-Grippo-Soto.csproj",
-        "packagesPath": "C:\\Users\\Lucho\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Lucho\\OneDrive\\Escritorio\\Proyecto Inmobiliaria\\Inmobiliaria-Grippo-Soto\\obj\\",
+        "projectPath": "C:\\Users\\fedeg\\Desktop\\Inmobiliaria-Grippo-Soto\\Inmobiliaria-Grippo-Soto.csproj",
+        "packagesPath": "C:\\Users\\fedeg\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\fedeg\\Desktop\\Inmobiliaria-Grippo-Soto\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Lucho\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\fedeg\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -71,7 +71,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.317/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
