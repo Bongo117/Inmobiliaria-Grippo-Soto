@@ -248,7 +248,6 @@
             const userDropdown = document.getElementById('userDropdown');
             const userToggle = document.querySelector('.user-dropdown-toggle');
             
-            // Cerrar otros dropdowns
             const allDropdowns = document.querySelectorAll('.dropdown-menu-custom');
             allDropdowns.forEach(dropdown => {
                 if (dropdown.id !== 'userDropdown') {
@@ -275,7 +274,6 @@
         // Manejar clicks en items del dropdown
         document.addEventListener('click', function (event) {
             if (event.target.classList.contains('dropdown-item-custom') && !event.target.classList.contains('disabled')) {
-                // Cerrar el dropdown al seleccionar un item
                 const dropdown = event.target.closest('.dropdown-menu-custom');
                 if (dropdown) {
                     const button = dropdown.parentElement.querySelector('.btn-dropdown-primary, .btn-dropdown-secondary, .btn-dropdown-custom');
@@ -286,16 +284,12 @@
                     }
                 }
 
-                // Solo prevenir navegación para enlaces demo (que tengan href="#")
                 if (event.target.getAttribute('href') === '#') {
                     event.preventDefault();
                 }
-                // Los enlaces reales con asp-controller y asp-action funcionarán normalmente
             }
             
-            // Manejar clicks en items del dropdown de usuario
             if (event.target.classList.contains('user-dropdown-item') && !event.target.classList.contains('disabled')) {
-                // Cerrar el dropdown de usuario al seleccionar un item
                 const userDropdown = document.getElementById('userDropdown');
                 const userToggle = document.querySelector('.user-dropdown-toggle');
                 
@@ -306,11 +300,9 @@
                     userToggle.classList.remove('active');
                 }
 
-                // Solo prevenir navegación para enlaces demo (que tengan href="#")
                 if (event.target.getAttribute('href') === '#') {
                     event.preventDefault();
                 }
-                // Los enlaces reales con asp-controller y asp-action funcionarán normalmente
             }
         });
     </script>

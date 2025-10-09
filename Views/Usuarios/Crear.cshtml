@@ -119,14 +119,12 @@
             }
 
             form.addEventListener('submit', function (e) {
-                // Limpiar errores previos
                 clearClientErrors();
 
                 const password = pwd.value || '';
                 const confirm = confirmPwd.value || '';
                 const errors = [];
 
-                // Requisitos mínimos
                 if (!password) {
                     errors.push('La contraseña es obligatoria.');
                 } else {
@@ -146,13 +144,10 @@
                 if (errors.length > 0) {
                     e.preventDefault();
                     errors.forEach(addClientError);
-                    // hacer focus en el primer campo con error
                     if (!password) pwd.focus(); else if (password !== confirm) confirmPwd.focus();
-                    // evitar doble envío
                     return false;
                 }
 
-                // Dejar que el formulario haga submit al servidor
                 return true;
             });
         })();

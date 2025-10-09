@@ -42,13 +42,11 @@ namespace Inmobiliaria_.Net_Core.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    // Validar que la fecha de fin sea posterior a la fecha de inicio
                     if (contrato.FechaFin <= contrato.FechaInicio)
                     {
                         ModelState.AddModelError("FechaFin", "La fecha de finalización debe ser posterior a la fecha de inicio");
                     }
                     
-                    // Validar que no exista otro contrato para ese inmueble en esas fechas
                     if (repositorio.ExisteContratoEnFechas(contrato.InmuebleId, contrato.FechaInicio, contrato.FechaFin))
                     {
                         var contratosSuperpuestos = repositorio.ObtenerContratosSuperpuestos(contrato.InmuebleId, contrato.FechaInicio, contrato.FechaFin);
@@ -62,7 +60,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                         ModelState.AddModelError("", mensaje.Trim());
                     }
                     
-                    // Validar si ya existe un contrato activo para el mismo inquilino e inmueble
                     if (repositorio.ExisteContratoActivoParaInquilinoEInmueble(contrato.InquilinoId, contrato.InmuebleId))
                     {
                         var contratosExistentes = repositorio.ObtenerContratosActivosPorInquilinoEInmueble(contrato.InquilinoId, contrato.InmuebleId);
@@ -82,7 +79,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
                     if (ModelState.IsValid)
                     {
-                        // Auditoría
                         contrato.FechaCreacion = DateTime.Now;
                         contrato.UsuarioCreador = User?.Identity?.Name;
 
@@ -92,14 +88,12 @@ namespace Inmobiliaria_.Net_Core.Controllers
                     }
                 }
                 
-                // Si llegamos aquí, hay errores de validación
                 ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
                 ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
                 return View(contrato);
             }
             catch (Exception ex)
             {
-                // Log del error
                 Console.WriteLine($"Error al crear contrato: {ex.Message}");
                 Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 
@@ -128,13 +122,11 @@ namespace Inmobiliaria_.Net_Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Validar que la fecha de fin sea posterior a la fecha de inicio
                 if (contrato.FechaFin <= contrato.FechaInicio)
                 {
                     ModelState.AddModelError("FechaFin", "La fecha de finalización debe ser posterior a la fecha de inicio");
                 }
                 
-                // Validar que no exista otro contrato para ese inmueble en esas fechas (excluyendo el actual)
                 if (repositorio.ExisteContratoEnFechas(contrato.InmuebleId, contrato.FechaInicio, contrato.FechaFin, contrato.Id))
                 {
                     var contratosSuperpuestos = repositorio.ObtenerContratosSuperpuestos(contrato.InmuebleId, contrato.FechaInicio, contrato.FechaFin, contrato.Id);
@@ -148,7 +140,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                     ModelState.AddModelError("", mensaje.Trim());
                 }
                 
-                // Validar si ya existe otro contrato activo para el mismo inquilino e inmueble (excluyendo el actual)
                 if (repositorio.ExisteContratoActivoParaInquilinoEInmueble(contrato.InquilinoId, contrato.InmuebleId, contrato.Id))
                 {
                     var contratosExistentes = repositorio.ObtenerContratosActivosPorInquilinoEInmueble(contrato.InquilinoId, contrato.InmuebleId);
@@ -188,7 +179,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         public IActionResult Detalles(int id)
         {
-            // Permitir ver detalles aun si el contrato no está activo
             var contrato = repositorio.ObtenerPorIdIncluyeInactivos(id);
             if (contrato == null)
             {
@@ -197,7 +187,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View(contrato);
         }
 
-        // Renovación de contrato: crea un nuevo contrato con mismo inquilino e inmueble
         public IActionResult Renovar(int id)
         {
             var contrato = repositorio.ObtenerPorIdIncluyeInactivos(id);
@@ -242,7 +231,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 UsuarioCreador = User?.Identity?.Name
             };
 
-            // Validaciones iguales a Crear
             if (contrato.FechaFin <= contrato.FechaInicio)
             {
                 ModelState.AddModelError("FechaFin", "La fecha de finalización debe ser posterior a la fecha de inicio");
@@ -276,7 +264,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
         }
 
-        // Contratos que finalizan en N días
         public IActionResult FinalizanEn(int dias = 30)
         {
             var hoy = DateTime.Today;
@@ -338,7 +325,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
         [HttpPost]
         public IActionResult VigentesEntreFechasPost(DateTime fechaDesde, DateTime fechaHasta)
         {
-            // PRG: redirigir con querystring para evitar reenvío al volver/recargar
             return RedirectToAction(nameof(VigentesEntreFechas), new { fechaDesde = fechaDesde.ToString("yyyy-MM-dd"), fechaHasta = fechaHasta.ToString("yyyy-MM-dd") });
         }
 
@@ -347,7 +333,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return RedirectToAction("PorContrato", "Pagos", new { contratoId = id });
         }
 
-        // Contratos por inmueble
         public IActionResult PorInmueble(int inmuebleId)
         {
             var lista = repositorio.ObtenerPorInmueble(inmuebleId);
@@ -355,7 +340,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View("Index", lista);
         }
 
-        // Métodos para terminación anticipada
         public IActionResult TerminarAnticipadamente(int id)
         {
             var contrato = repositorio.ObtenerPorId(id);
@@ -400,7 +384,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 return RedirectToAction(nameof(Index));
             }
             
-            // Validar que la fecha de terminación esté dentro del rango válido
             if (contrato.FechaTerminacionAnticipada.HasValue && contrato.FechaTerminacionAnticipada.Value.Date < contratoOriginal.FechaInicio.Date)
             {
                 ModelState.AddModelError("FechaTerminacionAnticipada", "La fecha de terminación no puede ser anterior a la fecha de inicio del contrato");
@@ -421,7 +404,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
             
             try
             {
-                // Actualizar el contrato con la terminación anticipada
                 contratoOriginal.FechaTerminacionAnticipada = contrato.FechaTerminacionAnticipada;
                 contratoOriginal.MotivoTerminacion = contrato.MotivoTerminacion;
                 contratoOriginal.MultaAplicada = contratoOriginal.MontoMultaCalculado;
@@ -431,7 +413,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 
                 repositorio.Modificacion(contratoOriginal);
                 
-                // Crear pago de multa automáticamente
                 CrearPagoMulta(contratoOriginal);
                 
                 TempData["Mensaje"] = $"Contrato terminado anticipadamente. Multa aplicada: ${contratoOriginal.MultaAplicada:F2}";
@@ -452,7 +433,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 return NotFound();
             }
             
-            // Si se proporciona una fecha de terminación, calcular con esa fecha
             if (fechaTerminacion.HasValue)
             {
                 var duracionTotal = contrato.DuracionDias;
@@ -473,7 +453,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 });
             }
             
-            // Si el contrato ya tiene terminación anticipada, usar esos valores
             return Json(new
             {
                 montoMulta = contrato.MontoMultaCalculado,
@@ -505,8 +484,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
             catch (Exception ex)
             {
-                // Log del error pero no interrumpir el flujo principal
-                // En un entorno de producción, se debería usar un logger apropiado
                 Console.WriteLine($"Error al crear pago de multa: {ex.Message}");
             }
         }

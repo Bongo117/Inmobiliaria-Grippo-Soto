@@ -146,14 +146,12 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return View();
         }
 
-        // ---- POST Crear modificado para recibir Password y ConfirmPassword ----
         [HttpPost]
         [Authorize(Roles = "Administrador")]
         public IActionResult Crear(Usuario usuario, string Password, string ConfirmPassword)
         {
             try
             {
-                // Validar password recibida desde el form
                 if (string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(ConfirmPassword))
                 {
                     ModelState.AddModelError("Password", "La contraseña y su confirmación son obligatorias.");
@@ -166,21 +164,17 @@ namespace Inmobiliaria_.Net_Core.Controllers
                     return View(usuario);
                 }
 
-                // Asignar ClaveHash antes de validar ModelState y eliminar errores previos sobre ClaveHash
                 usuario.ClaveHash = Password; // En producción hash!
                 if (ModelState.ContainsKey("ClaveHash"))
                     ModelState.Remove("ClaveHash");
 
-                // Asegurar estado por defecto
                 usuario.Estado = true;
 
-                // Validar resto del modelo
                 if (!ModelState.IsValid)
                 {
                     return View(usuario);
                 }
 
-                // Validar email único
                 if (repositorioUsuario.ExisteEmail(usuario.Email))
                 {
                     ModelState.AddModelError("Email", "Ya existe un usuario con ese email");
@@ -196,7 +190,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 return View(usuario);
             }
         }
-        // ---------------------------------------------------------------------
 
         [Authorize(Roles = "Administrador")]
         public IActionResult Editar(int id)
@@ -214,7 +207,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
             {
                 if (usuario == null) return BadRequest();
 
-                // Si por algún motivo el Id no vino en el binding (Id == 0), intentamos tomarlo del form
                 if (usuario.Id == 0)
                 {
                     if (int.TryParse(Request.Form["Id"], out var idFromForm))
@@ -223,18 +215,13 @@ namespace Inmobiliaria_.Net_Core.Controllers
                         return BadRequest("Id de usuario faltante.");
                 }
 
-                // Obtener usuario actual desde BD para preservar campos no enviados (ClaveHash, AvatarUrl, FechaAlta, etc.)
                 var usuarioDb = repositorioUsuario.ObtenerPorId(usuario.Id);
                 if (usuarioDb == null) return NotFound();
 
-                // El model binder ya ejecutó la validación: como el formulario de editar NO envía ClaveHash,
-                // ModelState tendrá error por ClaveHash (porque en el modelo está marcado Required).
-                // Eliminamos cualquier error de ModelState sobre ClaveHash y asignamos la clave actual para que la validación continúe ok.
                 if (ModelState.ContainsKey("ClaveHash"))
                     ModelState.Remove("ClaveHash");
                 usuario.ClaveHash = usuarioDb.ClaveHash;
 
-                // Preservar AvatarUrl si no fue enviado desde el form (tenemos input hidden en la vista)
                 if (string.IsNullOrEmpty(usuario.AvatarUrl))
                     usuario.AvatarUrl = usuarioDb.AvatarUrl;
 
@@ -253,12 +240,10 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
                 if (rows <= 0)
                 {
-                    // No se actualizó; informar
                     ModelState.AddModelError("", "No se pudieron guardar los cambios. Revise los datos e intente nuevamente.");
                     return View(usuario);
                 }
 
-                // Si el usuario editado es el mismo que está logueado, actualizamos los claims para que la sesión refleje los cambios
                 var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (idClaim != null && int.TryParse(idClaim, out var currentUserId) && currentUserId == usuario.Id)
                 {
@@ -326,11 +311,9 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 if (idClaim == null) return NotFound();
                 usuario.Id = int.Parse(idClaim);
 
-                // Obtener usuario actual desde BD para conservar campos no enviados por el formulario
                 var usuarioDb = repositorioUsuario.ObtenerPorId(usuario.Id);
                 if (usuarioDb == null) return NotFound();
 
-                // Manejar subida de archivo de avatar
                 if (avatarFile != null && avatarFile.Length > 0)
                 {
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
@@ -363,7 +346,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                         await avatarFile.CopyToAsync(stream);
                     }
 
-                    // eliminar avatar anterior si existía
                     if (!string.IsNullOrEmpty(usuarioDb.AvatarUrl))
                     {
                         var prevPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", usuarioDb.AvatarUrl.TrimStart('/'));
@@ -373,7 +355,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                         }
                     }
 
-                    // Actualizar la URL del avatar
                     usuarioDb.AvatarUrl = $"/uploads/avatars/{fileName}";
                 }
 

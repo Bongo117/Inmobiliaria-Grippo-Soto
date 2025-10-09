@@ -19,7 +19,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         public IActionResult Index(bool? disponibles = null, bool? todos = null)
         {
-            // Si se está filtrando por disponibles, no disponibles, o se quiere ver todos, incluir inactivos
             var incluirInactivos = disponibles.HasValue || todos.HasValue;
             var lista = repositorio.ObtenerTodos(incluirInactivos);
             
@@ -38,7 +37,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
             }
             else if (todos.HasValue)
             {
-                // Cuando se hace clic en "Todos", mostrar todos (activos e inactivos)
                 ViewBag.FiltroDisponibles = "Todos";
             }
             return View(lista);
@@ -141,7 +139,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
         [HttpPost]
         public IActionResult LibresEntreFechasPost(DateTime fechaDesde, DateTime fechaHasta)
         {
-            // PRG: redirigir con querystring para evitar reenvío al volver/recargar
             return RedirectToAction(nameof(LibresEntreFechas), new { fechaDesde = fechaDesde.ToString("yyyy-MM-dd"), fechaHasta = fechaHasta.ToString("yyyy-MM-dd") });
         }
 
@@ -154,7 +151,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 return NotFound();
             }
             
-            // Verificar si tiene contratos vigentes
             if (repositorio.TieneContratosVigentes(id))
             {
                 TempData["Error"] = "No se puede eliminar el inmueble porque tiene contratos vigentes";
@@ -171,7 +167,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
         {
             try
             {
-                // Verificar nuevamente antes de eliminar
                 if (repositorio.TieneContratosVigentes(id))
                 {
                     TempData["Error"] = "No se puede eliminar el inmueble porque tiene contratos vigentes";
@@ -188,7 +183,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Inmuebles por Propietario
         public IActionResult PorPropietario(int id)
         {
             var propietario = repositorioPropietario.ObtenerPorId(id);

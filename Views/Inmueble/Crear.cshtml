@@ -60,7 +60,6 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <!-- Información del tipo seleccionado -->
                             <div id="tipoInfo" class="alert alert-info" style="display: none;">
                                 <small>
                                     <strong>Información del tipo:</strong>
@@ -133,10 +132,8 @@
                 var esComercial = selectedOption.data('comercial');
                 
                 if (tipoNombre && tipoNombre !== 'Seleccione un tipo') {
-                    // Autocompletar el campo Tipo con el nombre del tipo seleccionado
                     $('#Tipo').val(tipoNombre);
                     
-                    // Mostrar información del tipo
                     var info = 'Uso: ' + uso + (esComercial ? ' (Comercial)' : ' (No comercial)');
                     $('#tipoDescripcion').text(info);
                     $('#tipoInfo').show();

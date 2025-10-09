@@ -126,7 +126,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 return NotFound();
             }
             
-            // Verificar si tiene inmuebles asignados
             if (repositorio.TieneInmueblesAsignados(id))
             {
                 TempData["Error"] = "No se puede eliminar el tipo de inmueble porque tiene inmuebles asignados";
@@ -143,7 +142,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
         {
             try
             {
-                // Verificar nuevamente antes de eliminar
                 if (repositorio.TieneInmueblesAsignados(id))
                 {
                     TempData["Error"] = "No se puede eliminar el tipo de inmueble porque tiene inmuebles asignados";

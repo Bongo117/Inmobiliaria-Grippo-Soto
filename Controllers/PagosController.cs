@@ -23,7 +23,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
         public IActionResult PorContrato(int contratoId)
         {
-            // Incluir contratos inactivos para poder ver pagos históricos
             var contrato = repositorioContrato.ObtenerPorIdIncluyeInactivos(contratoId);
             if (contrato == null)
             {
@@ -67,20 +66,17 @@ namespace Inmobiliaria_.Net_Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Validar que el contrato existe
                 var contrato = repositorioContrato.ObtenerPorId(pago.ContratoId);
                 if (contrato == null)
                 {
                     ModelState.AddModelError("ContratoId", "El contrato seleccionado no existe");
                 }
 
-                // Validar que no exista ya un pago con ese número para el contrato
                 if (repositorio.ExisteNumeroPago(pago.ContratoId, pago.NumeroPago))
                 {
                     ModelState.AddModelError("NumeroPago", "Ya existe un pago con ese número para este contrato");
                 }
 
-                // Validar que la fecha del pago esté dentro del rango del contrato
                 if (contrato != null)
                 {
                     if (pago.FechaPago < contrato.FechaInicio || pago.FechaPago > contrato.FechaFin.AddMonths(1))
@@ -98,7 +94,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                         repositorio.Alta(pago);
                         TempData["Mensaje"] = "Pago registrado exitosamente";
                         
-                        // Si se creó desde la vista de un contrato, volver a ella.
                         return RedirectToAction(nameof(PorContrato), new { contratoId = pago.ContratoId });
                     }
                     catch (Exception ex)
@@ -124,7 +119,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 return NotFound();
             }
 
-            // Verificar que el pago no esté anulado
             if (!pago.Estado)
             {
                 TempData["Error"] = "No se puede editar un pago anulado";
@@ -146,7 +140,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
                     return NotFound();
                 }
 
-                // Verificar que el pago no esté anulado
                 if (!pagoOriginal.Estado)
                 {
                     TempData["Error"] = "No se puede editar un pago anulado";
@@ -155,7 +148,6 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
                 try
                 {
-                    // Según la narrativa, solo se puede editar el detalle/concepto
                     pagoOriginal.Detalle = pago.Detalle;
                     repositorio.Modificacion(pagoOriginal);
                     TempData["Mensaje"] = "Pago actualizado exitosamente";
@@ -229,13 +221,11 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 TempData["Error"] = "Error al anular el pago: " + ex.Message;
             }
 
-            // Siempre redirigir a la vista de pagos del contrato
             var pagoAnulado = repositorio.ObtenerPorId(id); // Obtener el pago para conseguir el ContratoId
             if (pagoAnulado != null)
             {
                 return RedirectToAction(nameof(PorContrato), new { contratoId = pagoAnulado.ContratoId });
             }
-            // Si el pago no se encuentra (caso muy raro), redirigir al index general
             return RedirectToAction(nameof(Index));
         }
 
@@ -280,14 +270,12 @@ namespace Inmobiliaria_.Net_Core.Controllers
             
             if (ModelState.IsValid)
             {
-                // Validar que el contrato existe
                 var contrato = repositorioContrato.ObtenerPorId(contratoId);
                 if (contrato == null)
                 {
                     return NotFound();
                 }
 
-                // Validar que no exista ya un pago con ese número para el contrato
                 if (repositorio.ExisteNumeroPago(pago.ContratoId, pago.NumeroPago))
                 {
                     TempData["Error"] = "Ya existe un pago con ese número para este contrato";

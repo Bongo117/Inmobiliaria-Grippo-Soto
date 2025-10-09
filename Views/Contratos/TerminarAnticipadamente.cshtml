@@ -125,7 +125,6 @@
             const fechaFin = '@Model.FechaFin.ToString("yyyy-MM-dd")';
             const montoMensual = @Model.MontoMensual;
             
-            // No inicializar automáticamente, dejar que el usuario seleccione la fecha
             
             $('#FechaTerminacionAnticipada').on('change', function() {
                 const fechaSeleccionada = $(this).val();
@@ -144,10 +143,8 @@
             });
             
             function calcularMulta(fechaTerminacion) {
-                // Mostrar indicador de carga
                 $('#calculoMulta').html('<div class="text-center"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Calculando...</span></div> <span class="ms-2">Calculando multa...</span></div>');
                 
-                // Llamar al endpoint del backend para obtener el cálculo preciso
                 $.ajax({
                     url: '@Url.Action("CalcularMulta", "Contratos")',
                     type: 'GET',
@@ -211,7 +208,6 @@
                 });
             }
             
-            // Validación del formulario
             $('#terminarForm').on('submit', function(e) {
                 const fechaTerminacion = $('#FechaTerminacionAnticipada').val();
                 const motivo = $('#MotivoTerminacion').val().trim();

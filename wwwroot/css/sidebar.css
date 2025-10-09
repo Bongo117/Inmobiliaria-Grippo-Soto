@@ -185,7 +185,6 @@
   transition: all var(--transition-normal);
 }
 
-/* Dropdown visible */
 .dropdown-menu-custom.show {
   opacity: 1;
   visibility: visible;
@@ -357,7 +356,6 @@
   transition: all var(--transition-normal);
 }
 
-/* Dropdown visible */
 .user-dropdown-menu.show {
   opacity: 1;
   visibility: visible;

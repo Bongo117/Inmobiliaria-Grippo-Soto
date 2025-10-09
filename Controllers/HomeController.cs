@@ -29,13 +29,10 @@ public class HomeController : Controller
         var todosLosInmuebles = _repoInmueble.ObtenerTodos();
         var contratosVigentes = _repoContrato.ObtenerVigentes();
         
-        // Obtener IDs de inmuebles que tienen contratos vigentes
         var inmueblesConContratosVigentes = contratosVigentes.Select(c => c.InmuebleId).Distinct().ToList();
         
-        // Calcular inmuebles disponibles (activos pero sin contratos vigentes)
         var inmueblesDisponibles = todosLosInmuebles.Count(i => i.Estado && !inmueblesConContratosVigentes.Contains(i.Id));
         
-        // Calcular inmuebles ocupados (con contratos vigentes)
         var inmueblesOcupados = inmueblesConContratosVigentes.Count;
         
         var viewModel = new DashboardViewModel
