@@ -344,67 +344,67 @@ namespace Inmobiliaria_.Net_Core.Controllers
         }
 
         [HttpPost]
-        public IActionResult TerminarAnticipadamente(int id, DateTime fechaTerminacion, string motivo)
+        public IActionResult TerminarAnticipadamente(Contrato contrato)
         {
-            var contrato = repositorio.ObtenerPorId(id);
-            if (contrato == null)
+            var contratoOriginal = repositorio.ObtenerPorId(contrato.Id);
+            if (contratoOriginal == null)
             {
                 return NotFound();
             }
             
-            if (contrato.TieneTerminacionAnticipada)
+            if (contratoOriginal.TieneTerminacionAnticipada)
             {
                 TempData["Error"] = "Este contrato ya fue terminado anticipadamente";
                 return RedirectToAction(nameof(Index));
             }
             
-            if (!contrato.EsVigente)
+            if (!contratoOriginal.EsVigente)
             {
                 TempData["Error"] = "Solo se pueden terminar contratos vigentes";
                 return RedirectToAction(nameof(Index));
             }
             
             // Validar que la fecha de terminación esté dentro del rango válido
-            if (fechaTerminacion < contrato.FechaInicio)
+            if (contrato.FechaTerminacionAnticipada.HasValue && contrato.FechaTerminacionAnticipada.Value.Date < contratoOriginal.FechaInicio.Date)
             {
                 ModelState.AddModelError("FechaTerminacionAnticipada", "La fecha de terminación no puede ser anterior a la fecha de inicio del contrato");
-                return View(contrato);
+                return View(contratoOriginal);
             }
             
-            if (fechaTerminacion >= contrato.FechaFin)
+            if (contrato.FechaTerminacionAnticipada.HasValue && contrato.FechaTerminacionAnticipada.Value.Date >= contratoOriginal.FechaFin.Date)
             {
                 ModelState.AddModelError("FechaTerminacionAnticipada", "La fecha de terminación debe ser anterior a la fecha de finalización original del contrato");
-                return View(contrato);
+                return View(contratoOriginal);
             }
             
-            if (string.IsNullOrWhiteSpace(motivo))
+            if (string.IsNullOrWhiteSpace(contrato.MotivoTerminacion))
             {
                 ModelState.AddModelError("MotivoTerminacion", "El motivo de terminación es obligatorio");
-                return View(contrato);
+                return View(contratoOriginal);
             }
             
             try
             {
                 // Actualizar el contrato con la terminación anticipada
-                contrato.FechaTerminacionAnticipada = fechaTerminacion;
-                contrato.MotivoTerminacion = motivo;
-                contrato.MultaAplicada = contrato.MontoMultaCalculado;
-                contrato.FechaAplicacionMulta = DateTime.Today;
-                contrato.FechaTerminacionRegistro = DateTime.Now;
-                contrato.UsuarioTerminacion = User?.Identity?.Name;
+                contratoOriginal.FechaTerminacionAnticipada = contrato.FechaTerminacionAnticipada;
+                contratoOriginal.MotivoTerminacion = contrato.MotivoTerminacion;
+                contratoOriginal.MultaAplicada = contratoOriginal.MontoMultaCalculado;
+                contratoOriginal.FechaAplicacionMulta = DateTime.Today;
+                contratoOriginal.FechaTerminacionRegistro = DateTime.Now;
+                contratoOriginal.UsuarioTerminacion = User?.Identity?.Name;
                 
-                repositorio.Modificacion(contrato);
+                repositorio.Modificacion(contratoOriginal);
                 
                 // Crear pago de multa automáticamente
-                CrearPagoMulta(contrato);
+                CrearPagoMulta(contratoOriginal);
                 
-                TempData["Mensaje"] = $"Contrato terminado anticipadamente. Multa aplicada: ${contrato.MultaAplicada:F2}";
-                return RedirectToAction(nameof(Detalles), new { id = contrato.Id });
+                TempData["Mensaje"] = $"Contrato terminado anticipadamente. Multa aplicada: ${contratoOriginal.MultaAplicada:F2}";
+                return RedirectToAction(nameof(Detalles), new { id = contratoOriginal.Id });
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Error al terminar el contrato: " + ex.Message);
-                return View(contrato);
+                return View(contratoOriginal);
             }
         }
 
