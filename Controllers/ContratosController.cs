@@ -60,8 +60,19 @@ namespace Inmobiliaria_.Net_Core.Controllers
                         contrato.FechaCreacion = DateTime.Now;
                         contrato.UsuarioCreador = User?.Identity?.Name;
 
+                        // Verificar si el contrato debe marcarse como vencido
+                        // Si la fecha de inicio es anterior a la fecha actual, marcar como vencido
+                        if (contrato.FechaInicio < DateTime.Today)
+                        {
+                            contrato.Estado = false;
+                            TempData["Mensaje"] = "Contrato creado exitosamente. El contrato se marcó como vencido porque la fecha de inicio es anterior a la fecha actual.";
+                        }
+                        else
+                        {
+                            TempData["Mensaje"] = "Contrato creado exitosamente";
+                        }
+
                         repositorio.Alta(contrato);
-                        TempData["Mensaje"] = "Contrato creado exitosamente";
                         return RedirectToAction(nameof(Index));
                     }
                     catch (Exception ex)
@@ -202,8 +213,19 @@ namespace Inmobiliaria_.Net_Core.Controllers
 
             try
             {
+                // Verificar si el contrato debe marcarse como vencido
+                // Si la fecha de inicio es anterior a la fecha actual, marcar como vencido
+                if (contrato.FechaInicio < DateTime.Today)
+                {
+                    contrato.Estado = false;
+                    TempData["Mensaje"] = "Contrato renovado exitosamente. El contrato se marcó como vencido porque la fecha de inicio es anterior a la fecha actual.";
+                }
+                else
+                {
+                    TempData["Mensaje"] = "Contrato renovado exitosamente";
+                }
+
                 repositorio.Alta(contrato);
-                TempData["Mensaje"] = "Contrato renovado exitosamente";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
