@@ -125,6 +125,8 @@
             const fechaFin = '@Model.FechaFin.ToString("yyyy-MM-dd")';
             const montoMensual = @Model.MontoMensual;
             
+            // No inicializar automáticamente, dejar que el usuario seleccione la fecha
+            
             $('#FechaTerminacionAnticipada').on('change', function() {
                 const fechaSeleccionada = $(this).val();
                 if (fechaSeleccionada) {
@@ -142,38 +144,71 @@
             });
             
             function calcularMulta(fechaTerminacion) {
-                const fechaInicioDate = new Date(fechaInicio);
-                const fechaFinDate = new Date(fechaFin);
-                const fechaTerminacionDate = new Date(fechaTerminacion);
+                // Mostrar indicador de carga
+                $('#calculoMulta').html('<div class="text-center"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Calculando...</span></div> <span class="ms-2">Calculando multa...</span></div>');
                 
-                const duracionTotal = (fechaFinDate - fechaInicioDate) / (1000 * 60 * 60 * 24);
-                const tiempoTranscurrido = (fechaTerminacionDate - fechaInicioDate) / (1000 * 60 * 60 * 24);
-                const porcentaje = (tiempoTranscurrido / duracionTotal) * 100;
-                
-                const mesesMulta = porcentaje < 50 ? 2 : 1;
-                const montoMulta = montoMensual * mesesMulta;
-                
-                let html = `
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Porcentaje de tiempo transcurrido:</strong><br>
-                            <span class="badge badge-${porcentaje < 50 ? 'danger' : 'warning'}">${porcentaje.toFixed(1)}%</span>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Meses de multa:</strong><br>
-                            <span class="badge badge-info">${mesesMulta} mes${mesesMulta > 1 ? 'es' : ''}</span>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="text-danger">
-                            <strong>Multa a aplicar: $${montoMulta.toLocaleString('es-AR', {minimumFractionDigits: 2})}</strong>
-                        </h5>
-                    </div>
-                `;
-                
-                $('#calculoMulta').html(html);
-                $('#confirmarBtn').prop('disabled', false);
+                // Llamar al endpoint del backend para obtener el cálculo preciso
+                $.ajax({
+                    url: '@Url.Action("CalcularMulta", "Contratos")',
+                    type: 'GET',
+                    data: { 
+                        id: contratoId, 
+                        fechaTerminacion: fechaTerminacion 
+                    },
+                    success: function(data) {
+                        let html = `
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-sm">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th colspan="2" class="text-center">Cálculo de Multa</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Fecha de inicio:</strong></td>
+                                            <td>${new Date(data.fechaInicio).toLocaleDateString('es-AR')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Fecha de fin original:</strong></td>
+                                            <td>${new Date(data.fechaFin).toLocaleDateString('es-AR')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Fecha de terminación:</strong></td>
+                                            <td>${new Date(fechaTerminacion).toLocaleDateString('es-AR')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Duración total del contrato:</strong></td>
+                                            <td>${data.duracionDias} días</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Tiempo transcurrido:</strong></td>
+                                            <td>${data.tiempoTranscurrido || Math.ceil((new Date(fechaTerminacion) - new Date(fechaInicio)) / (1000 * 60 * 60 * 24) + 1)} días</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Porcentaje transcurrido:</strong></td>
+                                            <td><span class="badge bg-${data.porcentajeTiempo < 50 ? 'danger' : 'warning'}">${data.porcentajeTiempo.toFixed(1)}%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Meses de multa:</strong></td>
+                                            <td><span class="badge bg-info">${data.mesesMulta} mes${data.mesesMulta > 1 ? 'es' : ''}</span></td>
+                                        </tr>
+                                        <tr class="table-danger">
+                                            <td><strong>Multa a aplicar:</strong></td>
+                                            <td><strong>$${data.montoMulta.toLocaleString('es-AR', {minimumFractionDigits: 2})}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                        
+                        $('#calculoMulta').html(html);
+                        $('#confirmarBtn').prop('disabled', false);
+                    },
+                    error: function() {
+                        $('#calculoMulta').html('<div class="alert alert-danger">Error al calcular la multa. Por favor, intente nuevamente.</div>');
+                    }
+                });
             }
             
             // Validación del formulario

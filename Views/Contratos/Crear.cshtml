@@ -14,6 +14,16 @@
                     <h4>Datos del Contrato</h4>
                 </div>
                 <div class="card-body">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Advertencia
+                            </h6>
+                            <div asp-validation-summary="All" class="mb-0"></div>
+                        </div>
+                    }
                     
                     <div class="row">
                         <div class="col-md-6">
