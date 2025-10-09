@@ -51,7 +51,15 @@ namespace Inmobiliaria_.Net_Core.Controllers
                     // Validar que no exista otro contrato para ese inmueble en esas fechas
                     if (repositorio.ExisteContratoEnFechas(contrato.InmuebleId, contrato.FechaInicio, contrato.FechaFin))
                     {
-                        ModelState.AddModelError("", "Ya existe un contrato para ese inmueble en las fechas seleccionadas");
+                        var contratosSuperpuestos = repositorio.ObtenerContratosSuperpuestos(contrato.InmuebleId, contrato.FechaInicio, contrato.FechaFin);
+                        var mensaje = "Ya existe un contrato para ese inmueble en las fechas seleccionadas:\n";
+                        foreach (var contratoSuperpuesto in contratosSuperpuestos)
+                        {
+                            mensaje += $"• Contrato ID: {contratoSuperpuesto.Id} - " +
+                                      $"Inquilino: {contratoSuperpuesto.Inquilino?.Apellido}, {contratoSuperpuesto.Inquilino?.Nombre} - " +
+                                      $"Período: {contratoSuperpuesto.FechaInicio:dd/MM/yyyy} a {contratoSuperpuesto.FechaFin:dd/MM/yyyy}\n";
+                        }
+                        ModelState.AddModelError("", mensaje.Trim());
                     }
                     
                     // Validar si ya existe un contrato activo para el mismo inquilino e inmueble
@@ -129,7 +137,15 @@ namespace Inmobiliaria_.Net_Core.Controllers
                 // Validar que no exista otro contrato para ese inmueble en esas fechas (excluyendo el actual)
                 if (repositorio.ExisteContratoEnFechas(contrato.InmuebleId, contrato.FechaInicio, contrato.FechaFin, contrato.Id))
                 {
-                    ModelState.AddModelError("", "Ya existe un contrato para ese inmueble en las fechas seleccionadas");
+                    var contratosSuperpuestos = repositorio.ObtenerContratosSuperpuestos(contrato.InmuebleId, contrato.FechaInicio, contrato.FechaFin, contrato.Id);
+                    var mensaje = "❌ Ya existe otro contrato para ese inmueble en las fechas seleccionadas:\n";
+                    foreach (var contratoSuperpuesto in contratosSuperpuestos)
+                    {
+                        mensaje += $"• Contrato ID: {contratoSuperpuesto.Id} - " +
+                                  $"Inquilino: {contratoSuperpuesto.Inquilino?.Apellido}, {contratoSuperpuesto.Inquilino?.Nombre} - " +
+                                  $"Período: {contratoSuperpuesto.FechaInicio:dd/MM/yyyy} a {contratoSuperpuesto.FechaFin:dd/MM/yyyy}\n";
+                    }
+                    ModelState.AddModelError("", mensaje.Trim());
                 }
                 
                 // Validar si ya existe otro contrato activo para el mismo inquilino e inmueble (excluyendo el actual)
@@ -299,11 +315,31 @@ namespace Inmobiliaria_.Net_Core.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Vigentes()
+        public IActionResult VigentesEntreFechas(DateTime? fechaDesde = null, DateTime? fechaHasta = null)
         {
-            var lista = repositorio.ObtenerVigentes();
-            ViewBag.Titulo = "Contratos Vigentes";
-            return View("Index", lista);
+            ViewBag.Resultados = null;
+            ViewBag.FechaDesde = fechaDesde;
+            ViewBag.FechaHasta = fechaHasta;
+
+            if (fechaDesde.HasValue && fechaHasta.HasValue)
+            {
+                if (fechaHasta.Value < fechaDesde.Value)
+                {
+                    TempData["Error"] = "La fecha hasta debe ser posterior a la fecha desde";
+                    return View();
+                }
+
+                var vigentes = repositorio.ObtenerVigentesEntreFechas(fechaDesde.Value, fechaHasta.Value);
+                ViewBag.Resultados = vigentes;
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult VigentesEntreFechasPost(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            // PRG: redirigir con querystring para evitar reenvío al volver/recargar
+            return RedirectToAction(nameof(VigentesEntreFechas), new { fechaDesde = fechaDesde.ToString("yyyy-MM-dd"), fechaHasta = fechaHasta.ToString("yyyy-MM-dd") });
         }
 
         public IActionResult Pagos(int id)

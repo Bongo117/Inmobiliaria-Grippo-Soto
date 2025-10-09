@@ -118,7 +118,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const ctx = document.getElementById('inmueblesChart').getContext('2d');
             const disponibles = @Model.InmueblesDisponibles;
-            const ocupados = @(Model.TotalInmuebles - Model.InmueblesDisponibles);
+            const ocupados = @Model.InmueblesOcupados;
 
             new Chart(ctx, {
                 type: 'doughnut',

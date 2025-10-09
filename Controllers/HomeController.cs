@@ -27,11 +27,23 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         var todosLosInmuebles = _repoInmueble.ObtenerTodos();
+        var contratosVigentes = _repoContrato.ObtenerVigentes();
+        
+        // Obtener IDs de inmuebles que tienen contratos vigentes
+        var inmueblesConContratosVigentes = contratosVigentes.Select(c => c.InmuebleId).Distinct().ToList();
+        
+        // Calcular inmuebles disponibles (activos pero sin contratos vigentes)
+        var inmueblesDisponibles = todosLosInmuebles.Count(i => i.Estado && !inmueblesConContratosVigentes.Contains(i.Id));
+        
+        // Calcular inmuebles ocupados (con contratos vigentes)
+        var inmueblesOcupados = inmueblesConContratosVigentes.Count;
+        
         var viewModel = new DashboardViewModel
         {
-            InmueblesDisponibles = todosLosInmuebles.Count(i => i.Estado),
+            InmueblesDisponibles = inmueblesDisponibles,
+            InmueblesOcupados = inmueblesOcupados,
             TotalInmuebles = todosLosInmuebles.Count,
-            ContratosVigentes = _repoContrato.ObtenerVigentes().Count,
+            ContratosVigentes = contratosVigentes.Count,
             InquilinosActivos = _repoInquilino.ObtenerTodos().Count,
             PropietariosActivos = _repoPropietario.ObtenerTodos().Count,
             ContratosPorVencer = _repoContrato.ObtenerTodos().Where(c => c.Estado && c.FechaFin >= DateTime.Today && c.FechaFin <= DateTime.Today.AddDays(30)).ToList()
